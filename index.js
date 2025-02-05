@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('./db');
 
 const app = express();
-const hostname = 'localhost'; // '192.168.4.115';
+const hostname = 'localhost'; // Tie-tkannat ip: '192.168.4.115';
 const port = 8040;
 
 app.use(express.static('public'));

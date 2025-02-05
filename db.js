@@ -16,7 +16,7 @@ const db = require('knex')({
 	},
 });
 
-// Testataan yhteyttä tietokantaan
+// Testaa yhteyttä tietokantaan
 db.raw('SELECT 1')
 	.then(() => {
 		console.log('Yhteys tietokantaan onnistui');
@@ -29,7 +29,7 @@ db.raw('SELECT 1')
 module.exports = db;
 
 /*
-Raaka pg-kirjasto versio tarvittaessa.
+Raaka pg-kirjastoa käyttävä versio tarvittaessa.
 
 const { Pool } = require('pg');
 

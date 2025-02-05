@@ -4,7 +4,7 @@ Repositorio TUNI kurssin DATA.DB.210: Tietokantaohjelmointi ryhmätyölle.
 
 Tämä on Node.js ja PostgreSQL -pohjainen sovellus, jossa käytetään Express.js:ää staattisten HTML-sivujen tarjoamiseen ja virheiden käsittelyyn.
 
-## Asennus
+## Sovelluksen asennus ja ajaminen
 
 1. **Kloonaa projekti ja siirry sen juurihakemistoon**:
 
