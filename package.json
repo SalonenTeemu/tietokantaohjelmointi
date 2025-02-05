@@ -1,0 +1,36 @@
+{
+	"name": "tietokantaohjelmointi",
+	"version": "1.0.0",
+	"description": "Tietokantaohjelmointi ryhmätyö",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "nodemon index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.21.2",
+		"knex": "^3.1.0",
+		"pg": "^8.13.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.19.0",
+		"eslint": "^9.19.0",
+		"eslint-config-prettier": "^10.0.1",
+		"globals": "^15.14.0",
+		"nodemon": "^3.1.9",
+		"prettier": "^3.4.2"
+	},
+	"nodemonConfig": {
+		"ignore": [
+			".git",
+			"node_modules/*",
+			"test/*",
+			"views/*",
+			"docs/*"
+		],
+		"delay": 1000
+	}
+}
