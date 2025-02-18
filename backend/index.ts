@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import db from './db';
+import { initializeDatabase } from './db';
 
 const app = express();
-const hostname = 'localhost'; // Tie-tkannat ip: '192.168.4.115';
+const hostname = 'localhost';
 const port = 8041;
 
 app.get('/data', async (req: Request, res: Response) => {
@@ -15,5 +15,6 @@ app.get('/data', async (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
+	initializeDatabase();
 	console.log(`Palvelin käynnissä osoitteessa http://${hostname}:${port}`);
 });

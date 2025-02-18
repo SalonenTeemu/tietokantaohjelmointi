@@ -10,7 +10,7 @@
 		"dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\"",
 		"lint:frontend": "cd frontend && ng lint",
 		"lint:backend": "cd backend && npm run lint",
-		"lint": "npm run lint:frontend && npm run lint:backend",
+		"lint": "npm run lint -prefix frontend && npm run lint:backend",
 		"format": "prettier --write ."
 	},
 	"author": "",

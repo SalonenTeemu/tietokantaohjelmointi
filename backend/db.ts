@@ -6,11 +6,11 @@ import knex, { Knex } from 'knex';
 const db: Knex = knex({
 	client: 'pg',
 	connection: {
-		host: 'the hostname',
-		port: 99999999999,
-		database: 'the database',
-		user: 'the user',
-		password: 'the password',
+		host: 'localhost',
+		port: 5432,
+		database: 'httusa',
+		user: 'postgres',
+		password: 'salonen',
 	},
 	pool: {
 		min: 2,
@@ -18,31 +18,29 @@ const db: Knex = knex({
 	},
 });
 
+// const db: Knex = knex({
+// 	client: 'pg',
+// 	connection: {
+// 		host: 'localhost',
+// 		port: 5432,
+// 		database: 'httusa',
+// 		user: 'httusa',
+// 		password: 'gIDJGqV5xWwrH59',
+// 	},
+// 	pool: {
+// 		min: 2,
+// 		max: 10,
+// 	},
+// });
+
 // Testaa yhteyttä tietokantaan
-db.raw('SELECT 1')
-	.then(() => {
+export const initializeDatabase = async () => {
+	try {
+		await db.raw('SELECT 1');
 		console.log('Yhteys tietokantaan onnistui');
-	})
-	.catch((err: Error) => {
-		console.error('Virhe yhteyden luomisessa:', err.message);
-		//process.exit(1);
-	});
+	} catch (err: unknown) {
+		console.error('Virhe yhteyden luomisessa:', err);
+	}
+};
 
 export default db;
-
-/*
-Raaka pg-kirjastoa käyttävä versio tarvittaessa.
-
-import { Pool } from 'pg';
-
-const pool = new Pool({
-    host: 'the hostname',
-    port: 'the port',
-    database: 'the database',
-    user: 'the user',
-    password: 'the password',
-    max: 10,
-});
-
-export default pool;
-*/
