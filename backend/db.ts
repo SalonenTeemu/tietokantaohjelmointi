@@ -1,11 +1,13 @@
+import knex, { Knex } from 'knex';
+
 /**
  * Yhdistä tietokantaan knex-kirjaston avulla.
  */
-const db = require('knex')({
+const db: Knex = knex({
 	client: 'pg',
 	connection: {
 		host: 'the hostname',
-		port: 'the port',
+		port: 99999999999,
 		database: 'the database',
 		user: 'the user',
 		password: 'the password',
@@ -21,26 +23,26 @@ db.raw('SELECT 1')
 	.then(() => {
 		console.log('Yhteys tietokantaan onnistui');
 	})
-	.catch((err) => {
+	.catch((err: Error) => {
 		console.error('Virhe yhteyden luomisessa:', err.message);
 		//process.exit(1);
 	});
 
-module.exports = db;
+export default db;
 
 /*
 Raaka pg-kirjastoa käyttävä versio tarvittaessa.
 
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 const pool = new Pool({
-	host: 'the hostname',
-	port: 'the port',
-	database: 'the database',
-	user: 'the user',
-	password: 'the password',
-	max: 10,
+    host: 'the hostname',
+    port: 'the port',
+    database: 'the database',
+    user: 'the user',
+    password: 'the password',
+    max: 10,
 });
 
-module.exports = pool;
+export default pool;
 */
