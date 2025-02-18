@@ -33,14 +33,4 @@ const db: Knex = knex({
 // 	},
 // });
 
-// Testaa yhteyttä tietokantaan
-export const initializeDatabase = async () => {
-	try {
-		await db.raw('SELECT 1');
-		console.log('Yhteys tietokantaan onnistui');
-	} catch (err: unknown) {
-		console.error('Virhe yhteyden luomisessa:', err);
-	}
-};
-
 export default db;
