@@ -1,5 +1,11 @@
 import db from './knex';
 
+export const testaaHakuja = async () => {
+    console.log("Teoksia nimellä:", await haeTeoksiaKeskusdivarista("Turms kuolematon"));
+    console.log("Luokka myynnissä:", await haeLuokanMyynnissaOlevatTeokset('Historia'));
+    console.log("Teokset hakusanalla:", await haeTeoksetHakusanalla('Turms kuolematon'));
+    console.log("Asiakkaan tilaukset:", await haeAsiakkaanTilaukset(1));
+}
 // R1
 export const haeTeoksiaKeskusdivarista = async (nimi: string) => {
 	const teokset = await db('keskusdivari')

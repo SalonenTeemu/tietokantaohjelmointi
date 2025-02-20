@@ -96,7 +96,7 @@ export const initViews = async () => {
         await createHakunäkymä();
         await createLuokanMyynnissaOlevatTeokset();
         await createAsiakasRaporttiViimeVuosi();
-        console.log('Näkymät luotu');
+        console.log('Näkymät luotu onnistuneesti');
     } catch (err) {
         console.error('Virhe näkymien luonnissa');
         console.error(err);
