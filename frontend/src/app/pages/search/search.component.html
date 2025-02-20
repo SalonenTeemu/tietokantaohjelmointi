@@ -1,0 +1,12 @@
+<div class="search-container">
+	<h2>Hae kirjoja</h2>
+	<input type="text" [(ngModel)]="query" placeholder="Kirjan nimi..." (keyup.enter)="onSearch()" />
+	<button (click)="onSearch()">Hae</button>
+
+	<ul>
+		<li *ngFor="let book of books">
+			{{ book.title }} - {{ book.author }} - {{ book.year }} ({{ book.price }} €)
+			<button (click)="addToCart(book)">Lisää ostoskoriin</button>
+		</li>
+	</ul>
+</div>

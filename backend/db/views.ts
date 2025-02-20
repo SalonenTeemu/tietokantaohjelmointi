@@ -3,30 +3,30 @@ import { keskusdivari } from './initDb';
 
 // Tarkasta löytyykö näkymää jo
 const checkView = async (view: string, schema: string) => {
-    const viewExists = await db.raw(`
+	const viewExists = await db.raw(`
         SELECT EXISTS (
             SELECT 1 
             FROM information_schema.views 
             WHERE table_schema = '${schema}' AND table_name = '${view}'
         ) as view_exists;
     `);
-    return viewExists.rows[0].view_exists;
+	return viewExists.rows[0].view_exists;
 };
 
 // Luo näkymä, jos sitä ei ole olemassa
 const createView = async (schema: string, view: string, query: string) => {
-    const exists = await checkView(view, schema);
-    if (exists) {
-        await db.raw(`DROP VIEW IF EXISTS "${schema}"."${view}"`);
-    }
-    await db.raw(`CREATE VIEW "${schema}"."${view}" AS ${query}`);
+	const exists = await checkView(view, schema);
+	if (exists) {
+		await db.raw(`DROP VIEW IF EXISTS "${schema}"."${view}"`);
+	}
+	await db.raw(`CREATE VIEW "${schema}"."${view}" AS ${query}`);
 };
 
 // Näkymä hakukyselyille (R1)
 const createHakunäkymä = async () => {
-    const schema = keskusdivari;
-    const view = 'HakuNakyma';
-    const query = `
+	const schema = keskusdivari;
+	const view = 'HakuNakyma';
+	const query = `
         SELECT 
             t."teosId" AS id,
             t."isbn" AS isbn, 
@@ -44,14 +44,14 @@ const createHakunäkymä = async () => {
         JOIN "${schema}"."Tyyppi" ty ON t."tyyppiId" = ty."tyyppiId"
         JOIN "${schema}"."Luokka" l ON t."luokkaId" = l."luokkaId";
     `;
-    await createView(schema, view, query);
+	await createView(schema, view, query);
 };
 
 // Näkymä tietyn luokan myynnissä olevista teoksista (R2)
 const createLuokanMyynnissaOlevatTeokset = async () => {
-    const schema = keskusdivari;
-    const view = 'LuokanMyynnissaOlevatTeokset';
-    const query = `
+	const schema = keskusdivari;
+	const view = 'LuokanMyynnissaOlevatTeokset';
+	const query = `
         SELECT
             l.nimi AS luokka, 
             COUNT(ti."teosInstanssiId") AS "lkmMyynnissa", 
@@ -63,14 +63,14 @@ const createLuokanMyynnissaOlevatTeokset = async () => {
         WHERE ti.tila = 'vapaa'
         GROUP BY l.nimi;
     `;
-    await createView(schema, view, query);
+	await createView(schema, view, query);
 };
 
 // Näkymä raportille asiakkaiden viime vuonna ostamien teosten lukumäärästä (R3):
 const createAsiakasRaporttiViimeVuosi = async () => {
-    const schema = keskusdivari;
-    const view = 'AsiakasRaporttiViimeVuosi';
-    const query = `
+	const schema = keskusdivari;
+	const view = 'AsiakasRaporttiViimeVuosi';
+	const query = `
         SELECT
             K."kayttajaId" AS "kayttajaId",
             K.nimi AS asiakas, 
@@ -88,17 +88,17 @@ const createAsiakasRaporttiViimeVuosi = async () => {
         GROUP BY 
             K."kayttajaId", K.nimi, K.email;
     `;
-    await createView(schema, view, query);
+	await createView(schema, view, query);
 };
 
 export const initViews = async () => {
-    try {
-        await createHakunäkymä();
-        await createLuokanMyynnissaOlevatTeokset();
-        await createAsiakasRaporttiViimeVuosi();
-        console.log('Näkymät luotu onnistuneesti');
-    } catch (err) {
-        console.error('Virhe näkymien luonnissa');
-        console.error(err);
-    }
+	try {
+		await createHakunäkymä();
+		await createLuokanMyynnissaOlevatTeokset();
+		await createAsiakasRaporttiViimeVuosi();
+		console.log('Näkymät luotu onnistuneesti');
+	} catch (err) {
+		console.error('Virhe näkymien luonnissa');
+		console.error(err);
+	}
 };

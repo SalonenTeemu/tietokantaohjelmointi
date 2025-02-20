@@ -1,11 +1,11 @@
 import db from './knex';
 
 export const testaaHakuja = async () => {
-    console.log("Teoksia nimellä:", await haeTeoksiaKeskusdivarista("Turms kuolematon"));
-    console.log("Luokka myynnissä:", await haeLuokanMyynnissaOlevatTeokset('Historia'));
-    console.log("Teokset hakusanalla:", await haeTeoksetHakusanalla('Turms kuolematon'));
-    console.log("Asiakkaan tilaukset:", await haeAsiakkaanTilaukset(1));
-}
+	console.log('Teoksia nimellä:', await haeTeoksiaKeskusdivarista('Turms kuolematon'));
+	console.log('Luokka myynnissä:', await haeLuokanMyynnissaOlevatTeokset('Historia'));
+	console.log('Teokset hakusanalla:', await haeTeoksetHakusanalla('Turms kuolematon'));
+	console.log('Asiakkaan tilaukset:', await haeAsiakkaanTilaukset(1));
+};
 // R1
 export const haeTeoksiaKeskusdivarista = async (nimi: string) => {
 	const teokset = await db('keskusdivari')
@@ -36,31 +36,30 @@ export const haeLuokanMyynnissaOlevatTeokset = async (luokka: string) => {
 
 // R4
 export const haeTeoksetHakusanalla = async (hakusana: string) => {
-    const teokset = await db
-        .select(
-            't.teosId',
-            't.isbn',
-            't.nimi',
-            't.tekija',
-            'ty.nimi as tyyppi',
-            'l.nimi as luokka',
-            't.julkaisuvuosi',
-            db.raw('COUNT(h.sana) as osumien_maara')
-        )
-        .from('keskusdivari.Teos as t')
-        .joinRaw(
-            `LEFT JOIN (SELECT unnest(string_to_array(?, ' ')) AS sana) AS h 
+	const teokset = await db
+		.select(
+			't.teosId',
+			't.isbn',
+			't.nimi',
+			't.tekija',
+			'ty.nimi as tyyppi',
+			'l.nimi as luokka',
+			't.julkaisuvuosi',
+			db.raw('COUNT(h.sana) as osumien_maara')
+		)
+		.from('keskusdivari.Teos as t')
+		.joinRaw(
+			`LEFT JOIN (SELECT unnest(string_to_array(?, ' ')) AS sana) AS h 
             ON LOWER(t.nimi) LIKE '%' || LOWER(h.sana) || '%'`,
-            [hakusana]
-        )
-        .leftJoin('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
-        .leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId')
-        .groupBy('t.teosId', 't.isbn', 't.nimi', 't.tekija', 'ty.nimi', 'l.nimi', 't.julkaisuvuosi')
-        .orderBy([{ column: 'osumien_maara', order: 'desc' }, { column: 't.nimi' }]);
+			[hakusana]
+		)
+		.leftJoin('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
+		.leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId')
+		.groupBy('t.teosId', 't.isbn', 't.nimi', 't.tekija', 'ty.nimi', 'l.nimi', 't.julkaisuvuosi')
+		.orderBy([{ column: 'osumien_maara', order: 'desc' }, { column: 't.nimi' }]);
 
-    return teokset;
+	return teokset;
 };
-
 
 // Asiakkaan tilaukset
 export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {

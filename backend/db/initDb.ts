@@ -6,7 +6,7 @@ import { initViews } from './views';
 export const keskusdivari = 'keskusdivari';
 export const divarit = ['d1', 'd3'];
 
-// Testaa yhteyttä tietokantaan ja luo skeemat onnistuessaan
+// Testaa yhteyttä tietokantaan ja luo skeemat ja taulut onnistuessaan
 export const initializeDatabase = async () => {
 	try {
 		await db.raw('SELECT 1');
@@ -19,8 +19,8 @@ export const initializeDatabase = async () => {
 		for (const divari of divarit) {
 			await createDivariTables(divari);
 		}
-        console.log('Tietokantataulut luotu onnistuneesti');
-        await initViews();
+		console.log('Tietokantataulut luotu onnistuneesti');
+		await initViews();
 		await insertTestData();
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);

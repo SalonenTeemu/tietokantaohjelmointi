@@ -1,0 +1,13 @@
+<div class="login-container">
+	<h2>Kirjaudu sisään</h2>
+
+	<form (ngSubmit)="onLogin()">
+		<label for="username">Käyttäjätunnus:</label>
+		<input type="text" id="username" [(ngModel)]="username" name="username" required />
+
+		<label for="password">Salasana:</label>
+		<input type="password" id="password" [(ngModel)]="password" name="password" required />
+
+		<button type="submit">Kirjaudu</button>
+	</form>
+</div>

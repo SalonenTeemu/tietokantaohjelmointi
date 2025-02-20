@@ -1,12 +1,30 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AuthService } from './services/auth.service';
+import { selectIsLoggedIn } from './store/selectors/auth.selector';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet],
+	standalone: true,
 	templateUrl: './app.component.html',
-	styleUrl: './app.component.css',
+	styleUrls: ['./app.component.css'],
+	imports: [RouterModule, CommonModule],
 })
 export class AppComponent {
-	title = 'Keskusdivari';
+	isLoggedIn$: Observable<boolean>;
+
+	constructor(
+		private store: Store,
+		private authService: AuthService
+	) {
+		this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
+	}
+
+	logout() {
+		this.authService.logout();
+		alert('Olet kirjautunut ulos');
+	}
 }
