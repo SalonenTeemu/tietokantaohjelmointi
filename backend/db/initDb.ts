@@ -1,6 +1,7 @@
 import db from './knex';
+import { initViews } from './views';
 
-const keskusdivari = 'keskusdivari';
+export const keskusdivari = 'keskusdivari';
 const divarit = ['d1', 'd3'];
 
 // Testaa yhteyttä tietokantaan ja luo skeemat onnistuessaan
@@ -16,6 +17,7 @@ export const initializeDatabase = async () => {
         for (const divari of divarit) {
             await createDivariTables(divari);
         }
+        await initViews();
         console.log('Tietokantataulut luotu onnistuneesti');
     } catch (err: unknown) {
         console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
