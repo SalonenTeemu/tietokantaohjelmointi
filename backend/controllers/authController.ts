@@ -20,7 +20,8 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			res.status(401).json({ message: 'Väärä salasana' });
 			return;
 		}
-		res.status(200).json({ message: 'Kirjautuminen onnistui' });
+		const { salasana: userSalasana, ...userWithoutPassword } = user;
+		res.status(200).json({ message: userWithoutPassword });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);
 		res.status(500).json({ message: 'Virhe' });
