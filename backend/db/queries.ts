@@ -3,17 +3,20 @@ import { Haku } from '../controllers/teosController';
 
 export const testaaHakuja = async () => {
 	//console.log('Teoksia nimellä:', await haeTeoksiaKeskusdivarista('Turms kuolematon'));
-	console.log('Luokka myynnissä:', await haeLuokanMyynnissaOlevatTeokset('Historia'));
+	console.log('Luokka myynnissä:', await haeLuokanMyynnissaOlevatTeokset());
 	//console.log('Teokset hakusanalla:', await haeTeoksetHakusanalla('Turms kuolematon'));
 	console.log('Asiakkaan tilaukset:', await haeAsiakkaanTilaukset(1));
 	console.log('Teokset hakusanalla 2:', await haeTeoksetHakusanalla({ nimi: 'Turms', tekija: null, luokka: null, tyyppi: null }));
 };
 
 // R2
-export const haeLuokanMyynnissaOlevatTeokset = async (luokka: string) => {
-	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot')
-		.select('lmot.lkmMyynnissa', 'lmot.kokonaisMyyntihinta', 'lmot.keskiMyyntihinta')
-		.where('luokka', luokka);
+export const haeLuokanMyynnissaOlevatTeokset = async () => {
+	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
+		'lmot.luokka',
+		'lmot.lkmMyynnissa',
+		'lmot.kokonaisMyyntihinta',
+		'lmot.keskiMyyntihinta'
+	);
 	return teokset;
 };
 
@@ -85,6 +88,22 @@ export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {
 	return tilaukset;
 };
 
+// Teoksen instanssit
+export const haeTeoksenInstanssit = async (teosId: string) => {
+	const instanssit = await db('keskusdivari.TeosInstanssi as ti')
+		.select(
+			'ti.teosInstanssiId',
+			'ti.hinta',
+			'ti.tila',
+			'ti.kunto',
+			'd.nimi as divariNimi'
+		)
+		.join('keskusdivari.Divari as d', 'ti.divariId', 'd.divariId')
+		.where('ti.teosId', teosId);
+
+	return instanssit;
+}
+
 // // R4
 // export const haeTeoksetHakusanalla = async (hakusana: string) => {
 // 	const teokset = await db
@@ -100,7 +119,7 @@ export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {
 // 		)
 // 		.from('keskusdivari.Teos as t')
 // 		.joinRaw(
-// 			`LEFT JOIN (SELECT unnest(string_to_array(?, ' ')) AS sana) AS h 
+// 			`LEFT JOIN (SELECT unnest(string_to_array(?, ' ')) AS sana) AS h
 //             ON LOWER(t.nimi) LIKE '%' || LOWER(h.sana) || '%'`,
 // 			[hakusana]
 // 		)
