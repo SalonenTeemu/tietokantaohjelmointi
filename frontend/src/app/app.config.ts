@@ -1,5 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { reducers } from './store';
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes),
 		provideStore(reducers),
+		provideHttpClient(),
 		provideEffects(),
 		provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
 	],

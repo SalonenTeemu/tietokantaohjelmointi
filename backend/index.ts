@@ -1,9 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import { initializeDatabase } from './db/initDb';
 import teosRoutes from './routes/teosRoutes';
 import tilausRoutes from './routes/tilausRoutes';
 
 const app = express();
+app.use(cors());
+
 const hostname = 'localhost';
 const port = 8041;
 

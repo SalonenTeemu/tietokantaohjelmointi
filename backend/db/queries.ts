@@ -33,7 +33,7 @@ export const haeTeoksetHakusanalla = async (hakusanat: Haku) => {
 			't.julkaisuvuosi',
 			db.raw(
 				`(
-					${hakusanat.nimi ? `CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : '0'}
+					${hakusanat.nimi ? `CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
 					${hakusanat.tekija ? `+ CASE WHEN LOWER(t.tekija) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
 					${hakusanat.luokka ? `+ CASE WHEN LOWER(l.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
 					${hakusanat.tyyppi ? `+ CASE WHEN LOWER(ty.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
@@ -91,18 +91,12 @@ export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {
 // Teoksen instanssit
 export const haeTeoksenInstanssit = async (teosId: string) => {
 	const instanssit = await db('keskusdivari.TeosInstanssi as ti')
-		.select(
-			'ti.teosInstanssiId',
-			'ti.hinta',
-			'ti.tila',
-			'ti.kunto',
-			'd.nimi as divariNimi'
-		)
+		.select('ti.teosInstanssiId', 'ti.hinta', 'ti.tila', 'ti.kunto', 'd.nimi as divari')
 		.join('keskusdivari.Divari as d', 'ti.divariId', 'd.divariId')
 		.where('ti.teosId', teosId);
 
 	return instanssit;
-}
+};
 
 // // R4
 // export const haeTeoksetHakusanalla = async (hakusana: string) => {

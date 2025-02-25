@@ -1,7 +1,10 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { CartItem } from '../../models/cart-item';
+import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 
-export const selectCart = createFeatureSelector<CartItem[]>('cart');
+export const selectCart = createFeatureSelector<OstoskoriTuote[]>('cart');
 
 export const selectCartItems = createSelector(selectCart, (cart) => cart);
-export const selectCartTotal = createSelector(selectCart, (cart) => cart.reduce((total, item) => total + item.price * item.quantity, 0));
+
+export const selectCartTotal = createSelector(selectCart, (cart) =>
+	cart.reduce((total: number, item) => total + Number(item.teosInstanssi.hinta), 0).toFixed(2)
+);
