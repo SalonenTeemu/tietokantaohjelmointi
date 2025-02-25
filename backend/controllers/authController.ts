@@ -6,7 +6,6 @@ import { haeKayttajaEmaililla, haeKayttajaOlemassa, lisaaKayttaja } from '../db/
 export const kirjaudu = async (req: Request, res: Response) => {
 	try {
 		const { email, salasana } = req.body;
-        console.log(email, salasana);
 		if (!email || !salasana) {
 			res.status(400).json({ message: 'Käyttäjätunnus ja salasana vaaditaan' });
 			return;

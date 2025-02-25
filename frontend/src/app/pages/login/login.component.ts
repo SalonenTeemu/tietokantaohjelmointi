@@ -28,7 +28,7 @@ export class LoginComponent {
 		const { email, salasana } = this.loginForm.value;
 		this.authService.login(email, salasana).subscribe((success: boolean) => {
 			if (success) {
-				this.router.navigate(['/search']);
+				this.router.navigate(['/hae']);
 				alert('Kirjautuminen onnistui');
 			} else {
 				alert('Virheellinen sähköposti tai salasana');

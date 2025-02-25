@@ -24,6 +24,9 @@ export class AuthService {
 		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
+					const responseBody = response.body as { message: object };
+					console.log(responseBody.message);
+					this.loggedIn = true;
 					return true;
 				} else {
 					return false;
@@ -43,9 +46,9 @@ export class AuthService {
 			osoite,
 			salasana,
 		};
-		return this.http.post<{ success: boolean; user: unknown }>(`${this.apiUrl}/rekisteroidy`, { body: user }).pipe(
+		return this.http.post<unknown>(`${this.apiUrl}/rekisteroidy`, user, {observe: 'response'}).pipe(
 			map((response) => {
-				if (response.success) {
+				if (response.ok) {
 					console.log('Rekisteröinti onnistui:');
 					return true;
 				}

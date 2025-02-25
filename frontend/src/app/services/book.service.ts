@@ -16,7 +16,7 @@ export class BookService {
 	haeTeokset(query: { nimi?: string; tekija?: string; tyyppi?: string; luokka?: string }): Observable<Teos[]> {
 		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos`, { params: query }).pipe(
 			map((response) => response.message),
-			catchError((error: any) => {
+			catchError((error: unknown) => {
 				console.error('Haku epäonnistui:', error);
 				return throwError(() => new Error('Teosten hakeminen epäonnistui. Yritä uudelleen.'));
 			})
@@ -26,7 +26,7 @@ export class BookService {
 	getTeosInstanssit(teosId: string): Observable<TeosInstanssi[]> {
 		return this.http.get<{ message: TeosInstanssi[] }>(`${this.apiUrl}/teos/${teosId}/instanssit`).pipe(
 			map((response) => response.message),
-			catchError((error: any) => {
+			catchError((error: unknown) => {
 				console.error('Instanssien haku epäonnistui:', error);
 				return throwError(() => new Error('Teosinstanssien hakeminen epäonnistui. Yritä uudelleen.'));
 			})
