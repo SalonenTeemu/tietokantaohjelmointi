@@ -1,8 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { login, logout } from '../actions/auth.actions';
-import { User } from '../../models/user';
+import { Kayttaja } from '../../models/kayttaja';
 
-export const initialAuthState: User | null = JSON.parse(localStorage.getItem('user') || 'null');
+export const initialAuthState: Kayttaja | null = JSON.parse(localStorage.getItem('user') || 'null');
 
 export const authReducer = createReducer(
 	initialAuthState,

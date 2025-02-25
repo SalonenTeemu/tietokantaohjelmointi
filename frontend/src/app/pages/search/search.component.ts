@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { addToCart } from '../../store/actions/cart.actions';
 //import { BookService } from '../../services/book.service';
-import { Book } from '../../models/book';
+import { TeosInstanssi } from '../../models/teosInstanssi';
 
 @Component({
 	selector: 'app-search',
@@ -16,7 +16,7 @@ import { Book } from '../../models/book';
 })
 export class SearchComponent {
 	query = '';
-	books: Book[] = [];
+	teokset: TeosInstanssi[] = [];
 
 	constructor(
 		/*private bookService: BookService,*/ private router: Router,
@@ -27,19 +27,31 @@ export class SearchComponent {
 		/*this.bookService.searchBooks(this.query).subscribe((data: any) => {
 		this.books = data;
 	}); */
-		this.books = [
+		this.teokset = [
 			{
-				id: 1,
-				title: 'Book 1',
-				author: 'Author 1',
-				year: 2021,
-				price: 10,
-				quantity: 1,
+				teosInstanssiId: '1',
+				hinta: 10,
+				kunto: 'hyvä',
+				divari: {
+					divariId: 1,
+					nimi: 'Divari',
+					osoite: 'Osoite',
+					webSivu: 'www.divari.fi',
+				},
+				teos: {
+					teosId: '1',
+					nimi: 'Teos',
+					tekija: 'Tekijä',
+					julkaisuvuosi: 2021,
+					paino: 100,
+					luokka: 'Luokka',
+					tyyppi: 'Tyyppi',
+				},
 			},
 		];
 	}
 
-	addToCart(book: Book) {
-		this.store.dispatch(addToCart({ item: { id: book.id, title: book.title, price: book.price, quantity: 1 } }));
+	addToCart(teos: TeosInstanssi) {
+		//this.store.dispatch(addToCart(
 	}
 }

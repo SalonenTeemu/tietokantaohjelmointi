@@ -1,6 +1,7 @@
 import db from './knex';
 import { insertTestData } from './insertTestData';
 import { initViews } from './views';
+import { testaaHakuja } from './queries';
 
 // Skeemat
 export const keskusdivari = 'keskusdivari';
@@ -22,6 +23,7 @@ export const initializeDatabase = async () => {
 		console.log('Tietokantataulut luotu onnistuneesti');
 		await initViews();
 		await insertTestData();
+		await testaaHakuja();
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
 	}

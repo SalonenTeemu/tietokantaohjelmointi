@@ -15,10 +15,12 @@ export class AuthService {
 	login(username: string, password: string): Observable<boolean> {
 		if (username === 'test' && password === 'password') {
 			const user = {
-				id: 1,
-				username: 'test',
-				email: 'test@example.com',
-				token: 'fake-jwt-token',
+				kayttajaId: 1,
+				nimi: 'test',
+				osoite: 'test',
+				puhelin: '12345',
+				email: 'test@email.com',
+				rooli: 'asiakas',
 			};
 			this.store.dispatch(login({ user }));
 			localStorage.setItem('user', JSON.stringify(user));

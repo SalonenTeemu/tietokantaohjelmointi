@@ -1,6 +1,6 @@
 <nav>
-	<a routerLink="/search">Etsi kirjoja</a> | <a routerLink="/cart">Ostoskori</a> |
-	<a *ngIf="(isLoggedIn$ | async) === false" routerLink="/login">Kirjaudu sisään</a>
+	<a routerLink="/hae">Etsi kirjoja</a> | <a routerLink="/ostoskori">Ostoskori</a> |
+	<a *ngIf="(isLoggedIn$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
 	<a *ngIf="isLoggedIn$ | async" href="#" (click)="logout()">Kirjaudu ulos</a>
 </nav>
 

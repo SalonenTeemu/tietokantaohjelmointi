@@ -1,12 +1,21 @@
 <div class="search-container">
-	<h2>Hae kirjoja</h2>
-	<input type="text" [(ngModel)]="query" placeholder="Kirjan nimi..." (keyup.enter)="onSearch()" />
+	<h2>Hae teoksia</h2>
+	<input type="text" [(ngModel)]="query" placeholder="Teoksen nimi..." (keyup.enter)="onSearch()" />
 	<button (click)="onSearch()">Hae</button>
 
 	<ul>
-		<li *ngFor="let book of books">
-			{{ book.title }} - {{ book.author }} - {{ book.year }} ({{ book.price }} €)
-			<button (click)="addToCart(book)">Lisää ostoskoriin</button>
+		<li *ngFor="let teos of teokset">
+			<p>Nimi: {{ teos.teos.nimi }}</p>
+			<p>Tekijä: {{ teos.teos.tekija }}</p>
+			<p>Julkaistu: {{ teos.teos.julkaisuvuosi }}</p>
+			<p>Hinta: {{ teos.hinta }} €</p>
+			<p>Paino: {{ teos.teos.paino }} g</p>
+			<p>Luokka: {{ teos.teos.luokka }}</p>
+			<p>Tyyppi: {{ teos.teos.tyyppi }}</p>
+			<p>Kunto: {{ teos.kunto }}</p>
+			<p>Myyjä: {{ teos.divari.nimi }}</p>
+			<p *ngIf="teos.teos.isbn">ISBN: {{ teos.teos.isbn }}</p>
+			<button (click)="addToCart(teos)">Lisää ostoskoriin</button>
 		</li>
 	</ul>
 </div>

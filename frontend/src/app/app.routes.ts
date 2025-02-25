@@ -4,8 +4,8 @@ import { SearchComponent } from './pages/search/search.component';
 import { CartComponent } from './pages/cart/cart.component';
 
 export const routes: Routes = [
-	{ path: '', redirectTo: 'login', pathMatch: 'full' },
-	{ path: 'login', component: LoginComponent },
-	{ path: 'search', component: SearchComponent },
-	{ path: 'cart', component: CartComponent },
+	{ path: '', redirectTo: 'kirjaudu', pathMatch: 'full' },
+	{ path: 'kirjaudu', component: LoginComponent },
+	{ path: 'hae', component: SearchComponent },
+	{ path: 'ostoskori', component: CartComponent },
 ];
