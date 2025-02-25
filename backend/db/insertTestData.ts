@@ -1,11 +1,41 @@
+import bcrypt from 'bcrypt';
 import db from './knex';
 import { keskusdivari } from './initDb';
 
+const hashSalasana = async (salasana: string) => {
+	return await bcrypt.hash(salasana, 10);
+};
+
 const kayttajat = [
-	{ nimi: 'Admin Admin', osoite: 'Admintie 1', puhelin: '0401234567', email: 'admin@email.com', salasana: 'admin', rooli: 'admin' },
-	{ nimi: 'Divarin 1 omistaja', osoite: 'Asiakastie 1', puhelin: '0407654321', email: 'asiakas1@email.com', salasana: 'asiakas1' },
-	{ nimi: 'Divarin 2 omistaja', osoite: 'Asiakastie 2', puhelin: '0407654322', email: 'asiakas2@rmail.com', salasana: 'asiakas2' },
-	{ nimi: 'Divarin 3 omistaja', osoite: 'Asiakastie 3', puhelin: '0407654323', email: 'asiakas3@email.com', salasana: 'asiakas3' },
+	{
+		nimi: 'Admin Admin',
+		osoite: 'Admintie 1',
+		puhelin: '0401234567',
+		email: 'admin@email.com',
+		salasana: await hashSalasana('salasana'),
+		rooli: 'admin',
+	},
+	{
+		nimi: 'Divarin 1 omistaja',
+		osoite: 'Asiakastie 1',
+		puhelin: '0407654321',
+		email: 'asiakas1@email.com',
+		salasana: await hashSalasana('salasana'),
+	},
+	{
+		nimi: 'Divarin 2 omistaja',
+		osoite: 'Asiakastie 2',
+		puhelin: '0407654322',
+		email: 'asiakas2@rmail.com',
+		salasana: await hashSalasana('salasana'),
+	},
+	{
+		nimi: 'Divarin 3 omistaja',
+		osoite: 'Asiakastie 3',
+		puhelin: '0407654323',
+		email: 'asiakas3@email.com',
+		salasana: await hashSalasana('salasana'),
+	},
 ];
 
 const divarit = [
