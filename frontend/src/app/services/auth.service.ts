@@ -46,7 +46,7 @@ export class AuthService {
 			osoite,
 			salasana,
 		};
-		return this.http.post<unknown>(`${this.apiUrl}/rekisteroidy`, user, {observe: 'response'}).pipe(
+		return this.http.post<unknown>(`${this.apiUrl}/rekisteroidy`, user, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
 					console.log('Rekisteröinti onnistui:');

@@ -21,19 +21,18 @@ export const haeTilaukset = async (req: Request, res: Response) => {
 export const luoTilaus = async (req: Request, res: Response) => {
 	try {
 		const asiakasId = Number(req.params.asiakasId);
-        const tilaus = req.body;
+		const tilaus = req.body;
 		if (!asiakasId) {
 			res.status(400).json({ message: 'Virheellinen asiakasId' });
 			return;
 		}
-        if (!tilaus) {
-            res.status(400).json({ message: 'Virheellinen tilaus' });
-            return;
-        }
-        // Tilauslogiikka
+		if (!tilaus) {
+			res.status(400).json({ message: 'Virheellinen tilaus' });
+			return;
+		}
+		// Tilauslogiikka
 	} catch (error) {
 		console.error('Virhe luotaessa tilausta:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };
-

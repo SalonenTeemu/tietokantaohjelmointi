@@ -11,7 +11,7 @@
 	<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
 
 	<ul *ngIf="teokset.length > 0">
-		<li *ngFor="let teos of teokset" (click)="haeTeosInstanssit(teos)">{{ teos.nimi }} - {{ teos.tekija }} ({{ teos.tyyppi }})</li>
+		<li *ngFor="let teos of teokset" (click)="haeTeosInstanssit(teos)" tabindex="0" (keydown.enter)="haeTeosInstanssit(teos)"></li>
 	</ul>
 	<p *ngIf="teokset.length === 0 && !errorMessage">Ei tuloksia</p>
 
