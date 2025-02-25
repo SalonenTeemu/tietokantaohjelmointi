@@ -1,13 +1,16 @@
 <div class="login-container">
 	<h2>Kirjaudu sisään</h2>
 
-	<form (ngSubmit)="onLogin()">
-		<label for="username">Käyttäjätunnus:</label>
-		<input type="text" id="username" [(ngModel)]="username" name="username" required />
+	<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+		<div class="form-group">
+			<label for="email">Sähköposti:</label>
+			<input type="email" formControlName="email" class="form-control" id="email" name="email" required />
 
-		<label for="password">Salasana:</label>
-		<input type="password" id="password" [(ngModel)]="password" name="password" required />
+			<label for="password">Salasana:</label>
+			<input type="password" formControlName="password" class="form-control" id="password" name="password" required />
 
-		<button type="submit">Kirjaudu</button>
+			<button type="submit">Kirjaudu</button>
+		</div>
 	</form>
+	<a routerLink="/rekisteröidy">Rekisteröidy</a>
 </div>

@@ -1,7 +1,7 @@
 import db from './knex';
 import { insertTestData } from './insertTestData';
 import { initViews } from './views';
-import { testaaHakuja } from './queries';
+//import { testaaHakuja } from './queries';
 
 // Skeemat
 export const keskusdivari = 'keskusdivari';

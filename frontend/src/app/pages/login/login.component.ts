@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -8,24 +8,30 @@ import { AuthService } from '../../services/auth.service';
 	standalone: true,
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.css'],
-	imports: [FormsModule],
+	imports: [FormsModule, RouterModule, ReactiveFormsModule],
 })
 export class LoginComponent {
-	username = '';
-	password = '';
+	loginForm: FormGroup;
 
 	constructor(
+		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router
-	) {}
+	) {
+		this.loginForm = this.fb.group({
+			email: [''],
+			salasana: [''],
+		});
+	}
 
 	onLogin() {
-		this.authService.login(this.username, this.password).subscribe((success) => {
+		const { email, salasana } = this.loginForm.value;
+		this.authService.login(email, salasana).subscribe((success: boolean) => {
 			if (success) {
 				this.router.navigate(['/search']);
 				alert('Kirjautuminen onnistui');
 			} else {
-				alert('Virheellinen käyttäjätunnus tai salasana');
+				alert('Virheellinen sähköposti tai salasana');
 			}
 		});
 	}

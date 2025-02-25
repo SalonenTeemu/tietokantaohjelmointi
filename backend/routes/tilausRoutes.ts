@@ -1,5 +1,5 @@
 import express from 'express';
-import { haeTilaukset } from '../controllers/tilausController';
+import { haeTilaukset, luoTilaus } from '../controllers/tilausController';
 
 const tilausRoutes = express.Router({ mergeParams: true });
 

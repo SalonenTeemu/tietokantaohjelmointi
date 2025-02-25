@@ -98,6 +98,23 @@ export const haeTeoksenInstanssit = async (teosId: string) => {
 	return instanssit;
 };
 
+// Käyttäjän haku emaililla
+export const haeKayttajaEmaililla = async (email: string) => {
+	const kayttaja = await db('keskusdivari.Kayttaja').where('email', email).first();
+	return kayttaja;
+};
+
+// Tarkista onko käyttäjää olemassa puhelinnumerolla tai emaililla
+export const haeKayttajaOlemassa = async (puhelin: string, email: string): Promise<boolean> => {
+	const kayttaja = await db('keskusdivari.Kayttaja').where('puhelin', puhelin).orWhere('email', email).first();
+	return kayttaja !== undefined;
+};
+
+// Lisää uusi käyttäjä
+export const lisaaKayttaja = async (email: string, salasana: string, nimi: string, osoite: string, puhelin: string) => {
+	await db('keskusdivari.Kayttaja').insert({ email, salasana, nimi, osoite, puhelin });
+};
+
 // // R4
 // export const haeTeoksetHakusanalla = async (hakusana: string) => {
 // 	const teokset = await db

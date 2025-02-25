@@ -1,43 +1,70 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { login, logout } from '../store/actions/auth.actions';
-import { Observable, of } from 'rxjs';
+import { /*login,*/ logout } from '../store/actions/auth.actions';
+import { Observable, of, map, catchError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
 	private loggedIn = false;
+	private apiUrl = 'http://localhost:8041/api/auth';
 
-	constructor(private store: Store) {}
+	constructor(
+		private store: Store,
+		private http: HttpClient
+	) {}
 
-	// You can call this to simulate a login action
-	login(username: string, password: string): Observable<boolean> {
-		if (username === 'test' && password === 'password') {
-			const user = {
-				kayttajaId: 1,
-				nimi: 'test',
-				osoite: 'test',
-				puhelin: '12345',
-				email: 'test@email.com',
-				rooli: 'asiakas',
-			};
-			this.store.dispatch(login({ user }));
-			localStorage.setItem('user', JSON.stringify(user));
-			this.loggedIn = true;
-			return of(true);
-		}
-		return of(false);
+	login(email: string, salasana: string): Observable<boolean> {
+		const user = {
+			email,
+			salasana,
+		};
+		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
+			map((response) => {
+				if (response.ok) {
+					return true;
+				} else {
+					return false;
+				}
+			}),
+			catchError((error) => {
+				console.error('Kirjautuminen epäonnistui:', error);
+				return of(false);
+			})
+		);
+	}
+	register(nimi: string, email: string, puhelin: string, osoite: string, salasana: string): Observable<boolean> {
+		const user = {
+			nimi,
+			email,
+			puhelin,
+			osoite,
+			salasana,
+		};
+		return this.http.post<{ success: boolean; user: unknown }>(`${this.apiUrl}/rekisteroidy`, { body: user }).pipe(
+			map((response) => {
+				if (response.success) {
+					console.log('Rekisteröinti onnistui:');
+					return true;
+				}
+				console.log('Rekisteröinti epäonnistui:');
+				return false;
+			}),
+			catchError((error: unknown) => {
+				console.error('Rekisteröinti epäonnistui:', error);
+				return of(false);
+			})
+		);
 	}
 
-	// Logout action
 	logout() {
 		this.loggedIn = false;
 		this.store.dispatch(logout());
 		localStorage.removeItem('user');
 	}
 
-	// Check if the user is authenticated
 	isAuthenticated(): boolean {
 		return this.loggedIn || !!localStorage.getItem('user');
 	}
