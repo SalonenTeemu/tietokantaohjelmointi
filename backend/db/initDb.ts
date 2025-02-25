@@ -23,7 +23,6 @@ export const initializeDatabase = async () => {
 		console.log('Tietokantataulut luotu onnistuneesti');
 		await initViews();
 		await insertTestData();
-		await testaaHakuja();
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
 	}

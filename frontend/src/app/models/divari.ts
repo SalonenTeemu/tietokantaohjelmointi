@@ -1,6 +1,6 @@
 export interface Divari {
 	divariId: number;
-	nimi: string;
+	divari: string;
 	osoite: string;
 	webSivu?: string;
 }

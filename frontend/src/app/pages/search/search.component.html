@@ -1,21 +1,31 @@
 <div class="search-container">
 	<h2>Hae teoksia</h2>
-	<input type="text" [(ngModel)]="query" placeholder="Teoksen nimi..." (keyup.enter)="onSearch()" />
+
+	<input type="text" [(ngModel)]="queryNimi" placeholder="Teoksen nimi" />
+	<input type="text" [(ngModel)]="queryTekija" placeholder="Tekijä" />
+	<input type="text" [(ngModel)]="queryTyyppi" placeholder="Tyyppi (romaani, sarjakuva...)" />
+	<input type="text" [(ngModel)]="queryLuokka" placeholder="Luokka (romantiikka, seikkailu...)" />
+
 	<button (click)="onSearch()">Hae</button>
 
-	<ul>
-		<li *ngFor="let teos of teokset">
-			<p>Nimi: {{ teos.teos.nimi }}</p>
-			<p>Tekijä: {{ teos.teos.tekija }}</p>
-			<p>Julkaistu: {{ teos.teos.julkaisuvuosi }}</p>
-			<p>Hinta: {{ teos.hinta }} €</p>
-			<p>Paino: {{ teos.teos.paino }} g</p>
-			<p>Luokka: {{ teos.teos.luokka }}</p>
-			<p>Tyyppi: {{ teos.teos.tyyppi }}</p>
-			<p>Kunto: {{ teos.kunto }}</p>
-			<p>Myyjä: {{ teos.divari.nimi }}</p>
-			<p *ngIf="teos.teos.isbn">ISBN: {{ teos.teos.isbn }}</p>
-			<button (click)="addToCart(teos)">Lisää ostoskoriin</button>
-		</li>
+	<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+	<ul *ngIf="teokset.length > 0">
+		<li *ngFor="let teos of teokset" (click)="haeTeosInstanssit(teos)">{{ teos.nimi }} - {{ teos.tekija }} ({{ teos.tyyppi }})</li>
 	</ul>
+	<p *ngIf="teokset.length === 0 && !errorMessage">Ei tuloksia</p>
+
+	<div *ngIf="valittuTeos">
+		<h3>Instanssit: {{ valittuTeos.nimi }}</h3>
+
+		<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+		<ul *ngIf="instanssit.length > 0">
+			<li *ngFor="let instanssi of instanssit">
+				Hinta: {{ instanssi.hinta }}€, Kunto: {{ instanssi.kunto || 'Ei tietoa' }}
+				<button (click)="lisaaOstoskoriin(instanssi)">Lisää ostoskoriin</button>
+			</li>
+		</ul>
+		<p *ngIf="instanssit.length === 0 && !errorMessage">Ei tuloksia</p>
+	</div>
 </div>

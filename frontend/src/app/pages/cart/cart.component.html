@@ -3,7 +3,7 @@
 
 	<ul>
 		<li *ngFor="let item of cartItems$ | async">
-			<span>{{ item.title }} ({{ item.quantity }}) - {{ item.price * item.quantity }} €</span>
+			<span>{{ item.teos.nimi }} - {{ item.teosInstanssi.kunto }} - {{ item.teosInstanssi.divari }} - {{ item.teosInstanssi.hinta }} €</span>
 			<button (click)="removeFromCart(item.id)">Poista</button>
 		</li>
 	</ul>

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { addToCart } from '../../store/actions/cart.actions';
-//import { BookService } from '../../services/book.service';
+import { Teos } from '../../models/teos';
 import { TeosInstanssi } from '../../models/teosInstanssi';
+import { BookService } from '../../services/book.service';
 
 @Component({
 	selector: 'app-search',
@@ -15,43 +15,67 @@ import { TeosInstanssi } from '../../models/teosInstanssi';
 	imports: [CommonModule, FormsModule],
 })
 export class SearchComponent {
-	query = '';
-	teokset: TeosInstanssi[] = [];
+	queryNimi = '';
+	queryTekija = '';
+	queryTyyppi = '';
+	queryLuokka = '';
+
+	teokset: Teos[] = [];
+	valittuTeos: Teos | null = null;
+	instanssit: TeosInstanssi[] = [];
+	errorMessage = '';
 
 	constructor(
-		/*private bookService: BookService,*/ private router: Router,
+		private bookService: BookService,
 		private store: Store
 	) {}
 
 	onSearch() {
-		/*this.bookService.searchBooks(this.query).subscribe((data: any) => {
-		this.books = data;
-	}); */
-		this.teokset = [
-			{
-				teosInstanssiId: '1',
-				hinta: 10,
-				kunto: 'hyvä',
-				divari: {
-					divariId: 1,
-					nimi: 'Divari',
-					osoite: 'Osoite',
-					webSivu: 'www.divari.fi',
+		this.errorMessage = ''; // Nollataan virhe ennen uutta hakua
+		this.bookService
+			.haeTeokset({
+				nimi: this.queryNimi,
+				tekija: this.queryTekija,
+				tyyppi: this.queryTyyppi,
+				luokka: this.queryLuokka,
+			})
+			.subscribe({
+				next: (data: Teos[]) => {
+					this.teokset = data;
+					this.valittuTeos = null;
+					this.instanssit = [];
 				},
-				teos: {
-					teosId: '1',
-					nimi: 'Teos',
-					tekija: 'Tekijä',
-					julkaisuvuosi: 2021,
-					paino: 100,
-					luokka: 'Luokka',
-					tyyppi: 'Tyyppi',
+				error: (error) => {
+					this.errorMessage = error.message;
 				},
-			},
-		];
+			});
 	}
 
-	addToCart(teos: TeosInstanssi) {
-		//this.store.dispatch(addToCart(
+	haeTeosInstanssit(teos: Teos) {
+		this.errorMessage = '';
+		this.valittuTeos = teos;
+		this.bookService.getTeosInstanssit(teos.teosId).subscribe({
+			next: (data: TeosInstanssi[]) => {
+				this.instanssit = data;
+			},
+			error: (error) => {
+				this.errorMessage = error.message;
+			},
+		});
+	}
+
+	lisaaOstoskoriin(instanssi: TeosInstanssi) {
+		console.log('Lisätään ostoskoriin', instanssi);
+		console.log('Valittu teos', this.valittuTeos);
+		if (this.valittuTeos) {
+			const ostoskoriTuote = {
+				id: Math.floor(Math.random() * 1000),
+				teos: this.valittuTeos,
+				teosInstanssi: instanssi,
+			};
+			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
+		} else {
+			this.errorMessage = 'Ei valittua teosta.';
+		}
 	}
 }
