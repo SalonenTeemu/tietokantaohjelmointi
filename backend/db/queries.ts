@@ -99,15 +99,15 @@ export const haeTeoksenInstanssit = async (teosId: string) => {
 };
 
 // Käyttäjän haku emaililla
-export const haeKayttajaEmaililla = async (email: string) => {
+export const haeKayttajaSahkopostilla = async (email: string) => {
 	const kayttaja = await db('keskusdivari.Kayttaja').where('email', email).first();
 	return kayttaja;
 };
 
-// Tarkista onko käyttäjää olemassa puhelinnumerolla tai emaililla
-export const haeKayttajaOlemassa = async (puhelin: string, email: string): Promise<boolean> => {
-	const kayttaja = await db('keskusdivari.Kayttaja').where('puhelin', puhelin).orWhere('email', email).first();
-	return kayttaja !== undefined;
+// Käyttäjän haku puhelimella
+export const haeKayttajaPuhelimella = async (puhelin: string) => {
+	const kayttaja = await db('keskusdivari.Kayttaja').where('puhelin', puhelin).first();
+	return kayttaja;
 };
 
 // Lisää uusi käyttäjä

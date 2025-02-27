@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { haeAsiakkaanTilaukset } from '../db/queries';
+import { tarkistaLuoTilaus } from '../utils/validate';
 
 // Hae asiakkaan tilaukset
 export const haeTilaukset = async (req: Request, res: Response) => {
 	try {
 		const asiakasId = Number(req.params.asiakasId);
 		if (!asiakasId) {
-			res.status(400).json({ message: 'Virheellinen asiakasId' });
+			res.status(400).json({ message: 'Virheellinen asiakasId.' });
 			return;
 		}
 		const tilaukset = await haeAsiakkaanTilaukset(asiakasId);
@@ -20,17 +21,13 @@ export const haeTilaukset = async (req: Request, res: Response) => {
 // Luo uusi tilaus
 export const luoTilaus = async (req: Request, res: Response) => {
 	try {
-		const asiakasId = Number(req.params.asiakasId);
 		const tilaus = req.body;
-		if (!asiakasId) {
-			res.status(400).json({ message: 'Virheellinen asiakasId' });
+		const tarkistus = tarkistaLuoTilaus(tilaus);
+		if (!tarkistus.success) {
+			res.status(400).json({ message: tarkistus.message });
 			return;
 		}
-		if (!tilaus) {
-			res.status(400).json({ message: 'Virheellinen tilaus' });
-			return;
-		}
-		// Tilauslogiikka
+		// Tilauslogiikka...
 	} catch (error) {
 		console.error('Virhe luotaessa tilausta:', error);
 		res.status(500).json({ message: 'Virhe' });

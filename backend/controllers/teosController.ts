@@ -1,19 +1,14 @@
 import { Request, Response } from 'express';
 import { haeTeoksetHakusanalla, haeLuokanMyynnissaOlevatTeokset, haeTeoksenInstanssit } from '../db/queries';
-
-export interface Haku {
-	nimi: string | null;
-	tekija: string | null;
-	luokka: string | null;
-	tyyppi: string | null;
-}
+import { tarkistaTeosHaku } from '../utils/validate';
 
 // Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
 export const haeTeoksia = async (req: Request, res: Response) => {
 	try {
-		const hakusanat = req.query as unknown as Haku;
-		if (!hakusanat.nimi && !hakusanat.tekija && !hakusanat.luokka && !hakusanat.tyyppi) {
-			res.status(400).json({ message: 'Ei hakusanoja' });
+		const hakusanat = req.query;
+		const tarkistus = tarkistaTeosHaku(hakusanat);
+		if (!tarkistus.success) {
+			res.status(400).json({ message: tarkistus.message });
 			return;
 		}
 		const teokset = await haeTeoksetHakusanalla(hakusanat);
@@ -29,7 +24,7 @@ export const haeTeosInstanssit = async (req: Request, res: Response) => {
 	try {
 		const teosId = req.params.teosId;
 		if (!teosId) {
-			res.status(400).json({ message: 'Virheellinen teosId' });
+			res.status(400).json({ message: 'Virheellinen teosId.' });
 			return;
 		}
 		const instanssit = await haeTeoksenInstanssit(teosId);
