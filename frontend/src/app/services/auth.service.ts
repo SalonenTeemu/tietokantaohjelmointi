@@ -22,15 +22,19 @@ export class AuthService {
 			email,
 			salasana,
 		};
-		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
+		return this.http.post<{ success: boolean; message: Kayttaja }>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
 					this.loggedIn = true;
-					const responseBody = response.body as { message: Kayttaja };
-					const kayttaja = responseBody.message;
-					this.store.dispatch(login({ user: kayttaja }));
-					localStorage.setItem('user', JSON.stringify(kayttaja));
-					console.log(`Kirjautuminen onnistui: ${kayttaja.email}`);
+					const responseBody = response.body;
+					const kayttaja = responseBody?.message;
+					if (kayttaja) {
+						this.store.dispatch(login({ user: kayttaja }));
+					} else {
+						console.error('Kayttajaa ei löytynyt');
+						this.loggedIn = false;
+						return false;
+					}
 					return true;
 				} else {
 					return false;

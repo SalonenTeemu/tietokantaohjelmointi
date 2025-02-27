@@ -1,12 +1,52 @@
 import { createReducer, on } from '@ngrx/store';
-import { addToCart, removeFromCart, clearCart } from '../actions/cart.actions';
-import { OstoskoriTuote } from '../../models/ostoskoriTuote';
+import { addToCart, removeFromCart, clearCart, setOrder, cancelOrder } from '../actions/cart.actions';
+import { OstoskoriState } from '../../models/ostoskori';
 
-export const initialCartState: OstoskoriTuote[] = [];
+const initialCartState: OstoskoriState = {
+	tuotteet: [],
+	postikulut: 0,
+	tilausId: null,
+};
+
+export const getCartState: OstoskoriState = JSON.parse(localStorage.getItem('ostoskori') || '{"tuotteet": [], "tilausId": null, "postikulut": 0}');
 
 export const cartReducer = createReducer(
-	initialCartState,
-	on(addToCart, (state, { item }) => [...state, item]),
-	on(removeFromCart, (state, { id }) => state.filter((item) => item.id !== id)),
-	on(clearCart, () => [])
+	getCartState,
+	on(addToCart, (state, { item }) => {
+		const updatedState = {
+			...state,
+			tuotteet: [...state.tuotteet, item],
+		};
+		localStorage.setItem('ostoskori', JSON.stringify(updatedState));
+		return updatedState;
+	}),
+	on(removeFromCart, (state, { id }) => {
+		const updatedState = {
+			...state,
+			tuotteet: state.tuotteet.filter((item) => item.id !== id),
+		};
+		localStorage.setItem('ostoskori', JSON.stringify(updatedState));
+		return updatedState;
+	}),
+	on(clearCart, () => {
+		localStorage.setItem('ostoskori', JSON.stringify(initialCartState));
+		return initialCartState;
+	}),
+	on(setOrder, (state, { shipping, orderId }) => {
+		const updatedState = {
+			...state,
+			postikulut: shipping,
+			tilausId: orderId,
+		};
+		localStorage.setItem('ostoskori', JSON.stringify(updatedState));
+		return updatedState;
+	}),
+	on(cancelOrder, (state) => {
+		const updatedState = {
+			...state,
+			tilausId: null,
+		};
+		localStorage.setItem('ostoskori', JSON.stringify(updatedState));
+		return updatedState;
+	})
 );

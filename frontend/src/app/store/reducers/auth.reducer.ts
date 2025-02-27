@@ -8,6 +8,7 @@ export const authReducer = createReducer(
 	initialAuthState,
 	on(login, (_, { user }) => {
 		localStorage.setItem('user', JSON.stringify(user));
+		console.log(`Kirjautuminen onnistui: ${JSON.stringify(user)}`);
 		return user;
 	}),
 	on(logout, () => {
