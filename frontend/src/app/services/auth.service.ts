@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { /*login,*/ logout } from '../store/actions/auth.actions';
+import { login, logout } from '../store/actions/auth.actions';
 import { Observable, of, map, catchError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Kayttaja } from '../models/kayttaja';
 
 @Injectable({
 	providedIn: 'root',
@@ -24,9 +25,12 @@ export class AuthService {
 		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
-					const responseBody = response.body as { message: object };
-					console.log(responseBody.message);
 					this.loggedIn = true;
+					const responseBody = response.body as { message: Kayttaja };
+					const kayttaja = responseBody.message;
+					this.store.dispatch(login({ user: kayttaja }));
+					localStorage.setItem('user', JSON.stringify(kayttaja));
+					console.log(`Kirjautuminen onnistui: ${kayttaja.email}`);
 					return true;
 				} else {
 					return false;

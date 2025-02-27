@@ -65,8 +65,6 @@ export class SearchComponent {
 	}
 
 	lisaaOstoskoriin(instanssi: TeosInstanssi) {
-		console.log('Lisätään ostoskoriin', instanssi);
-		console.log('Valittu teos', this.valittuTeos);
 		if (this.valittuTeos) {
 			const ostoskoriTuote = {
 				id: Math.floor(Math.random() * 1000),
