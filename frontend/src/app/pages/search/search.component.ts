@@ -6,6 +6,7 @@ import { addToCart } from '../../store/actions/cart.actions';
 import { Teos } from '../../models/teos';
 import { TeosInstanssi } from '../../models/teosInstanssi';
 import { BookService } from '../../services/book.service';
+import { tarkistaHaku } from '../../utils/validate';
 
 @Component({
 	selector: 'app-search',
@@ -32,6 +33,10 @@ export class SearchComponent {
 
 	onSearch() {
 		this.errorMessage = ''; // Nollataan virhe ennen uutta hakua
+		if (!tarkistaHaku(this.queryNimi, this.queryTekija, this.queryLuokka, this.queryTyyppi)) {
+			this.errorMessage = 'Anna vähintään yksi hakuehto';
+			return;
+		}
 		this.bookService
 			.haeTeokset({
 				nimi: this.queryNimi,

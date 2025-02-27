@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { tarkistaRekisteroityminen } from '../../utils/validate';
 
 @Component({
 	selector: 'app-register',
@@ -29,6 +30,11 @@ export class RegisterComponent {
 
 	onRegister() {
 		const { nimi, email, puhelin, osoite, salasana } = this.registerForm.value;
+		const tarkistus = tarkistaRekisteroityminen(nimi, email, puhelin, osoite, salasana);
+		if (!tarkistus.success) {
+			alert(tarkistus.message);
+			return;
+		}
 		this.authService.register(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
 			if (success) {
 				alert('Rekisteröityminen onnistui');
