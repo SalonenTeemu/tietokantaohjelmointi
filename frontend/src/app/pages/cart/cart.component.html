@@ -11,4 +11,9 @@
 	<h3>Kokonaissumma: {{ total$ | async }} €</h3>
 
 	<button (click)="clearCart()">Tyhjennä ostoskori</button>
+	<ng-container *ngIf="(isLoggedIn$ | async) === true">
+		<ng-container *ngIf="cartItems$ | async as cartItems">
+			<button *ngIf="cartItems.length > 0" (click)="teeTilaus()">Tilaa</button>
+		</ng-container>
+	</ng-container>
 </div>

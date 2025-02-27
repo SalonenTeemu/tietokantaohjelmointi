@@ -69,7 +69,6 @@ export class AuthService {
 	logout() {
 		this.loggedIn = false;
 		this.store.dispatch(logout());
-		localStorage.removeItem('user');
 	}
 
 	isAuthenticated(): boolean {

@@ -5,3 +5,9 @@ export interface Haku {
 	luokka: string | null;
 	tyyppi: string | null;
 }
+
+// Tyyppi tilausten luonnille
+export interface Tilaus {
+	asiakasId: number;
+	instanssit: [];
+}
