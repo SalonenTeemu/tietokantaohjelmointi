@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { tarkistaKirjautuminen } from '../../utils/validate';
 
 @Component({
 	selector: 'app-login',
@@ -26,6 +27,11 @@ export class LoginComponent {
 
 	onLogin() {
 		const { email, salasana } = this.loginForm.value;
+		const tarkistus = tarkistaKirjautuminen(email, salasana);
+		if (!tarkistus.success) {
+			alert(tarkistus.message);
+			return;
+		}
 		this.authService.login(email, salasana).subscribe((success: boolean) => {
 			if (success) {
 				this.router.navigate(['/hae']);
