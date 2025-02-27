@@ -6,8 +6,40 @@ export interface Haku {
 	tyyppi: string | null;
 }
 
-// Tyyppi tilausten luonnille
-export interface Tilaus {
-	asiakasId: number;
-	instanssit: [];
+// Tyyppi tilausten validointiin
+export interface TilausValidointi {
+	kayttajaId: number;
+	instanssit: TeosInstanssi[];
+}
+
+// Lisätty tilaus
+export interface LisattyTilaus {
+	tilausId: number;
+	tila: string;
+	tilauspvm: Date;
+	postikulut: number;
+	kokonaishinta: number;
+	kayttajaId: number;
+}
+
+// Tilaustiedot
+export interface TilausTiedot {
+	kayttajaId: number;
+	tilauspvm: Date;
+	kokonaishinta: number;
+	postikulut: number;
+}
+
+// TeosInstanssi
+export interface TeosInstanssi {
+	teosInstanssiId: string;
+	hinta: number;
+	kunto: string;
+	sisaanostohinta: number;
+	myyntipvm: Date | null;
+	tila: string;
+	teosId: string;
+	tilausId: number | null;
+	divariId: number;
+	paino?: number;
 }

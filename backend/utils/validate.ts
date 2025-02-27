@@ -1,4 +1,4 @@
-import { Haku, Tilaus } from './types';
+import { Haku, TilausValidointi } from './types';
 
 // Tarkista sähköpostin oikeellisuus
 function tarkistaEmail(email: string): boolean {
@@ -71,8 +71,7 @@ export function tarkistaRekisteroityminen(
 }
 
 // Tarkista teoshaun oikeellisuus
-export function tarkistaTeosHaku(hakusanat: Haku): { success: boolean; message?: string; hakusanat?: Haku } {
-	const haku = hakusanat as Haku;
+export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: string; hakusanat?: Haku } {
 	if (!haku.nimi && !haku.tekija && !haku.luokka && !haku.tyyppi) {
 		return { success: false, message: 'Ei annettuja hakusanoja.' };
 	}
@@ -80,8 +79,8 @@ export function tarkistaTeosHaku(hakusanat: Haku): { success: boolean; message?:
 }
 
 // Tarksita tilauksen luomisen oikeellisuus
-export function tarkistaLuoTilaus(tilaus: Tilaus): { success: boolean; message?: string } {
-	if (!tilaus.asiakasId) return { success: false, message: 'AsiakasId puuttuu.' };
+export function tarkistaLuoTilaus(tilaus: TilausValidointi): { success: boolean; message?: string } {
+	if (!tilaus.kayttajaId) return { success: false, message: 'KayttajaId puuttuu.' };
 	if (!tilaus.instanssit || tilaus.instanssit.length === 0) return { success: false, message: 'Tilauksessa ei ole instansseja.' };
 	return { success: true };
 }

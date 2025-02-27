@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { haeTeoksetHakusanalla, haeLuokanMyynnissaOlevatTeokset, haeTeoksenInstanssit } from '../db/queries';
+import { Haku } from '../utils/types';
 import { tarkistaTeosHaku } from '../utils/validate';
 
 // Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
 export const haeTeoksia = async (req: Request, res: Response) => {
 	try {
 		const hakusanat = req.query;
-		const tarkistus = tarkistaTeosHaku(hakusanat);
+		const tarkistus = tarkistaTeosHaku(hakusanat as unknown as Haku);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
 			return;

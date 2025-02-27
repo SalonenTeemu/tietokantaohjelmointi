@@ -1,5 +1,6 @@
+import { Knex } from 'knex';
 import db from './knex';
-import { Haku } from '../controllers/teosController';
+import { Haku, TilausTiedot } from '../utils/types';
 
 export const testaaHakuja = async () => {
 	//console.log('Teoksia nimellä:', await haeTeoksiaKeskusdivarista('Turms kuolematon'));
@@ -113,6 +114,76 @@ export const haeKayttajaPuhelimella = async (puhelin: string) => {
 // Lisää uusi käyttäjä
 export const lisaaKayttaja = async (email: string, salasana: string, nimi: string, osoite: string, puhelin: string) => {
 	await db('keskusdivari.Kayttaja').insert({ email, salasana, nimi, osoite, puhelin });
+};
+
+// Hae teos
+export const haeTeos = async (teosId: string) => {
+	const teos = await db('keskusdivari.Teos').where('teosId', teosId).first();
+	return teos;
+};
+
+// Hae teosIntanssi
+export const haeTeosInstanssi = async (teosInstanssiId: string) => {
+	const instanssi = await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).first();
+	return instanssi;
+};
+
+// Päivitys teosInstanssin tila
+export const paivitaTeosInstanssinTila = async (teosInstanssiId: string, uusiTila: string, trx: Knex.Transaction) => {
+	await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).update({ tila: uusiTila }).transacting(trx);
+};
+
+// Päivitä teosInstanssin tilaus
+export const paivitaTeosInstanssinTilaus = async (teosInstanssiId: string, tilausId: number | null, trx: Knex.Transaction) => {
+	await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).update({ tilausId }).transacting(trx);
+};
+
+// Aseta teosInstanssin myyntipäivämäärä
+export const asetaTeosInstanssinMyyntiPvm = async (teosInstanssiId: string, myyntipvm: Date, trx: Knex.Transaction) => {
+	await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).update({ myyntipvm }).transacting(trx);
+};
+
+// Hae tilauksen sisätämät instanssit
+export const haeTilauksenInstanssit = async (tilausId: number) => {
+	const instanssit = await db('keskusdivari.TeosInstanssi').where('tilausId', tilausId);
+	return instanssit;
+};
+
+// Hae tilaus
+export const haeTilaus = async (tilausId: number) => {
+	const tilaus = await db('keskusdivari.Tilaus').where('tilausId', tilausId).first();
+	return tilaus;
+};
+
+// Lisää uusi tilaus
+export const lisaaTilaus = async (tilausTiedot: TilausTiedot, trx: Knex.Transaction) => {
+	const formattedTilausTiedot = {
+		...tilausTiedot,
+		kokonaishinta: tilausTiedot.kokonaishinta,
+		postikulut: tilausTiedot.postikulut,
+	};
+
+	const tilaus = await db('keskusdivari.Tilaus')
+		.insert(formattedTilausTiedot)
+		.returning('*')
+		.transacting(trx)
+		.then((rows) => rows[0]);
+	return tilaus;
+};
+
+// Päivitys tilauksen tila
+export const paivitaTilauksenTila = async (tilausId: number, uusiTila: string, trx?: Knex.Transaction) => {
+	if (!trx) {
+		await db('keskusdivari.Tilaus').where('tilausId', tilausId).update({ tila: uusiTila });
+	} else {
+		await db('keskusdivari.Tilaus').where('tilausId', tilausId).update({ tila: uusiTila }).transacting(trx);
+	}
+};
+
+// Hae postitushinnasto
+export const haePostitusHinnasto = async () => {
+	const hinnasto = await db('keskusdivari.PostitusHinnasto').select('paino', 'hinta');
+	return hinnasto;
 };
 
 // // R4

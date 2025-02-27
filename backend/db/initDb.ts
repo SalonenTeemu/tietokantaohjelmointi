@@ -40,7 +40,7 @@ const createSchemas = async () => {
 const createTypes = async () => {
 	await createTypeIfNotExists('kayttajarooli', "ENUM ('asiakas', 'admin')");
 	await createTypeIfNotExists('teoskunto', "ENUM ('heikko', 'kohtalainen', 'erinomainen')");
-	await createTypeIfNotExists('tilaustila', "ENUM ('kesken', 'valmis')");
+	await createTypeIfNotExists('tilaustila', "ENUM ('kesken', 'peruutettu', 'valmis')");
 	await createTypeIfNotExists('teostila', "ENUM ('vapaa', 'varattu', 'myyty')");
 };
 
