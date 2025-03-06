@@ -1,9 +1,16 @@
 import { TarkistusTulos } from './types';
 
+// Tarkista sähköpostin oikeellisuus
 const tarkistaEmail = (email: string): boolean => {
 	const re = /\S+@\S+.\S+/;
 	return re.test(email) && email.length >= 5 && email.length <= 255;
 };
+
+// Tarkista ISBN:n oikeellisuus
+export function tarkistaISBN(isbn: string): boolean {
+	const re = /^[0-9]{10,20}$/;
+	return re.test(isbn);
+}
 
 const tarkistaSalasana = (salasana: string): boolean => {
 	return salasana.length >= 4 && salasana.length <= 100;
@@ -62,4 +69,34 @@ export const tarkistaHaku = (nimi: string, tekija: string, luokka: string, tyypp
 		return false;
 	}
 	return true;
+};
+
+export const tarkistaTeoksenLisäys = (
+	nimi: string,
+	isbn: string,
+	tekija: string,
+	tyyppi: string,
+	luokka: string,
+	julkaisuvuosi: number,
+	paino: number
+): TarkistusTulos => {
+	if (!nimi || !tekija || !tyyppi || !luokka || !julkaisuvuosi || !paino) {
+		return { success: false, message: 'Kaikki muut kentät kuin ISBN ovat pakollisia' };
+	}
+	if (!tarkistaNimi(nimi)) {
+		return { success: false, message: 'Virheellinen nimi: pituus oltava 2-100 merkkiä' };
+	}
+	if (isbn && !tarkistaISBN(isbn)) {
+		return { success: false, message: 'ISBN-numero ei kelpaa' };
+	}
+	if (!tarkistaNimi(tekija)) {
+		return { success: false, message: 'Virheellinen tekijä: pituus oltava 2-100 merkkiä' };
+	}
+	if (julkaisuvuosi < 0 || julkaisuvuosi > Number(new Date().getFullYear())) {
+		return { success: false, message: 'Virheellinen julkaisuvuosi' };
+	}
+	if (paino < 0) {
+		return { success: false, message: 'Virheellinen paino: painon tulee olla yli 0g' };
+	}
+	return { success: true, message: '' };
 };

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Teos } from '../models/teos';
+import { Teos, UusiTeos } from '../models/teos';
 import { TeosInstanssi } from '../models/teosInstanssi';
+import { Luokka, Tyyppi } from '../models/LuokkaTyyppi';
 
 @Injectable({
 	providedIn: 'root',
@@ -29,6 +30,43 @@ export class BookService {
 			catchError((error: unknown) => {
 				console.error('Instanssien haku epäonnistui:', error);
 				return throwError(() => new Error('Teosinstanssien hakeminen epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
+
+	haeTeosLuokat(): Observable<Luokka[]> {
+		return this.http.get<{ message: Luokka[] }>(`${this.apiUrl}/teos/luokat`).pipe(
+			map((response) => response.message),
+			catchError((error: unknown) => {
+				console.error('Luokkien haku epäonnistui:', error);
+				return throwError(() => new Error('Teosluokkien hakeminen epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
+
+	haeTeosTyypit(): Observable<Tyyppi[]> {
+		return this.http.get<{ message: Tyyppi[] }>(`${this.apiUrl}/teos/tyypit`).pipe(
+			map((response) => response.message),
+			catchError((error: unknown) => {
+				console.error('Typpien haku epäonnistui:', error);
+				return throwError(() => new Error('Teostyyppien hakeminen epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
+
+	lisaaTeos(teos: UusiTeos): Observable<boolean> {
+		console.log('Lisätään teos:', teos);
+		return this.http.post<{ message: string }>(`${this.apiUrl}/teos`, teos, { observe: 'response' }).pipe(
+			map((response) => {
+				if (response.ok) {
+					console.log(response.body?.message);
+					return true;
+				}
+				return false;
+			}),
+			catchError((error: unknown) => {
+				console.error('Teoksen lisäys epäonnistui:', error);
+				return of(false);
 			})
 		);
 	}

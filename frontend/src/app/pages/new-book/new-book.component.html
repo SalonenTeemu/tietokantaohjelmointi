@@ -1,0 +1,43 @@
+<div class="new-book-container">
+	<div class="new-book-form">
+		<h1>Lisää uusi teos keskusdivariin</h1>
+		<form [formGroup]="bookFormGroup" (ngSubmit)="onSubmitBook()">
+			<div class="form-group">
+				<label for="name">Nimi:</label>
+				<input type="text" formControlName="nimi" class="form-control" id="name" placeholder="Anna teoksen nimi" required />
+
+				<label for="isbn">ISBN:</label>
+				<input type="name" formControlName="isbn" class="form-control" id="isbn" placeholder="Anna teoksen ISBN (jos on)" />
+
+				<label for="writer">Tekijä:</label>
+				<input type="name" formControlName="tekija" class="form-control" id="writer" placeholder="Anna kirjailija" required />
+
+				<label for="type">Tyyppi:</label>
+				<select formControlName="tyyppiId" class="form-control" id="type" placeholder="Valitse teoksen tyyppi" required>
+					<option *ngFor="let tyyppi of tyypit" [value]="tyyppi.tyyppiId">{{ tyyppi.nimi }}</option>
+				</select>
+
+				<label for="class">Luokka:</label>
+				<select formControlName="luokkaId" class="form-control" id="class" placeholder="Valitse teoksen luokka" required>
+					<option *ngFor="let luokka of luokat" [value]="luokka.luokkaId">{{ luokka.nimi }}</option>
+				</select>
+
+				<label for="year">Julkaisuvuosi:</label>
+				<input
+					type="number"
+					formControlName="julkaisuvuosi"
+					class="form-control"
+					id="year"
+					placeholder="Anna teoksen julkaisuvuosi"
+					required
+				/>
+
+				<label for="weight">Paino (g):</label>
+				<input type="number" formControlName="paino" class="form-control" id="weight" placeholder="Anna teoksen paino" required />
+
+				<button type="submit" class="btn btn-primary">Lisää teos</button>
+			</div>
+		</form>
+		<a routerLink="/">Palaa etusivulle</a>
+	</div>
+</div>

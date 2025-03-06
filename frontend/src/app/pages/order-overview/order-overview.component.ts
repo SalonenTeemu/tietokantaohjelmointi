@@ -42,8 +42,12 @@ export class OrderOverviewComponent {
 				this.orderService.vahvistaTilaus(tilausId).subscribe((success: boolean) => {
 					if (success) {
 						alert('Tilaus vahvistettu');
-						this.store.dispatch(clearCart());
-						this.router.navigate(['/']);
+						combineLatest([this.cartItems$, this.shipping$, this.total$])
+							.pipe(take(1))
+							.subscribe(([tuotteet, shipping, total]) => {
+								this.store.dispatch(clearCart());
+								this.router.navigate(['/tilaus/vahvistettu'], { state: { tuotteet, shipping, total } });
+							});
 					} else {
 						alert('Tilauksen vahvistaminen epäonnistui');
 					}
