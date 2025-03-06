@@ -82,6 +82,27 @@ export const haeTeosISBNlla = async (isbn: string) => {
 	return teos;
 };
 
+// Hae teokset, jotka ovat myynnissä tietyssä divarissa
+export const haeDivarinMyymatTeokset = async (divariId: string) => {
+	const teokset = await db('keskusdivari.TeosInstanssi as ti')
+		.select(
+			't.teosId',
+			't.isbn',
+			't.nimi',
+			't.tekija',
+			'ty.nimi as tyyppi',
+			'l.nimi as luokka',
+			't.julkaisuvuosi',
+			db.raw('COUNT("ti"."teosInstanssiId") as instanssi_lkm')
+		)
+		.join('keskusdivari.Teos as t', 'ti.teosId', 't.teosId')
+		.join('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
+		.join('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId')
+		.where('ti.divariId', divariId)
+		.groupBy('t.teosId', 't.isbn', 't.nimi', 't.tekija', 'ty.nimi', 'l.nimi', 't.julkaisuvuosi');
+	return teokset;
+};
+
 // Teoksen instanssit
 export const haeTeoksenInstanssit = async (teosId: string) => {
 	const instanssit = await db('keskusdivari.TeosInstanssi as ti')

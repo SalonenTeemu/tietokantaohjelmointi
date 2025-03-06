@@ -7,6 +7,7 @@ import {
 	haeTyypit,
 	haeTeosISBNlla,
 	lisaaUusiTeos,
+	haeDivarinMyymatTeokset,
 } from '../db/queries/teos';
 import { Haku } from '../utils/types';
 import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
@@ -26,6 +27,23 @@ export const haeTeoksia = async (req: Request, res: Response) => {
 		res.status(200).json({ message: teokset });
 	} catch (error) {
 		console.error('Virhe haettaessa teoksia:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Hae divarin myymät teokset
+export const haeDivarinTeokset = async (req: Request, res: Response) => {
+	try {
+		const divariId = req.params.divariId;
+		const divariIdNum = Number(divariId);
+		if (!divariId || divariIdNum <= 0) {
+			res.status(400).json({ message: 'Virheellinen divariId.' });
+			return;
+		}
+		const teokset = await haeDivarinMyymatTeokset(divariId);
+		res.status(200).json({ message: teokset });
+	} catch (error) {
+		console.error('Virhe haettaessa divarin teoksia:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };
@@ -111,8 +129,8 @@ export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 			res.status(400).json({ message: 'Virheellinen teosId.' });
 			return;
 		}
-		const { hinta, kunto, sisaanostohinta, divariId } = req.body;
-		const tarkistus = tarkistaLuoTeosInstanssi(req.body);
+		const { kpl, hinta, kunto, sisaanostohinta, divariId } = req.body;
+		const tarkistus = tarkistaLuoTeosInstanssi(req.body, kpl);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
 			return;
@@ -122,7 +140,9 @@ export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 			res.status(400).json({ message: 'Annettua divaria ei löydy.' });
 			return;
 		}
-		await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
+		for (let i = 0; i < kpl; i++) {
+			await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
+		}
 		res.status(201).json({ message: 'TeosInstanssi lisätty.' });
 	} catch (error) {
 		console.error('Virhe teoksen instanssin lisäämisessä:', error);

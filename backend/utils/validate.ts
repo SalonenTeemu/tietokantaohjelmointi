@@ -116,12 +116,15 @@ export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: stri
 }
 
 // Tarkista teosInstanssin luomisen oikeellisuus
-export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi): { success: boolean; message?: string } => {
-	if (!instanssi.hinta || !instanssi.divariId) {
-		return { success: false, message: 'Hinta ja divariId vaaditaan.' };
+export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi, kpl: number): { success: boolean; message?: string } => {
+	if (!instanssi.hinta || !instanssi.divariId || !kpl) {
+		return { success: false, message: 'Hinta, kappalemäärä ja divariId vaaditaan.' };
 	}
 	if (instanssi.hinta < 0) {
 		return { success: false, message: 'Hinta ei ole kelvollinen.' };
+	}
+	if (kpl <= 0 || kpl > 100) {
+		return { success: false, message: 'Kappalemäärä ei ole kelvollinen. Kappalemäärän tulee olla 1-100.' };
 	}
 	if (instanssi.kunto && !['heikko', 'kohtalainen', 'erinomainen'].includes(instanssi.kunto)) {
 		return { success: false, message: 'Kunto ei ole kelvollinen.' };

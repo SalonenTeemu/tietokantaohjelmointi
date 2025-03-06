@@ -7,11 +7,13 @@ import {
 	haeLuokanKokonaismyynti,
 	lisaaTeos,
 	lisaaTeosInstanssi,
+	haeDivarinTeokset,
 } from '../controllers/teosController';
 
 const teosRoutes = express.Router({ mergeParams: true });
 
 teosRoutes.get('/', haeTeoksia);
+teosRoutes.get('/:divariId', haeDivarinTeokset);
 teosRoutes.get('/luokat', haeKaikkiLuokat);
 teosRoutes.get('/tyypit', haeKaikkiTyypit);
 teosRoutes.get('/luokka', haeLuokanKokonaismyynti);
