@@ -55,11 +55,9 @@ export class BookService {
 	}
 
 	lisaaTeos(teos: UusiTeos): Observable<boolean> {
-		console.log('Lisätään teos:', teos);
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos`, teos, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
-					console.log(response.body?.message);
 					return true;
 				}
 				return false;

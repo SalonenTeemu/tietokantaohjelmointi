@@ -39,17 +39,14 @@ export class NewBookComponent implements OnInit {
 
 	loadUtils() {
 		this.bookService.haeTeosLuokat().subscribe((luokat: Luokka[]) => {
-			console.log(luokat);
 			this.luokat = luokat;
 		});
 		this.bookService.haeTeosTyypit().subscribe((tyypit: Tyyppi[]) => {
-			console.log(tyypit);
 			this.tyypit = tyypit;
 		});
 	}
 
 	onSubmitBook() {
-		console.log(this.bookFormGroup.value);
 		const { nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino } = this.bookFormGroup.value;
 
 		const tarkistus = tarkistaTeoksenLisäys(nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino);
@@ -65,12 +62,4 @@ export class NewBookComponent implements OnInit {
 			}
 		});
 	}
-	// this.authService.register(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
-	//   if (success) {
-	//     alert('Rekisteröityminen onnistui');
-	//     this.router.navigate(['/kirjaudu']);
-	//   } else {
-	//     alert('Rekisteröityminen epäonnistui');
-	//   }
-	// });
 }
