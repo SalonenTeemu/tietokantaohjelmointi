@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
-import { haeTeoksetHakusanalla, haeLuokanMyynnissaOlevatTeokset, haeTeoksenInstanssit } from '../db/queries';
+import {
+	haeTeoksetHakusanalla,
+	haeLuokanMyynnissaOlevatTeokset,
+	haeTeoksenInstanssit,
+	haeLuokat,
+	haeTyypit,
+	haeTeosISBNlla,
+	lisaaUusiTeos,
+} from '../db/queries/teos';
 import { Haku } from '../utils/types';
-import { tarkistaTeosHaku } from '../utils/validate';
+import { tarkistaLuoTeos, tarkistaTeosHaku } from '../utils/validate';
 
 // Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
 export const haeTeoksia = async (req: Request, res: Response) => {
@@ -16,6 +24,28 @@ export const haeTeoksia = async (req: Request, res: Response) => {
 		res.status(200).json({ message: teokset });
 	} catch (error) {
 		console.error('Virhe haettaessa teoksia:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Hae kaiki mahdolliset luokat
+export const haeKaikkiLuokat = async (req: Request, res: Response) => {
+	try {
+		const luokat = await haeLuokat();
+		res.status(200).json({ message: luokat });
+	} catch (error) {
+		console.error('Virhe haettaessa luokkia:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Hae kaikki mahdolliset tyypit
+export const haeKaikkiTyypit = async (req: Request, res: Response) => {
+	try {
+		const tyypit = await haeTyypit();
+		res.status(200).json({ message: tyypit });
+	} catch (error) {
+		console.error('Virhe haettaessa tyyppejä:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };
@@ -43,6 +73,30 @@ export const haeLuokanKokonaismyynti = async (req: Request, res: Response) => {
 		res.status(200).json({ message: tiedot });
 	} catch (error) {
 		console.error('Virhe haettaessa luokan kokonaismyyntiä:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Lisää uusi teos
+export const lisaaTeos = async (req: Request, res: Response) => {
+	try {
+		const { isbn, nimi, tekija, julkaisuvuosi, paino, tyyppiId, luokkaId } = req.body;
+		const tarkistus = tarkistaLuoTeos(req.body);
+		if (!tarkistus.success) {
+			res.status(400).json({ message: tarkistus.message });
+			return;
+		}
+		if (isbn) {
+			const teos = await haeTeosISBNlla(isbn);
+			if (teos) {
+				res.status(400).json({ message: 'Teos on jo olemassa.' });
+				return;
+			}
+		}
+		await lisaaUusiTeos({ isbn, nimi, tekija, julkaisuvuosi, paino, tyyppiId, luokkaId });
+		res.status(201).json({ message: 'Teos lisätty.' });
+	} catch (error) {
+		console.error('Virhe teoksen lisäämisessä:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };

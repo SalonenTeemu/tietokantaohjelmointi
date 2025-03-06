@@ -30,6 +30,17 @@ export interface TilausTiedot {
 	postikulut: number;
 }
 
+// Teos
+export interface Teos {
+	isbn?: string;
+	nimi: string;
+	tekija: string;
+	julkaisuvuosi: number;
+	paino: number;
+	tyyppiId: number;
+	luokkaId: number;
+}
+
 // TeosInstanssi
 export interface TeosInstanssi {
 	teosInstanssiId: string;

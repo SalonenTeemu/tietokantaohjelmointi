@@ -1,9 +1,9 @@
-import { haePostitusHinnasto } from '../db/queries';
+import { haePostitusHinnasto } from '../db/queries/postitusHinnasto';
+
+const painoluokat = await haePostitusHinnasto();
 
 // Laske postikulut annetun kokonaispainon perusteella
 export async function laskePostikulut(paino: number) {
-	const painoluokat = await haePostitusHinnasto();
-
 	let painoJaljella = paino;
 	let postikulut = 0;
 

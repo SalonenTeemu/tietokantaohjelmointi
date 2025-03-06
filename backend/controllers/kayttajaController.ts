@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja } from '../db/queries';
+import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja } from '../db/queries/kayttaja';
 import { tarkistaKirjautuminen, tarkistaRekisteroityminen } from '../utils/validate';
 
 // Kirjaudu sisään

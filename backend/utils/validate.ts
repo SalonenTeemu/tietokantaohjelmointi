@@ -1,4 +1,4 @@
-import { Haku, TilausValidointi } from './types';
+import { Haku, Teos, TilausValidointi } from './types';
 
 // Tarkista sähköpostin oikeellisuus
 function tarkistaEmail(email: string): boolean {
@@ -66,6 +66,43 @@ export function tarkistaRekisteroityminen(
 	}
 	if (!tarkistaPuhelin(puhelin)) {
 		return { success: false, message: 'Puhelinnumero ei ole kelvollinen.' };
+	}
+	return { success: true };
+}
+
+// Tarkista ISBN:n oikeellisuus
+export function tarkistaISBN(isbn: string): boolean {
+	const re = /^[0-9]{10,20}$/;
+	return re.test(isbn);
+}
+
+// Tarkista julkaisuvuoden oikeellisuus
+export function tarkistaJulkaisuvuosi(julkaisuvuosi: number): boolean {
+	return julkaisuvuosi >= 0 && julkaisuvuosi <= new Date().getFullYear();
+}
+
+// Tarkista teoksen luomisen oikeellisuus
+export function tarkistaLuoTeos(teos: Teos): { success: boolean; message?: string } {
+	if (!teos.nimi || !teos.tekija || !teos.julkaisuvuosi || !teos.paino || !teos.tyyppiId || !teos.luokkaId) {
+		return { success: false, message: 'Kaikki tiedot vaaditaan.' };
+	}
+	if (!tarkistaNimi(teos.nimi)) {
+		return { success: false, message: 'Nimi ei ole kelvollinen. Nimen tulee olla 2-100 merkkiä pitkä.' };
+	}
+	if (teos.isbn && !tarkistaISBN(teos.isbn)) {
+		return { success: false, message: 'ISBN ei ole kelvollinen.' };
+	}
+	if (!tarkistaNimi(teos.tekija)) {
+		return { success: false, message: 'Tekijä ei ole kelvollinen. Tekijän tulee olla 2-100 merkkiä pitkä.' };
+	}
+	if (!tarkistaJulkaisuvuosi(teos.julkaisuvuosi)) {
+		return { success: false, message: 'Julkaisuvuosi ei ole kelvollinen.' };
+	}
+	if (teos.paino < 0) {
+		return { success: false, message: 'Paino ei ole kelvollinen.' };
+	}
+	if (teos.tyyppiId <= 0 || teos.luokkaId <= 0) {
+		return { success: false, message: 'Tyyppi tai luokka ei ole kelvollinen.' };
 	}
 	return { success: true };
 }

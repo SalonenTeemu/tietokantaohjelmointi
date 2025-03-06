@@ -1,17 +1,8 @@
 import { Request, Response } from 'express';
 import db from '../db/knex';
-import {
-	haeAsiakkaanTilaukset,
-	haeTeosInstanssi,
-	paivitaTeosInstanssinTila,
-	lisaaTilaus,
-	haeTilaus,
-	haeTilauksenInstanssit,
-	paivitaTilauksenTila,
-	haeTeos,
-	paivitaTeosInstanssinTilaus,
-	asetaTeosInstanssinMyyntiPvm,
-} from '../db/queries';
+import { haeAsiakkaanTilaukset, lisaaTilaus, haeTilaus, haeTilauksenInstanssit, paivitaTilauksenTila } from '../db/queries/tilaus';
+import { haeTeosIdlla } from '../db/queries/teos';
+import { haeTeosInstanssi, paivitaTeosInstanssinTila, paivitaTeosInstanssinTilaus, asetaTeosInstanssinMyyntiPvm } from '../db/queries/teosIntanssi';
 import { laskePostikulut } from '../utils/postikulut';
 import { tarkistaLuoTilaus } from '../utils/validate';
 import { LisattyTilaus, TeosInstanssi } from '../utils/types';
@@ -53,7 +44,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 				res.status(400).json({ id: instanssi, message: 'TeosInstanssi ei ole vapaa.' });
 				return;
 			}
-			const teos = await haeTeos(teosInstanssi.teosId);
+			const teos = await haeTeosIdlla(teosInstanssi.teosId);
 			if (!teos) {
 				res.status(400).json({ id: instanssi, message: 'Instanssin teosta ei löytynyt.' });
 				return;
