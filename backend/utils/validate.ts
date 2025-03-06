@@ -117,10 +117,10 @@ export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: stri
 
 // Tarkista teosInstanssin luomisen oikeellisuus
 export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi, kpl: number): { success: boolean; message?: string } => {
-	if (!instanssi.hinta || !instanssi.divariId || !kpl) {
+	if (instanssi.hinta == null || instanssi.divariId == null || kpl == null) {
 		return { success: false, message: 'Hinta, kappalemäärä ja divariId vaaditaan.' };
 	}
-	if (instanssi.hinta < 0) {
+	if (instanssi.hinta <= 0) {
 		return { success: false, message: 'Hinta ei ole kelvollinen.' };
 	}
 	if (kpl <= 0 || kpl > 100) {
@@ -129,7 +129,7 @@ export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi, kpl: numbe
 	if (instanssi.kunto && !['heikko', 'kohtalainen', 'erinomainen'].includes(instanssi.kunto)) {
 		return { success: false, message: 'Kunto ei ole kelvollinen.' };
 	}
-	if (instanssi.sisaanostohinta && instanssi.sisaanostohinta < 0) {
+	if (instanssi.sisaanostohinta != null && instanssi.sisaanostohinta <= 0) {
 		return { success: false, message: 'Sisäänostohinta ei ole kelvollinen.' };
 	}
 	if (instanssi.divariId <= 0) {

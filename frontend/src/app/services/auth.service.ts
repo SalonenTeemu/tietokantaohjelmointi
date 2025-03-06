@@ -78,4 +78,12 @@ export class AuthService {
 	isAuthenticated(): boolean {
 		return this.loggedIn || !!localStorage.getItem('user');
 	}
+
+	getUser(): Kayttaja | null {
+		const user = localStorage.getItem('user');
+		if (user) {
+			return JSON.parse(user);
+		}
+		return null;
+	}
 }

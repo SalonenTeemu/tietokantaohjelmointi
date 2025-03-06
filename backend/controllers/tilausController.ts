@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import db from '../db/knex';
 import { haeAsiakkaanTilaukset, lisaaTilaus, haeTilaus, haeTilauksenInstanssit, paivitaTilauksenTila } from '../db/queries/tilaus';
 import { haeTeosIdlla } from '../db/queries/teos';
-import { haeTeosInstanssi, paivitaTeosInstanssinTila, paivitaTeosInstanssinTilaus, asetaTeosInstanssinMyyntiPvm } from '../db/queries/teosIntanssi';
+import { haeTeosInstanssi, paivitaTeosInstanssinTila, paivitaTeosInstanssinTilaus, asetaTeosInstanssinMyyntiPvm } from '../db/queries/teosInstanssi';
 import { laskePostikulut } from '../utils/postikulut';
 import { tarkistaLuoTilaus } from '../utils/validate';
 import { LisattyTilaus, TeosInstanssi } from '../utils/types';

@@ -1,0 +1,55 @@
+<div class="divari-books-container">
+	<h1>Divarisi teokset</h1>
+	<div class="divari-books">
+		<div *ngFor="let teos of teokset" class="divari-book">
+			<div class="divari-book-info">
+				<h2>{{ teos.nimi }}</h2>
+				<p>Tekijä: {{ teos.tekija }}</p>
+				<p>ISBN: {{ teos.isbn }}</p>
+				<p>Tyyppi: {{ teos.tyyppi }}</p>
+				<p>Luokka: {{ teos.luokka }}</p>
+				<p>Julkaisuvuosi: {{ teos.julkaisuvuosi }}</p>
+				<p>Paino: {{ teos.paino }} g</p>
+				<p>Myynnissä olevat kappaleet: {{ teos.instanssi_lkm }}</p>
+				<button (click)="selectBook(teos.teosId)">Lisää uusi myytävä instanssi</button>
+			</div>
+			<div *ngIf="valittuTeos !== null" class="new-instance-form">
+				<h2>Lisää uusi myytävä instanssi</h2>
+				<form [formGroup]="instanceFormGroup" (ngSubmit)="onSubmitInstance()">
+					<div class="form-group">
+						<label for="price">Hinta:</label>
+						<input type="number" formControlName="hinta" class="form-control" id="price" placeholder="Anna instanssin hinta" required />
+
+						<label for="amount">Kappalemäärä:</label>
+						<input
+							type="number"
+							formControlName="kpl"
+							class="form-control"
+							id="amount"
+							placeholder="Anna lisättävä kappalemäärä"
+							required
+						/>
+
+						<label for="condition">Kunto:</label>
+						<select formControlName="kunto" class="form-control" id="condition" placeholder="Valitse instanssin kunto">
+							<option value="erinomainen">Erinomainen</option>
+							<option value="kohtalainen">Kohtalainen</option>
+							<option value="heikko">Heikko</option>
+						</select>
+
+						<label for="bought-price">Sisäänostohinta:</label>
+						<input
+							type="number"
+							formControlName="sisaanostohinta"
+							class="form-control"
+							id="bought-price"
+							placeholder="Anna instanssin sisäänostohinta"
+						/>
+
+						<button type="submit" class="btn btn-primary">Lisää instanssi</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -13,7 +13,7 @@ import {
 import { Haku } from '../utils/types';
 import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
 import { haeDivariIdlla } from '../db/queries/divari';
-import { lisaaUusiTeosInstanssi } from '../db/queries/teosIntanssi';
+import { lisaaUusiTeosInstanssi } from '../db/queries/teosInstanssi';
 
 // Hae kaikki teokset
 export const haeKaikkiTeokset = async (req: Request, res: Response) => {

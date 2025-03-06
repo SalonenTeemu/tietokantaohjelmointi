@@ -7,6 +7,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { OrderOverviewComponent } from './pages/order-overview/order-overview.component';
 import { OrderConfirmedComponent } from './pages/order-confirmed/order-confirmed.component';
 import { NewBookComponent } from './pages/new-book/new-book.component';
+import { DivariBooksComponent } from './pages/divari-books/divari-books.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -17,4 +18,5 @@ export const routes: Routes = [
 	{ path: 'rekisteröidy', component: RegisterComponent },
 	{ path: 'hae', component: SearchComponent },
 	{ path: 'uusi/teos', component: NewBookComponent },
+	{ path: 'divari/teokset', component: DivariBooksComponent },
 ];

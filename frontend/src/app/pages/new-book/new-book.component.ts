@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { tarkistaTeoksenLisäys } from '../../utils/validate';
 import { BookService } from '../../services/book.service';
-import { Luokka, Tyyppi } from '../../models/LuokkaTyyppi';
+import { Luokka, Tyyppi } from '../../models/luokkaTyyppi';
 
 @Component({
 	selector: 'app-new-book',

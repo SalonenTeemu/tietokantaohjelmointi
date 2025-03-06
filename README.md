@@ -22,7 +22,6 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 ## TODO
 
-- lisää uusi teosinstanssi
 - autentikaatio sen vaatimiin endpointteihin ja frontendin toteutus -> oman divarin admin ym.
 - divarin tietojen muokkaus
 - muokkaa haku, että luokat ja tyypit ovat dropdown menuja
@@ -34,3 +33,5 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 - UI tyylin parantaminen ja selkeytys
 - frontend authorization sivuille ym.
 - tarkista hakutoiminto, vastaako oletettua (R4)
+- Tyypit any ja modelit/typet selkeiksi
+- ä ja ö samanlaisiksi

@@ -1,4 +1,5 @@
 import { TarkistusTulos } from './types';
+import { LuoTeosInstanssi } from '../models/teosInstanssi';
 
 // Tarkista sähköpostin oikeellisuus
 const tarkistaEmail = (email: string): boolean => {
@@ -99,4 +100,26 @@ export const tarkistaTeoksenLisäys = (
 		return { success: false, message: 'Virheellinen paino: painon tulee olla yli 0g' };
 	}
 	return { success: true, message: '' };
+};
+
+export const tarkistaInstanssiLisäys = (instanssi: LuoTeosInstanssi): { success: boolean; message?: string } => {
+	if (instanssi.hinta == null || instanssi.divariId == null || instanssi.kpl == null) {
+		return { success: false, message: 'Hinta ja kappalemäärä vaaditaan.' };
+	}
+	if (instanssi.hinta <= 0) {
+		return { success: false, message: 'Hinta ei ole kelvollinen.' };
+	}
+	if (instanssi.kpl <= 0 || instanssi.kpl > 100) {
+		return { success: false, message: 'Kappalemäärä ei ole kelvollinen. Kappalemäärän tulee olla 1-100.' };
+	}
+	if (instanssi.kunto && !['heikko', 'kohtalainen', 'erinomainen'].includes(instanssi.kunto)) {
+		return { success: false, message: 'Kunto ei ole kelvollinen.' };
+	}
+	if (instanssi.sisaanostohinta && instanssi.sisaanostohinta < 0) {
+		return { success: false, message: 'Sisäänostohinta ei ole kelvollinen.' };
+	}
+	if (instanssi.divariId <= 0) {
+		return { success: false, message: 'DivariId ei ole kelvollinen.' };
+	}
+	return { success: true };
 };

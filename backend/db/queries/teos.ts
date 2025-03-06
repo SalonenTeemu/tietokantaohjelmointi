@@ -103,7 +103,7 @@ export const haeDivarinMyymatTeokset = async (divariId: string) => {
 			'ty.nimi as tyyppi',
 			'l.nimi as luokka',
 			't.julkaisuvuosi',
-			db.raw('COUNT("ti"."teosInstanssiId") as instanssi_lkm')
+			db.raw('CAST(COUNT("ti"."teosInstanssiId") AS INTEGER) as instanssi_lkm')
 		)
 		.join('keskusdivari.Teos as t', 'ti.teosId', 't.teosId')
 		.join('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
