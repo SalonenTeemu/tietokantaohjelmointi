@@ -8,11 +8,13 @@ import {
 	lisaaTeos,
 	lisaaTeosInstanssi,
 	haeDivarinTeokset,
+	haeKaikkiTeokset,
 } from '../controllers/teosController';
 
 const teosRoutes = express.Router({ mergeParams: true });
 
-teosRoutes.get('/', haeTeoksia);
+teosRoutes.get('/', haeKaikkiTeokset);
+teosRoutes.get('/hae', haeTeoksia);
 teosRoutes.get('/:divariId', haeDivarinTeokset);
 teosRoutes.get('/luokat', haeKaikkiLuokat);
 teosRoutes.get('/tyypit', haeKaikkiTyypit);

@@ -1,6 +1,15 @@
 import db from '../knex';
 import { Haku, Teos } from '../../utils/types';
 
+// Hae kaikki teokset
+export const haeTeokset = async () => {
+	const teokset = await db('keskusdivari.Teos as t')
+		.select('t.teosId', 't.isbn', 't.nimi', 't.tekija', 't.paino', 't.julkaisuvuosi', 'ty.nimi as tyyppi', 'l.nimi as luokka')
+		.leftJoin('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
+		.leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId');
+	return teokset;
+};
+
 // R2
 export const haeLuokanMyynnissaOlevatTeokset = async () => {
 	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
@@ -90,6 +99,7 @@ export const haeDivarinMyymatTeokset = async (divariId: string) => {
 			't.isbn',
 			't.nimi',
 			't.tekija',
+			't.paino',
 			'ty.nimi as tyyppi',
 			'l.nimi as luokka',
 			't.julkaisuvuosi',

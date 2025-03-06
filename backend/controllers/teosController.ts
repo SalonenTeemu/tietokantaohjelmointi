@@ -8,11 +8,23 @@ import {
 	haeTeosISBNlla,
 	lisaaUusiTeos,
 	haeDivarinMyymatTeokset,
+	haeTeokset,
 } from '../db/queries/teos';
 import { Haku } from '../utils/types';
 import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
 import { haeDivariIdlla } from '../db/queries/divari';
 import { lisaaUusiTeosInstanssi } from '../db/queries/teosIntanssi';
+
+// Hae kaikki teokset
+export const haeKaikkiTeokset = async (req: Request, res: Response) => {
+	try {
+		const teokset = await haeTeokset();
+		res.status(200).json({ message: teokset });
+	} catch (error) {
+		console.error('Virhe haettaessa teoksia:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
 
 // Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
 export const haeTeoksia = async (req: Request, res: Response) => {
