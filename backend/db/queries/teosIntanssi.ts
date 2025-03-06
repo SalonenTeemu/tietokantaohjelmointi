@@ -1,10 +1,16 @@
 import { Knex } from 'knex';
 import db from '../knex';
+import { LuoTeosInstanssi } from '../../utils/types';
 
 // Hae teosIntanssi
 export const haeTeosInstanssi = async (teosInstanssiId: string) => {
 	const instanssi = await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).first();
 	return instanssi;
+};
+
+// Lisää uusi teosInstanssi
+export const lisaaUusiTeosInstanssi = async (instanssi: LuoTeosInstanssi) => {
+	await db('keskusdivari.TeosInstanssi').insert(instanssi);
 };
 
 // Päivitys teosInstanssin tila

@@ -1,4 +1,4 @@
-import { Haku, Teos, TilausValidointi } from './types';
+import { Haku, LuoTeosInstanssi, Teos, TilausValidointi } from './types';
 
 // Tarkista sähköpostin oikeellisuus
 function tarkistaEmail(email: string): boolean {
@@ -115,7 +115,27 @@ export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: stri
 	return { success: true, hakusanat: haku };
 }
 
-// Tarksita tilauksen luomisen oikeellisuus
+// Tarkista teosInstanssin luomisen oikeellisuus
+export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi): { success: boolean; message?: string } => {
+	if (!instanssi.hinta || !instanssi.divariId) {
+		return { success: false, message: 'Hinta ja divariId vaaditaan.' };
+	}
+	if (instanssi.hinta < 0) {
+		return { success: false, message: 'Hinta ei ole kelvollinen.' };
+	}
+	if (instanssi.kunto && !['heikko', 'kohtalainen', 'erinomainen'].includes(instanssi.kunto)) {
+		return { success: false, message: 'Kunto ei ole kelvollinen.' };
+	}
+	if (instanssi.sisaanostohinta && instanssi.sisaanostohinta < 0) {
+		return { success: false, message: 'Sisäänostohinta ei ole kelvollinen.' };
+	}
+	if (instanssi.divariId <= 0) {
+		return { success: false, message: 'DivariId ei ole kelvollinen.' };
+	}
+	return { success: true };
+};
+
+// Tarkista tilauksen luomisen oikeellisuus
 export function tarkistaLuoTilaus(tilaus: TilausValidointi): { success: boolean; message?: string } {
 	if (!tilaus.kayttajaId) return { success: false, message: 'KayttajaId puuttuu.' };
 	if (!tilaus.instanssit || tilaus.instanssit.length === 0) return { success: false, message: 'Tilauksessa ei ole instansseja.' };

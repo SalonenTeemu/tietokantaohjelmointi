@@ -16,3 +16,9 @@ export const haeKayttajaPuhelimella = async (puhelin: string) => {
 export const lisaaKayttaja = async (email: string, salasana: string, nimi: string, osoite: string, puhelin: string) => {
 	await db('keskusdivari.Kayttaja').insert({ email, salasana, nimi, osoite, puhelin });
 };
+
+// Hae käyttäjän divariId
+export const haeKayttajanDivariId = async (kayttajaId: number) => {
+	const kayttaja = await db('keskusdivari.Divari_Admin').where('kayttajaId', kayttajaId).first();
+	return kayttaja.divariId;
+};

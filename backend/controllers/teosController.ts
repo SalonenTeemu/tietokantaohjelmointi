@@ -9,7 +9,9 @@ import {
 	lisaaUusiTeos,
 } from '../db/queries/teos';
 import { Haku } from '../utils/types';
-import { tarkistaLuoTeos, tarkistaTeosHaku } from '../utils/validate';
+import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
+import { haeDivariIdlla } from '../db/queries/divari';
+import { lisaaUusiTeosInstanssi } from '../db/queries/teosIntanssi';
 
 // Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
 export const haeTeoksia = async (req: Request, res: Response) => {
@@ -97,6 +99,33 @@ export const lisaaTeos = async (req: Request, res: Response) => {
 		res.status(201).json({ message: 'Teos lisätty.' });
 	} catch (error) {
 		console.error('Virhe teoksen lisäämisessä:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Lisää uusi instanssi teokselle
+export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
+	try {
+		const teosId = req.params.teosId;
+		if (!teosId) {
+			res.status(400).json({ message: 'Virheellinen teosId.' });
+			return;
+		}
+		const { hinta, kunto, sisaanostohinta, divariId } = req.body;
+		const tarkistus = tarkistaLuoTeosInstanssi(req.body);
+		if (!tarkistus.success) {
+			res.status(400).json({ message: tarkistus.message });
+			return;
+		}
+		const divari = await haeDivariIdlla(divariId);
+		if (!divari) {
+			res.status(400).json({ message: 'Annettua divaria ei löydy.' });
+			return;
+		}
+		await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
+		res.status(201).json({ message: 'TeosInstanssi lisätty.' });
+	} catch (error) {
+		console.error('Virhe teoksen instanssin lisäämisessä:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };

@@ -5,4 +5,5 @@ export interface Kayttaja {
 	puhelin: string;
 	email: string;
 	rooli: string;
+	divariId?: number;
 }

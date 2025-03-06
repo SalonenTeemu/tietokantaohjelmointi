@@ -34,7 +34,7 @@ export class LoginComponent {
 		}
 		this.authService.login(email, salasana).subscribe((success: boolean) => {
 			if (success) {
-				this.router.navigate(['/hae']);
+				this.router.navigate(['/']);
 				alert('Kirjautuminen onnistui');
 			} else {
 				alert('Virheellinen sähköposti tai salasana');

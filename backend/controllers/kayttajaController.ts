@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja } from '../db/queries/kayttaja';
+import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja, haeKayttajanDivariId } from '../db/queries/kayttaja';
 import { tarkistaKirjautuminen, tarkistaRekisteroityminen } from '../utils/validate';
 
 // Kirjaudu sisään
@@ -17,6 +17,10 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			res.status(401).json({ message: 'Käyttäjää annetulla sähköpostilla ei löydy.' });
 			return;
 		}
+		let divariId;
+		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
+			divariId = await haeKayttajanDivariId(user.kayttajaId);
+		}
 		const salasanaOikein = await bcrypt.compare(salasana, user.salasana);
 		if (!salasanaOikein) {
 			res.status(401).json({ message: 'Väärä salasana.' });
@@ -30,6 +34,7 @@ export const kirjaudu = async (req: Request, res: Response) => {
 				osoite: user.osoite,
 				puhelin: user.puhelin,
 				rooli: user.rooli,
+				divariId: divariId,
 			},
 		});
 	} catch (error) {

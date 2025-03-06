@@ -54,3 +54,11 @@ export interface TeosInstanssi {
 	divariId: number;
 	paino?: number;
 }
+
+export interface LuoTeosInstanssi {
+	hinta: number;
+	kunto?: string;
+	sisaanostohinta?: number;
+	divariId: number;
+	teosId: string;
+}

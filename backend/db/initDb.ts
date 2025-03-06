@@ -38,7 +38,7 @@ const createSchemas = async () => {
 
 // Luo tietokantatyypit keskusdivarille, jos niitä ei ole olemassa
 const createTypes = async () => {
-	await createTypeIfNotExists('kayttajarooli', "ENUM ('asiakas', 'admin')");
+	await createTypeIfNotExists('kayttajarooli', "ENUM ('asiakas', 'divariAdmin', 'admin')");
 	await createTypeIfNotExists('teoskunto', "ENUM ('heikko', 'kohtalainen', 'erinomainen')");
 	await createTypeIfNotExists('tilaustila', "ENUM ('kesken', 'peruutettu', 'valmis')");
 	await createTypeIfNotExists('teostila', "ENUM ('vapaa', 'varattu', 'myyty')");
