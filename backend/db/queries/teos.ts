@@ -1,11 +1,12 @@
 import db from '../knex';
 
-// Hae kaikki teokset
+// Hae kaikki teokset aakkosjärjestyksessä
 export const haeTeokset = async () => {
 	const teokset = await db('keskusdivari.Teos as t')
 		.select('t.teosId', 't.isbn', 't.nimi', 't.tekija', 't.paino', 't.julkaisuvuosi', 'ty.nimi as tyyppi', 'l.nimi as luokka')
 		.leftJoin('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
-		.leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId');
+		.leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId')
+		.orderBy('t.nimi');
 	return teokset;
 };
 
@@ -33,11 +34,11 @@ export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 			't.julkaisuvuosi',
 			db.raw(
 				`(
-					${hakusanat.nimi ? `CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-					${hakusanat.tekija ? `+ CASE WHEN LOWER(t.tekija) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-					${hakusanat.luokka ? `+ CASE WHEN LOWER(l.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-					${hakusanat.tyyppi ? `+ CASE WHEN LOWER(ty.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-				) AS osumien_maara`,
+                    ${hakusanat.nimi ? `CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
+                    ${hakusanat.tekija ? `+ CASE WHEN LOWER(t.tekija) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
+                    ${hakusanat.luokka ? `+ CASE WHEN LOWER(l.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
+                    ${hakusanat.tyyppi ? `+ CASE WHEN LOWER(ty.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
+                ) AS osumien_maara`,
 				[
 					...(hakusanat.nimi ? [hakusanat.nimi] : []),
 					...(hakusanat.tekija ? [hakusanat.tekija] : []),
@@ -68,7 +69,7 @@ export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 	lisaaHakuehto('ty.nimi', hakusanat.tyyppi);
 
 	if (hakuEhdot.length > 0) {
-		query.whereRaw(hakuEhdot.join(' OR '), hakuArvot);
+		query.whereRaw(hakuEhdot.join(' AND '), hakuArvot);
 	}
 
 	query

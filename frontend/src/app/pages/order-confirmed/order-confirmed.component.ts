@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 	styleUrl: './order-confirmed.component.css',
 	standalone: true,
 })
-
 export class OrderConfirmedComponent {
 	tuotteet: OstoskoriTuote[];
 	toimituskulut: number;

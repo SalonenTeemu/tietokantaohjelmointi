@@ -13,6 +13,16 @@ export class BookService {
 
 	constructor(private http: HttpClient) {}
 
+	getKaikkiTeokset(): Observable<Teos[]> {
+		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos`).pipe(
+			map((response) => response.message),
+			catchError((error: unknown) => {
+				console.error('Teosten haku epäonnistui:', error);
+				return throwError(() => new Error('Teosten hakeminen epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
+
 	getTeokset(query: { nimi?: string; tekija?: string; tyyppi?: string; luokka?: string }): Observable<Teos[]> {
 		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos/hae`, { params: query }).pipe(
 			map((response) => response.message),

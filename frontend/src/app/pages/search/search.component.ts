@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -15,7 +15,9 @@ import { tarkistaHaku } from '../../utils/validate';
 	styleUrls: ['./search.component.css'],
 	imports: [CommonModule, FormsModule],
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
+	luokat: any[] = [];
+	tyypit: any[] = [];
 	queryNimi = '';
 	queryTekija = '';
 	queryTyyppi = '';
@@ -31,10 +33,33 @@ export class SearchComponent {
 		private store: Store
 	) {}
 
+	ngOnInit() {
+		this.lataaLuokatjaTyypit();
+	}
+
+	lataaLuokatjaTyypit() {
+		this.bookService.getTeosLuokat().subscribe((luokat: any[]) => {
+			this.luokat = luokat;
+		});
+		this.bookService.getTeosTyypit().subscribe((tyypit: any[]) => {
+			this.tyypit = tyypit;
+		});
+	}
+
 	haeTeoksia() {
 		this.virheViesti = ''; // Nollataan virhe ennen uutta hakua
+		// Jos haku on tyhjä, hae kaikki teokset
 		if (!tarkistaHaku(this.queryNimi, this.queryTekija, this.queryLuokka, this.queryTyyppi)) {
-			this.virheViesti = 'Anna vähintään yksi hakuehto';
+			this.bookService.getKaikkiTeokset().subscribe({
+				next: (data: Teos[]) => {
+					this.teokset = data;
+					this.valittuTeos = null;
+					this.instanssit = [];
+				},
+				error: (error) => {
+					this.virheViesti = error.message;
+				},
+			});
 			return;
 		}
 		this.bookService

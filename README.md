@@ -24,12 +24,8 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 - autentikaatio sen vaatimiin endpointteihin ja frontendin toteutus -> oman divarin admin ym.
 - divarin tietojen muokkaus
-- muokkaa haku, että luokat ja tyypit ovat dropdown menuja
-- Mahdollisuus hakea ilman mitään ehtoja
-- Lisää luokat ja tyypit stateen, koska niitä käytetään useammassa paikassa
 - ilmoitukset sovelluksen frontendiin
 - raportit admin käyttäjille
 - triggeri divarien synkronoimiseksi
 - UI tyylin parantaminen ja selkeytys
 - frontend authorization sivuille ym.
-- tarkista hakutoiminto, vastaako oletettua (R4)
