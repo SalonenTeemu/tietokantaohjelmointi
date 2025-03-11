@@ -2,13 +2,13 @@
 	<h2>Kiitos tilauksestasi!</h2>
 
 	<ul>
-		<li *ngFor="let item of tuotteet">
-			<span>{{ item.teos.nimi }} - {{ item.teosInstanssi.kunto }} - {{ item.teosInstanssi.divari }} - {{ item.teosInstanssi.hinta }} €</span>
+		<li *ngFor="let tuote of tuotteet">
+			<span>{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €</span>
 		</li>
 	</ul>
 
-	<h3>Toimituskulut: {{ shipping }} €</h3>
-	<h3>Yhteensä: {{ total | number: '1.2-2' }} €</h3>
+	<h3>Toimituskulut: {{ toimituskulut }} €</h3>
+	<h3>Yhteensä: {{ yhteensa | number: '1.2-2' }} €</h3>
 
-	<button (click)="navigateToHome()">Palaa etusivulle</button>
+	<button (click)="siirryEtusivulle()">Palaa etusivulle</button>
 </div>

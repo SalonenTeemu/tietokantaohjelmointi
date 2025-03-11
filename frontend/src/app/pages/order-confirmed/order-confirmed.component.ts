@@ -10,20 +10,24 @@ import { CommonModule } from '@angular/common';
 	styleUrl: './order-confirmed.component.css',
 	standalone: true,
 })
+
 export class OrderConfirmedComponent {
 	tuotteet: OstoskoriTuote[];
-	shipping: number;
-	total: number;
+	toimituskulut: number;
+	yhteensa: number;
 
 	constructor(private router: Router) {
 		const navigation = this.router.getCurrentNavigation();
 		const state = navigation?.extras.state || {};
 		this.tuotteet = state['tuotteet'] || [];
-		this.shipping = state['shipping'] || 0;
-		this.total = state['total'] || 0;
+		this.toimituskulut = state['toimituskulut'] || 0;
+		this.yhteensa = state['yhteensa'] || 0;
+
+		console.log(state);
+		console.log(this.tuotteet, this.toimituskulut, this.yhteensa);
 	}
 
-	navigateToHome() {
+	siirryEtusivulle() {
 		this.router.navigate(['/']);
 	}
 }

@@ -25,7 +25,7 @@ export class AppComponent {
 		this.userRole$ = this.store.select(selectUserRole) || undefined;
 	}
 
-	logout() {
+	kirjauduUlos() {
 		this.authService.logout();
 		alert('Olet kirjautunut ulos');
 	}

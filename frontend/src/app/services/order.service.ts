@@ -14,7 +14,7 @@ export class OrderService {
 		private store: Store
 	) {}
 
-	luoTilaus(tilaus: unknown): Observable<unknown> {
+	postLuoTilaus(tilaus: unknown): Observable<unknown> {
 		return this.http.post(this.apiUrl, tilaus, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
@@ -35,7 +35,7 @@ export class OrderService {
 		);
 	}
 
-	vahvistaTilaus(tilausId: number): Observable<boolean> {
+	postVahvistaTilaus(tilausId: number): Observable<boolean> {
 		return this.http.post(`${this.apiUrl}/vahvista/${tilausId}`, null, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
@@ -52,7 +52,7 @@ export class OrderService {
 		);
 	}
 
-	peruutaTilaus(tilausId: number): Observable<boolean> {
+	postPeruutaTilaus(tilausId: number): Observable<boolean> {
 		return this.http.post(`${this.apiUrl}/peruuta/${tilausId}`, null, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {

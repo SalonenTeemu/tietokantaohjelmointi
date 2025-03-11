@@ -6,21 +6,21 @@
 	<input type="text" [(ngModel)]="queryTyyppi" placeholder="Tyyppi (romaani, sarjakuva...)" />
 	<input type="text" [(ngModel)]="queryLuokka" placeholder="Luokka (romantiikka, seikkailu...)" />
 
-	<button (click)="onSearch()">Hae</button>
+	<button (click)="haeTeoksia()">Hae</button>
 
-	<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+	<p *ngIf="virheViesti" class="error">{{ virheViesti }}</p>
 
 	<ul *ngIf="teokset.length > 0">
 		<li *ngFor="let teos of teokset" tabindex="0" (keydown.enter)="haeTeosInstanssit(teos)" (click)="haeTeosInstanssit(teos)">
 			{{ teos.nimi }} - {{ teos.tekija }} ({{ teos.tyyppi }})
 		</li>
 	</ul>
-	<p *ngIf="teokset.length === 0 && !errorMessage">Ei tuloksia</p>
+	<p *ngIf="teokset.length === 0 && !virheViesti">Ei tuloksia</p>
 
 	<div *ngIf="valittuTeos">
 		<h3>Instanssit: {{ valittuTeos.nimi }}</h3>
 
-		<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+		<p *ngIf="virheViesti" class="error">{{ virheViesti }}</p>
 
 		<ul *ngIf="instanssit.length > 0">
 			<li *ngFor="let instanssi of instanssit">
@@ -28,6 +28,6 @@
 				<button (click)="lisaaOstoskoriin(instanssi)">Lisää ostoskoriin</button>
 			</li>
 		</ul>
-		<p *ngIf="instanssit.length === 0 && !errorMessage">Ei tuloksia</p>
+		<p *ngIf="instanssit.length === 0 && !virheViesti">Ei tuloksia</p>
 	</div>
 </div>

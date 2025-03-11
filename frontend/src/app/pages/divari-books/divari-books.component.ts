@@ -16,15 +16,14 @@ export class DivariBooksComponent implements OnInit {
 	instanceFormGroup: FormGroup;
 	teokset: any[] = [];
 	valittuTeos: string | null = null;
-	user: Kayttaja | null;
+	kayttaja: Kayttaja | null;
 
 	constructor(
 		private bookService: BookService,
 		private fb: FormBuilder,
 		private authService: AuthService
 	) {
-		this.user = this.authService.getUser();
-		this.loadBooks();
+		this.kayttaja = this.authService.haeKayttaja();
 		this.instanceFormGroup = this.fb.group({
 			hinta: [''],
 			kpl: [''],
@@ -34,10 +33,10 @@ export class DivariBooksComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.loadBooks();
+		this.lataaTeokset();
 	}
 
-	updateBookCount(lkm: number) {
+	paivitaTeosLkm(lkm: number) {
 		if (this.valittuTeos) {
 			const teos = this.teokset.find((teos) => teos.teosId === this.valittuTeos);
 			if (teos) {
@@ -46,14 +45,14 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
-	loadBooks() {
-		if (this.user && this.user.divariId !== undefined) {
-			const divariIdNum = Number(this.user.divariId);
+	lataaTeokset() {
+		if (this.kayttaja && this.kayttaja.divariId !== undefined) {
+			const divariIdNum = Number(this.kayttaja.divariId);
 			if (isNaN(divariIdNum)) {
 				console.error('Invalid divariId');
 				return;
 			}
-			this.bookService.haeDivarinTeokset(divariIdNum).subscribe((teokset: any[]) => {
+			this.bookService.getDivarinTeokset(divariIdNum).subscribe((teokset: any[]) => {
 				this.teokset = teokset;
 			});
 		} else {
@@ -61,7 +60,7 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
-	selectBook(teosId: string) {
+	valitseTeos(teosId: string) {
 		if (this.valittuTeos === teosId) {
 			this.valittuTeos = null;
 			return;
@@ -69,8 +68,8 @@ export class DivariBooksComponent implements OnInit {
 		this.valittuTeos = teosId;
 	}
 
-	onSubmitInstance() {
-		const instanssi = { divariId: this.user?.divariId, teosId: this.valittuTeos, ...this.instanceFormGroup.value };
+	lisaaInstanssi() {
+		const instanssi = { divariId: this.kayttaja?.divariId, teosId: this.valittuTeos, ...this.instanceFormGroup.value };
 		if (!instanssi.sisaanostohinta) {
 			delete instanssi.sisaanostohinta;
 		}
@@ -82,9 +81,9 @@ export class DivariBooksComponent implements OnInit {
 			alert(tarkistus.message);
 			return;
 		}
-		this.bookService.lisaaTeosInstanssi(instanssi).subscribe((success: boolean) => {
+		this.bookService.postLisaaTeosInstanssi(instanssi).subscribe((success: boolean) => {
 			if (success) {
-				this.updateBookCount(instanssi.kpl);
+				this.paivitaTeosLkm(instanssi.kpl);
 				alert('Teoksen lisäys onnistui');
 			} else {
 				alert('Teoksen lisäys epäonnistui');

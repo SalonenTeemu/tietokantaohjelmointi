@@ -33,19 +33,19 @@ export class NewBookComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.loadUtils();
+		this.lataaLuokatjaTyypit();
 	}
 
-	loadUtils() {
-		this.bookService.haeTeosLuokat().subscribe((luokat: any[]) => {
+	lataaLuokatjaTyypit() {
+		this.bookService.getTeosLuokat().subscribe((luokat: any[]) => {
 			this.luokat = luokat;
 		});
-		this.bookService.haeTeosTyypit().subscribe((tyypit: any[]) => {
+		this.bookService.getTeosTyypit().subscribe((tyypit: any[]) => {
 			this.tyypit = tyypit;
 		});
 	}
 
-	onSubmitBook() {
+	lisaaTeos() {
 		const { nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino } = this.bookFormGroup.value;
 
 		const tarkistus = tarkistaTeoksenLisäys(nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino);
@@ -53,7 +53,7 @@ export class NewBookComponent implements OnInit {
 			alert(tarkistus.message);
 			return;
 		}
-		this.bookService.lisaaTeos(this.bookFormGroup.value).subscribe((success: boolean) => {
+		this.bookService.postLisaaTeos(this.bookFormGroup.value).subscribe((success: boolean) => {
 			if (success) {
 				alert('Teoksen lisäys onnistui');
 			} else {

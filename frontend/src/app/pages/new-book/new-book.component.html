@@ -1,7 +1,7 @@
 <div class="new-book-container">
 	<div class="new-book-form">
 		<h1>Lisää uusi teos keskusdivariin</h1>
-		<form [formGroup]="bookFormGroup" (ngSubmit)="onSubmitBook()">
+		<form [formGroup]="bookFormGroup" (ngSubmit)="lisaaTeos()">
 			<div class="form-group">
 				<label for="name">Nimi:</label>
 				<input type="text" formControlName="nimi" class="form-control" id="name" placeholder="Anna teoksen nimi" required />

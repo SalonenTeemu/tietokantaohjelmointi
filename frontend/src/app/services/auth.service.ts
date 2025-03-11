@@ -9,7 +9,7 @@ import { Kayttaja } from '../models/kayttaja';
 	providedIn: 'root',
 })
 export class AuthService {
-	private loggedIn = false;
+	private kirjautunut = false;
 	private apiUrl = 'http://localhost:8041/api/auth';
 
 	constructor(
@@ -17,7 +17,7 @@ export class AuthService {
 		private http: HttpClient
 	) {}
 
-	login(email: string, salasana: string): Observable<boolean> {
+	postKirjaudu(email: string, salasana: string): Observable<boolean> {
 		const user = {
 			email,
 			salasana,
@@ -25,14 +25,14 @@ export class AuthService {
 		return this.http.post<{ success: boolean; message: Kayttaja }>(`${this.apiUrl}/kirjaudu`, user, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
-					this.loggedIn = true;
+					this.kirjautunut = true;
 					const responseBody = response.body;
 					const kayttaja = responseBody?.message;
 					if (kayttaja) {
 						this.store.dispatch(login({ user: kayttaja }));
 					} else {
 						console.error('Kayttajaa ei löytynyt');
-						this.loggedIn = false;
+						this.kirjautunut = false;
 						return false;
 					}
 					return true;
@@ -46,7 +46,7 @@ export class AuthService {
 			})
 		);
 	}
-	register(nimi: string, email: string, puhelin: string, osoite: string, salasana: string): Observable<boolean> {
+	postRekisteroidy(nimi: string, email: string, puhelin: string, osoite: string, salasana: string): Observable<boolean> {
 		const user = {
 			nimi,
 			email,
@@ -71,15 +71,15 @@ export class AuthService {
 	}
 
 	logout() {
-		this.loggedIn = false;
+		this.kirjautunut = false;
 		this.store.dispatch(logout());
 	}
 
-	isAuthenticated(): boolean {
-		return this.loggedIn || !!localStorage.getItem('user');
+	onKirjautunut(): boolean {
+		return this.kirjautunut || !!localStorage.getItem('user');
 	}
 
-	getUser(): Kayttaja | null {
+	haeKayttaja(): Kayttaja | null {
 		const user = localStorage.getItem('user');
 		if (user) {
 			return JSON.parse(user);

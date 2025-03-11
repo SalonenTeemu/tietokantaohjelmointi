@@ -11,11 +11,11 @@
 				<p>Julkaisuvuosi: {{ teos.julkaisuvuosi }}</p>
 				<p>Paino: {{ teos.paino }} g</p>
 				<p>Myynnissä olevat kappaleet: {{ teos.instanssi_lkm }}</p>
-				<button (click)="selectBook(teos.teosId)">Lisää uusi myytävä instanssi</button>
+				<button (click)="valitseTeos(teos.teosId)">Lisää uusi myytävä instanssi</button>
 			</div>
-			<div *ngIf="valittuTeos !== null" class="new-instance-form">
+			<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
 				<h2>Lisää uusi myytävä instanssi</h2>
-				<form [formGroup]="instanceFormGroup" (ngSubmit)="onSubmitInstance()">
+				<form [formGroup]="instanceFormGroup" (ngSubmit)="lisaaInstanssi()">
 					<div class="form-group">
 						<label for="price">Hinta:</label>
 						<input type="number" formControlName="hinta" class="form-control" id="price" placeholder="Anna instanssin hinta" required />

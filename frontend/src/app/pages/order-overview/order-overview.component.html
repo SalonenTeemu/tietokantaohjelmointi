@@ -2,15 +2,15 @@
 	<h2>Tilauksen yhteenveto</h2>
 
 	<ul>
-		<li *ngFor="let item of cartItems$ | async">
-			<span>{{ item.teos.nimi }} - {{ item.teosInstanssi.kunto }} - {{ item.teosInstanssi.divari }} - {{ item.teosInstanssi.hinta }} €</span>
+		<li *ngFor="let tuote of ostoskoriTuotteet$ | async">
+			<span>{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €</span>
 		</li>
 	</ul>
 
-	<h3>Tuotteet yhteensä: {{ itemTotal$ | async }} €</h3>
-	<h3>Toimituskulut: {{ shipping$ | async }} €</h3>
-	<h3>Yhteensä: {{ total$ | async | number: '1.2-2' }} €</h3>
+	<h3>Tuotteet yhteensä: {{ tuotteetYhteensa$ | async }} €</h3>
+	<h3>Toimituskulut: {{ toimituskulut$ | async }} €</h3>
+	<h3>Yhteensä: {{ yhteensa$ | async | number: '1.2-2' }} €</h3>
 
-	<button (click)="confirmOrder()">Vahvista tilaus</button>
-	<button (click)="cancelOrder()">Keskeytä tilaus</button>
+	<button (click)="vahvistaTilaus()">Vahvista tilaus</button>
+	<button (click)="peruutaTilaus()">Keskeytä tilaus</button>
 </div>

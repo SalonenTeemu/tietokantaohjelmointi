@@ -13,7 +13,7 @@ export class BookService {
 
 	constructor(private http: HttpClient) {}
 
-	haeTeokset(query: { nimi?: string; tekija?: string; tyyppi?: string; luokka?: string }): Observable<Teos[]> {
+	getTeokset(query: { nimi?: string; tekija?: string; tyyppi?: string; luokka?: string }): Observable<Teos[]> {
 		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos/hae`, { params: query }).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
@@ -23,7 +23,7 @@ export class BookService {
 		);
 	}
 
-	haeDivarinTeokset(divariId: number): Observable<any[]> {
+	getDivarinTeokset(divariId: number): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/${divariId}`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
@@ -43,7 +43,7 @@ export class BookService {
 		);
 	}
 
-	haeTeosLuokat(): Observable<any[]> {
+	getTeosLuokat(): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/luokat`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
@@ -53,7 +53,7 @@ export class BookService {
 		);
 	}
 
-	haeTeosTyypit(): Observable<any[]> {
+	getTeosTyypit(): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/tyypit`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
@@ -63,7 +63,7 @@ export class BookService {
 		);
 	}
 
-	lisaaTeos(teos: any): Observable<boolean> {
+	postLisaaTeos(teos: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos`, teos, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
@@ -78,7 +78,7 @@ export class BookService {
 		);
 	}
 
-	lisaaTeosInstanssi(instanssi: any): Observable<boolean> {
+	postLisaaTeosInstanssi(instanssi: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos/${instanssi.teosId}`, instanssi, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {

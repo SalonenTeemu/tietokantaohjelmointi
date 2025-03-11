@@ -4,7 +4,7 @@
 		<a *ngIf="(userRole$ | async) === 'admin'" routerLink="/uusi/teos">Lisää teos</a>
 		<a *ngIf="(userRole$ | async) === 'divariAdmin'" routerLink="/divari/teokset">Divarin teokset</a>
 		|
-		<a routerLink="/" (click)="logout()">Kirjaudu ulos</a>
+		<a routerLink="/" (click)="kirjauduUlos()">Kirjaudu ulos</a>
 	</ng-container>
 	<a *ngIf="(isLoggedIn$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
 </nav>

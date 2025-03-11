@@ -25,14 +25,14 @@ export class LoginComponent {
 		});
 	}
 
-	onLogin() {
+	kirjaudu() {
 		const { email, salasana } = this.loginForm.value;
 		const tarkistus = tarkistaKirjautuminen(email, salasana);
 		if (!tarkistus.success) {
 			alert(tarkistus.message);
 			return;
 		}
-		this.authService.login(email, salasana).subscribe((success: boolean) => {
+		this.authService.postKirjaudu(email, salasana).subscribe((success: boolean) => {
 			if (success) {
 				this.router.navigate(['/']);
 				alert('Kirjautuminen onnistui');

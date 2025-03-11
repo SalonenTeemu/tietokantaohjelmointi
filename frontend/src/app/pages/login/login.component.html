@@ -1,7 +1,7 @@
 <div class="login-container">
 	<h2>Kirjaudu sisään</h2>
 
-	<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+	<form [formGroup]="loginForm" (ngSubmit)="kirjaudu()">
 		<div class="form-group">
 			<label for="email">Sähköposti:</label>
 			<input type="email" formControlName="email" class="form-control" id="email" name="email" required />

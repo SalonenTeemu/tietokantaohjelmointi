@@ -28,14 +28,14 @@ export class RegisterComponent {
 		});
 	}
 
-	onRegister() {
+	rekisteroidy() {
 		const { nimi, email, puhelin, osoite, salasana } = this.registerForm.value;
 		const tarkistus = tarkistaRekisteroityminen(nimi, email, puhelin, osoite, salasana);
 		if (!tarkistus.success) {
 			alert(tarkistus.message);
 			return;
 		}
-		this.authService.register(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
+		this.authService.postRekisteroidy(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
 			if (success) {
 				alert('Rekisteröityminen onnistui');
 				this.router.navigate(['/kirjaudu']);

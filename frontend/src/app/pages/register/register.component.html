@@ -1,7 +1,7 @@
 <div class="register-container">
 	<div class="register-form">
 		<h1>Rekisteröidy</h1>
-		<form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+		<form [formGroup]="registerForm" (ngSubmit)="rekisteroidy()">
 			<div class="form-group">
 				<label for="name">Nimi:</label>
 				<input type="text" formControlName="nimi" class="form-control" id="name" placeholder="Anna nimesi" required />

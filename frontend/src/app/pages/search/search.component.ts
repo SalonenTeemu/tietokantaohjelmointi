@@ -24,21 +24,21 @@ export class SearchComponent {
 	teokset: Teos[] = [];
 	valittuTeos: Teos | null = null;
 	instanssit: TeosInstanssi[] = [];
-	errorMessage = '';
+	virheViesti = '';
 
 	constructor(
 		private bookService: BookService,
 		private store: Store
 	) {}
 
-	onSearch() {
-		this.errorMessage = ''; // Nollataan virhe ennen uutta hakua
+	haeTeoksia() {
+		this.virheViesti = ''; // Nollataan virhe ennen uutta hakua
 		if (!tarkistaHaku(this.queryNimi, this.queryTekija, this.queryLuokka, this.queryTyyppi)) {
-			this.errorMessage = 'Anna vähintään yksi hakuehto';
+			this.virheViesti = 'Anna vähintään yksi hakuehto';
 			return;
 		}
 		this.bookService
-			.haeTeokset({
+			.getTeokset({
 				nimi: this.queryNimi,
 				tekija: this.queryTekija,
 				tyyppi: this.queryTyyppi,
@@ -51,20 +51,20 @@ export class SearchComponent {
 					this.instanssit = [];
 				},
 				error: (error) => {
-					this.errorMessage = error.message;
+					this.virheViesti = error.message;
 				},
 			});
 	}
 
 	haeTeosInstanssit(teos: Teos) {
-		this.errorMessage = '';
+		this.virheViesti = '';
 		this.valittuTeos = teos;
 		this.bookService.getTeosInstanssit(teos.teosId).subscribe({
 			next: (data: TeosInstanssi[]) => {
 				this.instanssit = data;
 			},
 			error: (error) => {
-				this.errorMessage = error.message;
+				this.virheViesti = error.message;
 			},
 		});
 	}
@@ -78,7 +78,7 @@ export class SearchComponent {
 			};
 			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
 		} else {
-			this.errorMessage = 'Ei valittua teosta.';
+			this.virheViesti = 'Ei valittua teosta.';
 		}
 	}
 }

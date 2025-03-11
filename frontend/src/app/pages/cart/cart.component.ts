@@ -21,43 +21,42 @@ export class CartComponent {
 		private router: Router,
 		private orderService: OrderService
 	) {
-		this.cartItems$ = this.store.select(selectCartItems);
-		this.total$ = this.store.select(selectCartTotal);
-		this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
-		this.userId$ = this.store.select(selectUserId);
+		this.ostoskoriTuotteet$ = this.store.select(selectCartItems);
+		this.yhteensa$ = this.store.select(selectCartTotal);
+		this.kirjautunut$ = this.store.select(selectIsLoggedIn);
+		this.kayttajaId$ = this.store.select(selectUserId);
 	}
 
-	cartItems$;
-	total$;
-	isLoggedIn$;
-	userId$;
+	ostoskoriTuotteet$;
+	yhteensa$;
+	kirjautunut$;
+	kayttajaId$;
 
-	removeFromCart(id: number) {
+	poistaOstoskorista(id: number) {
 		this.store.dispatch(removeFromCart({ id }));
 	}
 
-	clearCart() {
+	tyhjennaOstoskori() {
 		this.store.dispatch(clearCart());
 	}
 
 	tilaa() {
-		combineLatest([this.cartItems$, this.userId$])
+		combineLatest([this.ostoskoriTuotteet$, this.kayttajaId$])
 			.pipe(take(1))
-			.subscribe(([cartItems, userId]) => {
-				if (!userId) {
+			.subscribe(([ostoskoriTuotteet, kayttajaId]) => {
+				if (!kayttajaId) {
 					alert('User not logged in!');
 					return;
 				}
 
-				const instanssit = cartItems.map((item) => item.teosInstanssi.teosInstanssiId);
+				const instanssit = ostoskoriTuotteet.map((item) => item.teosInstanssi.teosInstanssiId);
 				const tilaus = {
-					kayttajaId: userId,
+					kayttajaId,
 					instanssit,
 				};
 
-				this.orderService.luoTilaus(tilaus).subscribe((response) => {
+				this.orderService.postLuoTilaus(tilaus).subscribe((response) => {
 					if (response) {
-						//this.clearCart();
 						this.router.navigate(['/tilaus']);
 					} else {
 						alert('Tilauksen luonti epäonnistui');
