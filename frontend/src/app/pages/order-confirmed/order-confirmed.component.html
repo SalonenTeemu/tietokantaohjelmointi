@@ -1,16 +1,20 @@
 <div class="order-confirmed-container">
 	<h2>Kiitos tilauksestasi!</h2>
 
-	<ul>
-		<li *ngFor="let tuote of tuotteet">
+	<ul class="order-items-list">
+		<li *ngFor="let tuote of tuotteet" class="order-item">
 			<span
 				>{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €</span
 			>
 		</li>
 	</ul>
 
-	<h3>Toimituskulut: {{ toimituskulut }} €</h3>
-	<h3>Yhteensä: {{ yhteensa | number: '1.2-2' }} €</h3>
+	<div class="order-summary">
+		<h3>Toimituskulut: {{ toimituskulut }} €</h3>
+		<h3>Yhteensä: {{ yhteensa | number: '1.2-2' }} €</h3>
+	</div>
 
-	<button (click)="siirryEtusivulle()">Palaa etusivulle</button>
+	<div class="order-actions">
+		<button (click)="siirryEtusivulle()" class="btn btn-primary">Palaa etusivulle</button>
+	</div>
 </div>

@@ -1,7 +1,8 @@
 <div class="register-container">
 	<div class="register-form">
 		<h1>Rekisteröidy</h1>
-		<form [formGroup]="registerForm" (ngSubmit)="rekisteroidy()">
+
+		<form [formGroup]="registerForm" (ngSubmit)="rekisteroidy()" class="form-content">
 			<div class="form-group">
 				<label for="name">Nimi:</label>
 				<input type="text" formControlName="nimi" class="form-control" id="name" placeholder="Anna nimesi" required />
@@ -13,7 +14,7 @@
 				<input type="tel" formControlName="puhelin" class="form-control" id="phone" placeholder="Anna puhelinnumerosi" required />
 
 				<label for="address">Osoite:</label>
-				<input type="text" formControlName="osoite" class="form-control" id="address" placeholder="Anna osoiteesi" required />
+				<input type="text" formControlName="osoite" class="form-control" id="address" placeholder="Anna osoitteesi" required />
 
 				<label for="password">Salasana:</label>
 				<input type="password" formControlName="salasana" class="form-control" id="password" placeholder="Anna salasana" required />
@@ -21,6 +22,7 @@
 				<button type="submit" class="btn btn-primary">Rekisteröidy</button>
 			</div>
 		</form>
-		<a routerLink="/kirjaudu">Onko sinulla jo käyttäjä? Kirjaudu</a>
+
+		<p class="login-link">Onko sinulla jo käyttäjä? <a routerLink="/kirjaudu">Kirjaudu</a></p>
 	</div>
 </div>

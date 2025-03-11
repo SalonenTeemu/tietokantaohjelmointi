@@ -1,39 +1,50 @@
 <div class="search-container">
-	<h2>Hae teoksia</h2>
-
-	<p>Voit hakea kaikki teokset jättämällä kaikki kentät tyhjiksi tai hakea tarkemmin täyttämällä haluamasi kentät.</p>
-
-	<label for="nimi">Teoksen nimi</label>
-	<input id="nimi" type="text" [(ngModel)]="queryNimi" placeholder="Teoksen nimi" />
-	<label for="tekija">Tekijä</label>
-	<input id="tekija" type="text" [(ngModel)]="queryTekija" placeholder="Tekijä" />
-	<label for="tyyppi">Tyyppi</label>
-	<select id="tyyppi" [(ngModel)]="queryTyyppi">
-		<option value="">-- Valitse tyyppi --</option>
-		<option *ngFor="let tyyppi of tyypit$ | async" [value]="tyyppi.nimi">{{ tyyppi.nimi }}</option>
-	</select>
-	<label for="luokka">Luokka</label>
-	<select id="luokka" [(ngModel)]="queryLuokka">
-		<option value="">-- Valitse luokka --</option>
-		<option *ngFor="let luokka of luokat$ | async" [value]="luokka.nimi">{{ luokka.nimi }}</option>
-	</select>
-
-	<button (click)="haeTeoksia()">Hae</button>
-
-	<ul *ngIf="teokset.length > 0">
-		<li *ngFor="let teos of teokset" tabindex="0" (keydown.enter)="haeTeosInstanssit(teos)" (click)="haeTeosInstanssit(teos)">
-			{{ teos.nimi }} - {{ teos.tekija }} - {{ teos.julkaisuvuosi }} - ({{ teos.tyyppi }}, {{ teos.luokka }})
-		</li>
-	</ul>
-
-	<div *ngIf="valittuTeos">
-		<h3>Instanssit: {{ valittuTeos.nimi }} ({{ instanssit.length }} kpl)</h3>
-
-		<ul *ngIf="instanssit.length > 0">
-			<li *ngFor="let instanssi of instanssit">
-				Hinta: {{ instanssi.hinta }}€, Kunto: {{ instanssi.kunto || 'Ei tietoa' }}
-				<button (click)="lisaaOstoskoriin(instanssi)">Lisää ostoskoriin</button>
+	<div class="search-form">
+		<h2>Hae teoksia</h2>
+		<p>Voit hakea kaikki teokset jättämällä kaikki kentät tyhjiksi tai hakea tarkemmin täyttämällä haluamasi kentät.</p>
+		<label for="nimi">Teoksen nimi</label>
+		<input id="nimi" type="text" [(ngModel)]="queryNimi" placeholder="Teoksen nimi" />
+		<label for="tekija">Tekijä</label>
+		<input id="tekija" type="text" [(ngModel)]="queryTekija" placeholder="Tekijä" />
+		<label for="tyyppi">Tyyppi</label>
+		<select id="tyyppi" [(ngModel)]="queryTyyppi">
+			<option value="">-- Valitse tyyppi --</option>
+			<option *ngFor="let tyyppi of tyypit$ | async" [value]="tyyppi.nimi">{{ tyyppi.nimi }}</option>
+		</select>
+		<label for="luokka">Luokka</label>
+		<select id="luokka" [(ngModel)]="queryLuokka">
+			<option value="">-- Valitse luokka --</option>
+			<option *ngFor="let luokka of luokat$ | async" [value]="luokka.nimi">{{ luokka.nimi }}</option>
+		</select>
+		<button (click)="haeTeoksia()" class="btn btn-primary">Hae</button>
+	</div>
+	<div class="search-results-container">
+		<ul *ngIf="teokset.length > 0" class="search-results">
+			<li
+				*ngFor="let teos of teokset"
+				class="search-result-item"
+				tabindex="0"
+				(keydown.enter)="haeTeosInstanssit(teos)"
+				(click)="haeTeosInstanssit(teos)"
+			>
+				<div class="search-result-info">
+					<h3>{{ teos.nimi }}</h3>
+					<p>{{ teos.tekija }} - {{ teos.julkaisuvuosi }}</p>
+					<p class="type-class">{{ teos.tyyppi }}, {{ teos.luokka }}</p>
+				</div>
+				<div *ngIf="valittuTeos && valittuTeos.teosId === teos.teosId" class="instanssit-container">
+					<h4>Instanssit: {{ valittuTeos.nimi }} ({{ instanssit.length }} kpl)</h4>
+					<ul *ngIf="instanssit.length > 0" class="instanssit-list">
+						<li *ngFor="let instanssi of instanssit" class="instanssi-item">
+							<p>Hinta: {{ instanssi.hinta }}€</p>
+							<p>Kunto: {{ instanssi.kunto || 'Ei tietoa' }}</p>
+							<button (click)="lisaaOstoskoriin(instanssi)" class="btn btn-success">Lisää ostoskoriin</button>
+						</li>
+					</ul>
+					<p *ngIf="instanssit.length === 0" class="no-results">Ei tuloksia</p>
+				</div>
 			</li>
 		</ul>
+		<p *ngIf="teokset.length === 0" class="no-results">Ei tuloksia</p>
 	</div>
 </div>

@@ -1,16 +1,33 @@
 <div class="login-container">
 	<h2>Kirjaudu sisään</h2>
 
-	<form [formGroup]="loginForm" (ngSubmit)="kirjaudu()">
+	<form [formGroup]="loginForm" (ngSubmit)="kirjaudu()" class="login-form">
 		<div class="form-group">
 			<label for="email">Sähköposti:</label>
-			<input type="email" formControlName="email" class="form-control" id="email" name="email" required />
+			<input
+				type="email"
+				formControlName="email"
+				class="form-control"
+				id="email"
+				name="email"
+				placeholder="Syötä sähköpostiosoitteesi"
+				required
+			/>
 
 			<label for="password">Salasana:</label>
-			<input type="password" formControlName="salasana" class="form-control" id="password" name="password" required />
+			<input
+				type="password"
+				formControlName="salasana"
+				class="form-control"
+				id="password"
+				name="password"
+				placeholder="Syötä salasanasi"
+				required
+			/>
 
-			<button type="submit">Kirjaudu</button>
+			<button type="submit" class="btn btn-primary">Kirjaudu</button>
 		</div>
 	</form>
-	<a routerLink="/rekisteröidy">Rekisteröidy</a>
+
+	<p class="register-link">Ei vielä tiliä? <a routerLink="/rekisteröidy">Rekisteröidy</a></p>
 </div>

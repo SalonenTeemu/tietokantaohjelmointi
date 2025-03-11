@@ -65,10 +65,6 @@ export class SearchComponent {
 					this.teokset = data;
 					this.valittuTeos = null;
 					this.instanssit = [];
-
-					if (this.teokset.length === 0) {
-						this.notificationService.newNotification('error', 'Ei hakutuloksia');
-					}
 				},
 				error: (error) => {
 					this.notificationService.newNotification('error', error.message);
@@ -77,6 +73,11 @@ export class SearchComponent {
 	}
 
 	haeTeosInstanssit(teos: Teos) {
+		if (this.valittuTeos && this.valittuTeos.teosId === teos.teosId) {
+			this.valittuTeos = null;
+			this.instanssit = [];
+			return;
+		}
 		this.valittuTeos = teos;
 		this.bookService.getTeosInstanssit(teos.teosId).subscribe({
 			next: (data: TeosInstanssi[]) => {
