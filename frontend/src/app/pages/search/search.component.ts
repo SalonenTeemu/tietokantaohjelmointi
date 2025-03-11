@@ -9,6 +9,7 @@ import { BookService } from '../../services/book.service';
 import { tarkistaHaku } from '../../utils/validate';
 import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
 import { Observable } from 'rxjs';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-search',
@@ -28,19 +29,17 @@ export class SearchComponent {
 	teokset: Teos[] = [];
 	valittuTeos: Teos | null = null;
 	instanssit: TeosInstanssi[] = [];
-	virheViesti = '';
 
 	constructor(
 		private bookService: BookService,
-		private store: Store
+		private store: Store,
+		private notificationService: NotificationService
 	) {
 		this.luokat$ = store.select(selectLuokat);
 		this.tyypit$ = store.select(selectTyypit);
 	}
 
 	haeTeoksia() {
-		this.virheViesti = ''; // Nollataan virhe ennen uutta hakua
-		// Jos haku on tyhjä, hae kaikki teokset
 		if (!tarkistaHaku(this.queryNimi, this.queryTekija, this.queryLuokka, this.queryTyyppi)) {
 			this.bookService.getKaikkiTeokset().subscribe({
 				next: (data: Teos[]) => {
@@ -49,7 +48,7 @@ export class SearchComponent {
 					this.instanssit = [];
 				},
 				error: (error) => {
-					this.virheViesti = error.message;
+					this.notificationService.newNotification('error', error.message);
 				},
 			});
 			return;
@@ -66,22 +65,25 @@ export class SearchComponent {
 					this.teokset = data;
 					this.valittuTeos = null;
 					this.instanssit = [];
+
+					if (this.teokset.length === 0) {
+						this.notificationService.newNotification('error', 'Ei hakutuloksia');
+					}
 				},
 				error: (error) => {
-					this.virheViesti = error.message;
+					this.notificationService.newNotification('error', error.message);
 				},
 			});
 	}
 
 	haeTeosInstanssit(teos: Teos) {
-		this.virheViesti = '';
 		this.valittuTeos = teos;
 		this.bookService.getTeosInstanssit(teos.teosId).subscribe({
 			next: (data: TeosInstanssi[]) => {
 				this.instanssit = data;
 			},
 			error: (error) => {
-				this.virheViesti = error.message;
+				this.notificationService.newNotification('error', error.message);
 			},
 		});
 	}
@@ -94,8 +96,9 @@ export class SearchComponent {
 				teosInstanssi: instanssi,
 			};
 			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
+			this.notificationService.newNotification('success', `Tuote "${ostoskoriTuote.teos.nimi}" lisätty ostoskoriin`);
 		} else {
-			this.virheViesti = 'Ei valittua teosta.';
+			this.notificationService.newNotification('error', 'Ei valittua teosta');
 		}
 	}
 }

@@ -8,5 +8,5 @@
 	</ng-container>
 	<a *ngIf="(kirjautunut$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
 </nav>
-
+<app-notification></app-notification>
 <router-outlet></router-outlet>

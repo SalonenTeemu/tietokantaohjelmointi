@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { tarkistaRekisteroityminen } from '../../utils/validate';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-register',
@@ -17,7 +18,8 @@ export class RegisterComponent {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private notificationService: NotificationService
 	) {
 		this.registerForm = this.fb.group({
 			nimi: [''],
@@ -32,15 +34,15 @@ export class RegisterComponent {
 		const { nimi, email, puhelin, osoite, salasana } = this.registerForm.value;
 		const tarkistus = tarkistaRekisteroityminen(nimi, email, puhelin, osoite, salasana);
 		if (!tarkistus.success) {
-			alert(tarkistus.message);
+			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
 		this.authService.postRekisteroidy(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
 			if (success) {
-				alert('Rekisteröityminen onnistui');
+				this.notificationService.newNotification('success', 'Rekisteröityminen onnistui');
 				this.router.navigate(['/kirjaudu']);
 			} else {
-				alert('Rekisteröityminen epäonnistui');
+				this.notificationService.newNotification('error', 'Rekisteröityminen epäonnistui');
 			}
 		});
 	}

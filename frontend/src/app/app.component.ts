@@ -7,13 +7,15 @@ import { AuthService } from './services/auth.service';
 import { BookService } from './services/book.service';
 import { selectIsLoggedIn, selectUserRole } from './store/selectors/auth.selector';
 import { addLuokat, addTyypit } from './store/actions/category.actions';
+import { NotificationService } from './services/notification.service';
+import { NotificationComponent } from './notification.component';
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
-	imports: [RouterModule, CommonModule],
+	imports: [RouterModule, CommonModule, NotificationComponent],
 })
 export class AppComponent implements OnInit {
 	kirjautunut$: Observable<boolean>;
@@ -22,7 +24,8 @@ export class AppComponent implements OnInit {
 	constructor(
 		private store: Store,
 		private authService: AuthService,
-		private bookService: BookService
+		private bookService: BookService,
+		private notificationService: NotificationService
 	) {
 		this.kirjautunut$ = this.store.select(selectIsLoggedIn);
 		this.rooli$ = this.store.select(selectUserRole) || undefined;
@@ -39,6 +42,6 @@ export class AppComponent implements OnInit {
 
 	kirjauduUlos() {
 		this.authService.logout();
-		alert('Olet kirjautunut ulos');
+		this.notificationService.newNotification('success', 'Kirjauduttu ulos');
 	}
 }

@@ -7,6 +7,7 @@ import { BookService } from '../../services/book.service';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-new-book',
@@ -23,7 +24,8 @@ export class NewBookComponent {
 	constructor(
 		private fb: FormBuilder,
 		private bookService: BookService,
-		private store: Store
+		private store: Store,
+		private notificationService: NotificationService
 	) {
 		this.bookFormGroup = this.fb.group({
 			nimi: [''],
@@ -42,15 +44,15 @@ export class NewBookComponent {
 		const { nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino } = this.bookFormGroup.value;
 
 		const tarkistus = tarkistaTeoksenLisäys(nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino);
-		if (!tarkistus.success) {
-			alert(tarkistus.message);
+		if (!tarkistus.success && tarkistus.message) {
+			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
 		this.bookService.postLisaaTeos(this.bookFormGroup.value).subscribe((success: boolean) => {
 			if (success) {
-				alert('Teoksen lisäys onnistui');
+				this.notificationService.newNotification('success', 'Teoksen lisäys onnistui');
 			} else {
-				alert('Teoksen lisäys epäonnistui');
+				this.notificationService.newNotification('error', 'Teoksen lisäys epäonnistui');
 			}
 		});
 	}

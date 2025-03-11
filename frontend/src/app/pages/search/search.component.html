@@ -20,19 +20,14 @@
 
 	<button (click)="haeTeoksia()">Hae</button>
 
-	<p *ngIf="virheViesti" class="error">{{ virheViesti }}</p>
-
 	<ul *ngIf="teokset.length > 0">
 		<li *ngFor="let teos of teokset" tabindex="0" (keydown.enter)="haeTeosInstanssit(teos)" (click)="haeTeosInstanssit(teos)">
 			{{ teos.nimi }} - {{ teos.tekija }} - {{ teos.julkaisuvuosi }} - ({{ teos.tyyppi }}, {{ teos.luokka }})
 		</li>
 	</ul>
-	<p *ngIf="teokset.length === 0 && !virheViesti">Ei tuloksia</p>
 
 	<div *ngIf="valittuTeos">
 		<h3>Instanssit: {{ valittuTeos.nimi }} ({{ instanssit.length }} kpl)</h3>
-
-		<p *ngIf="virheViesti" class="error">{{ virheViesti }}</p>
 
 		<ul *ngIf="instanssit.length > 0">
 			<li *ngFor="let instanssi of instanssit">
@@ -40,6 +35,5 @@
 				<button (click)="lisaaOstoskoriin(instanssi)">Lisää ostoskoriin</button>
 			</li>
 		</ul>
-		<p *ngIf="instanssit.length === 0 && !virheViesti">Ei tuloksia</p>
 	</div>
 </div>

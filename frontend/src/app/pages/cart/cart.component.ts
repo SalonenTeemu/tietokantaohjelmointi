@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { combineLatest, Observable, take } from 'rxjs';
 import { OstoskoriTuote } from '../../models/ostoskoriTuote';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-cart',
@@ -25,7 +26,8 @@ export class CartComponent {
 	constructor(
 		private store: Store,
 		private router: Router,
-		private orderService: OrderService
+		private orderService: OrderService,
+		private notificationService: NotificationService
 	) {
 		this.ostoskoriTuotteet$ = this.store.select(selectCartItems);
 		this.yhteensa$ = this.store.select(selectCartTotal);
@@ -35,10 +37,12 @@ export class CartComponent {
 
 	poistaOstoskorista(id: number) {
 		this.store.dispatch(removeFromCart({ id }));
+		this.notificationService.newNotification('success', 'Tuote poistettu ostoskorista');
 	}
 
 	tyhjennaOstoskori() {
 		this.store.dispatch(clearCart());
+		this.notificationService.newNotification('success', 'Ostoskori tyhjennetty');
 	}
 
 	tilaa() {
@@ -46,7 +50,7 @@ export class CartComponent {
 			.pipe(take(1))
 			.subscribe(([ostoskoriTuotteet, kayttajaId]) => {
 				if (!kayttajaId) {
-					alert('User not logged in!');
+					this.notificationService.newNotification('error', 'Käyttäjä ei ole kirjautunut sisään');
 					return;
 				}
 
@@ -60,7 +64,7 @@ export class CartComponent {
 					if (response) {
 						this.router.navigate(['/tilaus']);
 					} else {
-						alert('Tilauksen luonti epäonnistui');
+						this.notificationService.newNotification('error', 'Tilauksen luonti epäonnistui');
 					}
 				});
 			});

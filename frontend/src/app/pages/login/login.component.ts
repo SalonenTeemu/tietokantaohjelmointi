@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { tarkistaKirjautuminen } from '../../utils/validate';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent {
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private notificationService: NotificationService
 	) {
 		this.loginForm = this.fb.group({
 			email: [''],
@@ -29,15 +31,15 @@ export class LoginComponent {
 		const { email, salasana } = this.loginForm.value;
 		const tarkistus = tarkistaKirjautuminen(email, salasana);
 		if (!tarkistus.success) {
-			alert(tarkistus.message);
+			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
 		this.authService.postKirjaudu(email, salasana).subscribe((success: boolean) => {
 			if (success) {
 				this.router.navigate(['/']);
-				alert('Kirjautuminen onnistui');
+				this.notificationService.newNotification('success', 'Kirjautuminen onnistui');
 			} else {
-				alert('Virheellinen sähköposti tai salasana');
+				this.notificationService.newNotification('error', 'Virheellinen sähköposti tai salasana');
 			}
 		});
 	}

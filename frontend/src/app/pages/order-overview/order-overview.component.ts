@@ -8,6 +8,7 @@ import { map, take } from 'rxjs/operators';
 import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-order-overview',
@@ -27,7 +28,8 @@ export class OrderOverviewComponent {
 
 	constructor(
 		private router: Router,
-		private orderService: OrderService
+		private orderService: OrderService,
+		private notificationService: NotificationService
 	) {
 		this.ostoskoriTuotteet$ = this.store.select(selectCartItems);
 		this.toimituskulut$ = this.store.select(selectCartShipping);
@@ -43,7 +45,7 @@ export class OrderOverviewComponent {
 			if (tilausId !== null) {
 				this.orderService.postVahvistaTilaus(tilausId).subscribe((success: boolean) => {
 					if (success) {
-						alert('Tilaus vahvistettu');
+						this.notificationService.newNotification('success', 'Tilaus vahvistettu');
 						combineLatest([this.ostoskoriTuotteet$, this.toimituskulut$, this.yhteensa$])
 							.pipe(take(1))
 							.subscribe(([ostoskoriTuotteet, toimituskulut, yhteensa]) => {
@@ -51,11 +53,11 @@ export class OrderOverviewComponent {
 								this.router.navigate(['/tilaus/vahvistettu'], { state: { tuotteet: ostoskoriTuotteet, toimituskulut, yhteensa } });
 							});
 					} else {
-						alert('Tilauksen vahvistaminen epäonnistui');
+						this.notificationService.newNotification('error', 'Tilauksen vahvistaminen epäonnistui');
 					}
 				});
 			} else {
-				alert('Tilauksen luonti epäonnistui');
+				this.notificationService.newNotification('error', 'Tilauksen luonti epäonnistui');
 			}
 		});
 	}
@@ -66,13 +68,13 @@ export class OrderOverviewComponent {
 				this.orderService.postPeruutaTilaus(tilausId).subscribe((success: boolean) => {
 					if (success) {
 						this.store.dispatch(cancelOrder());
-						alert('Tilaus peruttu');
+						this.notificationService.newNotification('success', 'Tilaus peruttu');
 					} else {
-						alert('Tilauksen peruminen epäonnistui');
+						this.notificationService.newNotification('error', 'Tilauksen peruminen epäonnistui');
 					}
 				});
 			} else {
-				alert('Tilauksen luonti epäonnistui');
+				this.notificationService.newNotification('error', 'Tilauksen peruminen epäonnistui');
 			}
 		});
 

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Kayttaja } from '../../models/kayttaja';
 import { tarkistaInstanssiLisäys } from '../../utils/validate';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
 	selector: 'app-divari-books',
@@ -21,7 +22,8 @@ export class DivariBooksComponent implements OnInit {
 	constructor(
 		private bookService: BookService,
 		private fb: FormBuilder,
-		private authService: AuthService
+		private authService: AuthService,
+		private notificationService: NotificationService
 	) {
 		this.kayttaja = this.authService.haeKayttaja();
 		this.instanceFormGroup = this.fb.group({
@@ -49,14 +51,14 @@ export class DivariBooksComponent implements OnInit {
 		if (this.kayttaja && this.kayttaja.divariId !== undefined) {
 			const divariIdNum = Number(this.kayttaja.divariId);
 			if (isNaN(divariIdNum)) {
-				console.error('Invalid divariId');
+				this.notificationService.newNotification('error', 'Virhe käyttäjän divariId:ssä');
 				return;
 			}
 			this.bookService.getDivarinTeokset(divariIdNum).subscribe((teokset: any[]) => {
 				this.teokset = teokset;
 			});
 		} else {
-			console.error('Käyttäjä ei divari admin tai ei kirjautunut');
+			this.notificationService.newNotification('error', 'Käyttäjä ei divari admin tai ei kirjautunut');
 		}
 	}
 
@@ -77,16 +79,16 @@ export class DivariBooksComponent implements OnInit {
 			delete instanssi.kunto;
 		}
 		const tarkistus = tarkistaInstanssiLisäys(instanssi);
-		if (!tarkistus.success) {
-			alert(tarkistus.message);
+		if (!tarkistus.success && tarkistus.message) {
+			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
 		this.bookService.postLisaaTeosInstanssi(instanssi).subscribe((success: boolean) => {
 			if (success) {
 				this.paivitaTeosLkm(instanssi.kpl);
-				alert('Teoksen lisäys onnistui');
+				this.notificationService.newNotification('success', 'Teoksen lisäys onnistui');
 			} else {
-				alert('Teoksen lisäys epäonnistui');
+				this.notificationService.newNotification('error', 'Teoksen lisäys epäonnistui');
 			}
 		});
 	}
