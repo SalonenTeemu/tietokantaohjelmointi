@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { tarkistaTeoksenLisäys } from '../../utils/validate';
 import { BookService } from '../../services/book.service';
-import { Luokka, Tyyppi } from '../../models/luokkaTyyppi';
 
 @Component({
 	selector: 'app-new-book',
@@ -15,8 +14,8 @@ import { Luokka, Tyyppi } from '../../models/luokkaTyyppi';
 })
 export class NewBookComponent implements OnInit {
 	bookFormGroup: FormGroup;
-	luokat: Luokka[] = [];
-	tyypit: Tyyppi[] = [];
+	luokat: any[] = [];
+	tyypit: any[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -38,10 +37,10 @@ export class NewBookComponent implements OnInit {
 	}
 
 	loadUtils() {
-		this.bookService.haeTeosLuokat().subscribe((luokat: Luokka[]) => {
+		this.bookService.haeTeosLuokat().subscribe((luokat: any[]) => {
 			this.luokat = luokat;
 		});
-		this.bookService.haeTeosTyypit().subscribe((tyypit: Tyyppi[]) => {
+		this.bookService.haeTeosTyypit().subscribe((tyypit: any[]) => {
 			this.tyypit = tyypit;
 		});
 	}

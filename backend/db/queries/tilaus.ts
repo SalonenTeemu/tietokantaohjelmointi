@@ -1,6 +1,5 @@
 import db from '../knex';
 import { Knex } from 'knex';
-import { TilausTiedot } from '../../utils/types';
 
 // Hae tilaus
 export const haeTilaus = async (tilausId: number) => {
@@ -9,7 +8,7 @@ export const haeTilaus = async (tilausId: number) => {
 };
 
 // Lisää uusi tilaus
-export const lisaaTilaus = async (tilausTiedot: TilausTiedot, trx: Knex.Transaction) => {
+export const lisaaTilaus = async (tilausTiedot: any, trx: Knex.Transaction) => {
 	const formattedTilausTiedot = {
 		...tilausTiedot,
 		kokonaishinta: tilausTiedot.kokonaishinta,
@@ -18,7 +17,7 @@ export const lisaaTilaus = async (tilausTiedot: TilausTiedot, trx: Knex.Transact
 
 	const tilaus = await db('keskusdivari.Tilaus')
 		.insert(formattedTilausTiedot)
-		.returning('*')
+		.returning(['tilausId', 'postikulut'])
 		.transacting(trx)
 		.then((rows) => rows[0]);
 	return tilaus;

@@ -10,7 +10,7 @@ export async function laskePostikulut(paino: number) {
 		// Käy läpi painoluokat pienimmästä suurimpaan
 		for (const luokka of painoluokat) {
 			if (painoJaljella <= luokka.paino) {
-				postikulut += luokka.hinta;
+				postikulut += parseFloat(luokka.hinta);
 				painoJaljella = 0; // Koko tilaus käsitelty
 				break;
 			}

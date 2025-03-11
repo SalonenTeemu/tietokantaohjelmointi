@@ -1,3 +1,4 @@
+// Esittää käyttäjän tietoja
 export interface Kayttaja {
 	kayttajaId: number;
 	nimi: string;

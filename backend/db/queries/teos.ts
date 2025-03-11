@@ -1,5 +1,4 @@
 import db from '../knex';
-import { Haku, Teos } from '../../utils/types';
 
 // Hae kaikki teokset
 export const haeTeokset = async () => {
@@ -22,7 +21,7 @@ export const haeLuokanMyynnissaOlevatTeokset = async () => {
 };
 
 // R4
-export const haeTeoksetHakusanalla = async (hakusanat: Haku) => {
+export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 	const query = db('keskusdivari.Teos as t')
 		.select(
 			't.teosId',
@@ -92,7 +91,7 @@ export const haeTeosISBNlla = async (isbn: string) => {
 };
 
 // Hae teokset, jotka ovat myynnissä tietyssä divarissa
-export const haeDivarinMyymatTeokset = async (divariId: string) => {
+export const haeDivarinMyymatTeokset = async (divariId: number) => {
 	const teokset = await db('keskusdivari.TeosInstanssi as ti')
 		.select(
 			't.teosId',
@@ -124,7 +123,7 @@ export const haeTeoksenInstanssit = async (teosId: string) => {
 };
 
 // Lisää uusi teos
-export const lisaaUusiTeos = async (teos: Teos) => {
+export const lisaaUusiTeos = async (teos: any) => {
 	await db('keskusdivari.Teos').insert(teos);
 };
 

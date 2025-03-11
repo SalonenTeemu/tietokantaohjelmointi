@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../services/book.service';
-import { DivarinTeos } from '../../models/teos';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -15,7 +14,7 @@ import { tarkistaInstanssiLisäys } from '../../utils/validate';
 })
 export class DivariBooksComponent implements OnInit {
 	instanceFormGroup: FormGroup;
-	teokset: DivarinTeos[] = [];
+	teokset: any[] = [];
 	valittuTeos: string | null = null;
 	user: Kayttaja | null;
 
@@ -49,7 +48,12 @@ export class DivariBooksComponent implements OnInit {
 
 	loadBooks() {
 		if (this.user && this.user.divariId !== undefined) {
-			this.bookService.haeDivarinTeokset(this.user.divariId).subscribe((teokset: DivarinTeos[]) => {
+			const divariIdNum = Number(this.user.divariId);
+			if (isNaN(divariIdNum)) {
+				console.error('Invalid divariId');
+				return;
+			}
+			this.bookService.haeDivarinTeokset(divariIdNum).subscribe((teokset: any[]) => {
 				this.teokset = teokset;
 			});
 		} else {
@@ -67,6 +71,12 @@ export class DivariBooksComponent implements OnInit {
 
 	onSubmitInstance() {
 		const instanssi = { divariId: this.user?.divariId, teosId: this.valittuTeos, ...this.instanceFormGroup.value };
+		if (!instanssi.sisaanostohinta) {
+			delete instanssi.sisaanostohinta;
+		}
+		if (!instanssi.kunto) {
+			delete instanssi.kunto;
+		}
 		const tarkistus = tarkistaInstanssiLisäys(instanssi);
 		if (!tarkistus.success) {
 			alert(tarkistus.message);

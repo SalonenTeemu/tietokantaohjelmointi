@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Teos, UusiTeos, DivarinTeos } from '../models/teos';
+import { Teos } from '../models/teos';
 import { TeosInstanssi } from '../models/teosInstanssi';
-import { Luokka, Tyyppi } from '../models/luokkaTyyppi';
 
 @Injectable({
 	providedIn: 'root',
@@ -24,8 +23,8 @@ export class BookService {
 		);
 	}
 
-	haeDivarinTeokset(divariId: number): Observable<DivarinTeos[]> {
-		return this.http.get<{ message: DivarinTeos[] }>(`${this.apiUrl}/teos/${divariId}`).pipe(
+	haeDivarinTeokset(divariId: number): Observable<any[]> {
+		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/${divariId}`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
 				console.error('Divarin teosten haku epäonnistui:', error);
@@ -44,8 +43,8 @@ export class BookService {
 		);
 	}
 
-	haeTeosLuokat(): Observable<Luokka[]> {
-		return this.http.get<{ message: Luokka[] }>(`${this.apiUrl}/teos/luokat`).pipe(
+	haeTeosLuokat(): Observable<any[]> {
+		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/luokat`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
 				console.error('Luokkien haku epäonnistui:', error);
@@ -54,8 +53,8 @@ export class BookService {
 		);
 	}
 
-	haeTeosTyypit(): Observable<Tyyppi[]> {
-		return this.http.get<{ message: Tyyppi[] }>(`${this.apiUrl}/teos/tyypit`).pipe(
+	haeTeosTyypit(): Observable<any[]> {
+		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/tyypit`).pipe(
 			map((response) => response.message),
 			catchError((error: unknown) => {
 				console.error('Typpien haku epäonnistui:', error);
@@ -64,7 +63,7 @@ export class BookService {
 		);
 	}
 
-	lisaaTeos(teos: UusiTeos): Observable<boolean> {
+	lisaaTeos(teos: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos`, teos, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
@@ -79,7 +78,7 @@ export class BookService {
 		);
 	}
 
-	lisaaTeosInstanssi(instanssi: DivarinTeos): Observable<boolean> {
+	lisaaTeosInstanssi(instanssi: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos/${instanssi.teosId}`, instanssi, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {

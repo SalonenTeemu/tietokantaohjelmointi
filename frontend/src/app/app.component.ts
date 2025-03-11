@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from './services/auth.service';
-import { selectIsLoggedIn } from './store/selectors/auth.selector';
+import { selectIsLoggedIn, selectUserRole } from './store/selectors/auth.selector';
 
 @Component({
 	selector: 'app-root',
@@ -15,12 +15,14 @@ import { selectIsLoggedIn } from './store/selectors/auth.selector';
 })
 export class AppComponent {
 	isLoggedIn$: Observable<boolean>;
+	userRole$: Observable<string | undefined>;
 
 	constructor(
 		private store: Store,
 		private authService: AuthService
 	) {
 		this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
+		this.userRole$ = this.store.select(selectUserRole) || undefined;
 	}
 
 	logout() {

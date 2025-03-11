@@ -1,5 +1,3 @@
-import { Haku, LuoTeosInstanssi, Teos, TilausValidointi } from './types';
-
 // Tarkista sähköpostin oikeellisuus
 function tarkistaEmail(email: string): boolean {
 	const re = /\S+@\S+\.\S+/;
@@ -82,7 +80,7 @@ export function tarkistaJulkaisuvuosi(julkaisuvuosi: number): boolean {
 }
 
 // Tarkista teoksen luomisen oikeellisuus
-export function tarkistaLuoTeos(teos: Teos): { success: boolean; message?: string } {
+export function tarkistaLuoTeos(teos: any): { success: boolean; message?: string } {
 	if (!teos.nimi || !teos.tekija || !teos.julkaisuvuosi || !teos.paino || !teos.tyyppiId || !teos.luokkaId) {
 		return { success: false, message: 'Kaikki tiedot vaaditaan.' };
 	}
@@ -108,7 +106,7 @@ export function tarkistaLuoTeos(teos: Teos): { success: boolean; message?: strin
 }
 
 // Tarkista teoshaun oikeellisuus
-export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: string; hakusanat?: Haku } {
+export function tarkistaTeosHaku(haku: any): { success: boolean; message?: string; hakusanat?: any } {
 	if (!haku.nimi && !haku.tekija && !haku.luokka && !haku.tyyppi) {
 		return { success: false, message: 'Ei annettuja hakusanoja.' };
 	}
@@ -116,7 +114,7 @@ export function tarkistaTeosHaku(haku: Haku): { success: boolean; message?: stri
 }
 
 // Tarkista teosInstanssin luomisen oikeellisuus
-export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi, kpl: number): { success: boolean; message?: string } => {
+export const tarkistaLuoTeosInstanssi = (instanssi: any, kpl: number): { success: boolean; message?: string } => {
 	if (instanssi.hinta == null || instanssi.divariId == null || kpl == null) {
 		return { success: false, message: 'Hinta, kappalemäärä ja divariId vaaditaan.' };
 	}
@@ -139,8 +137,9 @@ export const tarkistaLuoTeosInstanssi = (instanssi: LuoTeosInstanssi, kpl: numbe
 };
 
 // Tarkista tilauksen luomisen oikeellisuus
-export function tarkistaLuoTilaus(tilaus: TilausValidointi): { success: boolean; message?: string } {
+export function tarkistaLuoTilaus(tilaus: any): { success: boolean; message?: string } {
 	if (!tilaus.kayttajaId) return { success: false, message: 'KayttajaId puuttuu.' };
-	if (!tilaus.instanssit || tilaus.instanssit.length === 0) return { success: false, message: 'Tilauksessa ei ole instansseja.' };
+	if (!tilaus.instanssit || !Array.isArray(tilaus.instanssit) || tilaus.instanssit.length === 0)
+		return { success: false, message: 'Tilauksessa ei ole instansseja.' };
 	return { success: true };
 }

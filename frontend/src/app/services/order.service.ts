@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { TilausVastaus } from '../utils/types';
 import { setOrder } from '../store/actions/cart.actions';
 import { Store } from '@ngrx/store';
 
@@ -19,11 +18,9 @@ export class OrderService {
 		return this.http.post(this.apiUrl, tilaus, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
-					if (response.body as TilausVastaus) {
-						const tilausVastaus = response.body as TilausVastaus;
-						this.store.dispatch(
-							setOrder({ orderId: tilausVastaus.message.tilausId, shipping: parseFloat(tilausVastaus?.message.postikulut) })
-						);
+					if (response.body) {
+						const tilausVastaus = response.body as { message: { tilausId: number; postikulut: number } };
+						this.store.dispatch(setOrder({ orderId: tilausVastaus.message.tilausId, shipping: tilausVastaus.message.postikulut }));
 					}
 					return true;
 				} else {

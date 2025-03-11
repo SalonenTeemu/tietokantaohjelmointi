@@ -1,6 +1,3 @@
-import { TarkistusTulos } from './types';
-import { LuoTeosInstanssi } from '../models/teosInstanssi';
-
 // Tarkista sähköpostin oikeellisuus
 const tarkistaEmail = (email: string): boolean => {
 	const re = /\S+@\S+.\S+/;
@@ -30,7 +27,7 @@ const tarkistaOsoite = (osoite: string): boolean => {
 	return osoite.length >= 5 && osoite.length <= 255;
 };
 
-export const tarkistaKirjautuminen = (email: string, salasana: string): TarkistusTulos => {
+export const tarkistaKirjautuminen = (email: string, salasana: string): any => {
 	if (!email || !salasana) {
 		return { success: false, message: 'Sähköposti ja salasana ovat pakollisia' };
 	}
@@ -43,7 +40,7 @@ export const tarkistaKirjautuminen = (email: string, salasana: string): Tarkistu
 	return { success: true, message: '' };
 };
 
-export const tarkistaRekisteroityminen = (nimi: string, email: string, puhelin: string, osoite: string, salasana: string): TarkistusTulos => {
+export const tarkistaRekisteroityminen = (nimi: string, email: string, puhelin: string, osoite: string, salasana: string): any => {
 	if (!nimi || !email || !puhelin || !osoite || !salasana) {
 		return { success: false, message: 'Kaikki kentät ovat pakollisia' };
 	}
@@ -80,7 +77,7 @@ export const tarkistaTeoksenLisäys = (
 	luokka: string,
 	julkaisuvuosi: number,
 	paino: number
-): TarkistusTulos => {
+): any => {
 	if (!nimi || !tekija || !tyyppi || !luokka || !julkaisuvuosi || !paino) {
 		return { success: false, message: 'Kaikki muut kentät kuin ISBN ovat pakollisia' };
 	}
@@ -102,7 +99,7 @@ export const tarkistaTeoksenLisäys = (
 	return { success: true, message: '' };
 };
 
-export const tarkistaInstanssiLisäys = (instanssi: LuoTeosInstanssi): { success: boolean; message?: string } => {
+export const tarkistaInstanssiLisäys = (instanssi: any): { success: boolean; message?: string } => {
 	if (instanssi.hinta == null || instanssi.divariId == null || instanssi.kpl == null) {
 		return { success: false, message: 'Hinta ja kappalemäärä vaaditaan.' };
 	}

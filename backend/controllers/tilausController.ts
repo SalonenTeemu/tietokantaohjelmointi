@@ -5,7 +5,6 @@ import { haeTeosIdlla } from '../db/queries/teos';
 import { haeTeosInstanssi, paivitaTeosInstanssinTila, paivitaTeosInstanssinTilaus, asetaTeosInstanssinMyyntiPvm } from '../db/queries/teosInstanssi';
 import { laskePostikulut } from '../utils/postikulut';
 import { tarkistaLuoTilaus } from '../utils/validate';
-import { LisattyTilaus, TeosInstanssi } from '../utils/types';
 
 // Hae asiakkaan tilaukset
 export const haeTilaukset = async (req: Request, res: Response) => {
@@ -33,7 +32,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const tilauksenInstanssit: TeosInstanssi[] = [];
+		const tilauksenInstanssit: any[] = [];
 		for (const instanssi of tilaus.instanssit) {
 			const teosInstanssi = await haeTeosInstanssi(instanssi);
 			if (!teosInstanssi) {
@@ -58,22 +57,20 @@ export const luoTilaus = async (req: Request, res: Response) => {
 				await paivitaTeosInstanssinTila(instanssi, 'varattu', trx);
 			}
 
-			const postikulut = await laskePostikulut(
-				tilauksenInstanssit.reduce((sum: number, instanssi: TeosInstanssi) => sum + (instanssi.paino ?? 0), 0)
-			);
+			const postikulut = await laskePostikulut(tilauksenInstanssit.reduce((sum: number, instanssi: any) => sum + (instanssi.paino ?? 0), 0));
 
 			const tilausTiedot = {
 				kayttajaId: tilaus.kayttajaId,
 				tilauspvm: new Date(),
-				kokonaishinta:
-					Number(postikulut) + tilauksenInstanssit.reduce((sum: number, instanssi: TeosInstanssi) => sum + Number(instanssi.hinta), 0),
-				postikulut: Number(postikulut),
+				kokonaishinta: Number(postikulut) + tilauksenInstanssit.reduce((sum: number, instanssi: any) => sum + Number(instanssi.hinta), 0),
+				postikulut: postikulut,
 			};
 
-			const lisattyTilaus: LisattyTilaus = await lisaaTilaus(tilausTiedot, trx);
+			const lisattyTilaus: any = await lisaaTilaus(tilausTiedot, trx);
 			for (const instanssi of tilaus.instanssit) {
 				await paivitaTeosInstanssinTilaus(instanssi, lisattyTilaus.tilausId, trx);
 			}
+			lisattyTilaus.postikulut = parseFloat(lisattyTilaus.postikulut);
 			return lisattyTilaus;
 		});
 

@@ -10,7 +10,6 @@ import {
 	haeDivarinMyymatTeokset,
 	haeTeokset,
 } from '../db/queries/teos';
-import { Haku } from '../utils/types';
 import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
 import { haeDivariIdlla } from '../db/queries/divari';
 import { lisaaUusiTeosInstanssi } from '../db/queries/teosInstanssi';
@@ -30,7 +29,7 @@ export const haeKaikkiTeokset = async (req: Request, res: Response) => {
 export const haeTeoksia = async (req: Request, res: Response) => {
 	try {
 		const hakusanat = req.query;
-		const tarkistus = tarkistaTeosHaku(hakusanat as unknown as Haku);
+		const tarkistus = tarkistaTeosHaku(hakusanat);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
 			return;
@@ -52,7 +51,7 @@ export const haeDivarinTeokset = async (req: Request, res: Response) => {
 			res.status(400).json({ message: 'Virheellinen divariId.' });
 			return;
 		}
-		const teokset = await haeDivarinMyymatTeokset(divariId);
+		const teokset = await haeDivarinMyymatTeokset(divariIdNum);
 		res.status(200).json({ message: teokset });
 	} catch (error) {
 		console.error('Virhe haettaessa divarin teoksia:', error);

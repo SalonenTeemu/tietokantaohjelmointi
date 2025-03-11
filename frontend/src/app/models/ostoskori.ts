@@ -1,6 +1,7 @@
 import { OstoskoriTuote } from './ostoskoriTuote';
 
-export interface OstoskoriState {
+// Esittää ostoskorin sisältöä
+export interface Ostoskori {
 	tuotteet: OstoskoriTuote[];
 	tilausId: number | null;
 	postikulut: number;

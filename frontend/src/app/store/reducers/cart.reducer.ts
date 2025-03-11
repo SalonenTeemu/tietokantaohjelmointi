@@ -1,14 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { addToCart, removeFromCart, clearCart, setOrder, cancelOrder } from '../actions/cart.actions';
-import { OstoskoriState } from '../../models/ostoskori';
+import { Ostoskori } from '../../models/ostoskori';
 
-const initialCartState: OstoskoriState = {
+const initialCartState: Ostoskori = {
 	tuotteet: [],
 	postikulut: 0,
 	tilausId: null,
 };
 
-export const getCartState: OstoskoriState = JSON.parse(localStorage.getItem('ostoskori') || '{"tuotteet": [], "tilausId": null, "postikulut": 0}');
+export const getCartState: Ostoskori = JSON.parse(localStorage.getItem('ostoskori') || '{"tuotteet": [], "tilausId": null, "postikulut": 0}');
 
 export const cartReducer = createReducer(
 	getCartState,
@@ -23,7 +23,7 @@ export const cartReducer = createReducer(
 	on(removeFromCart, (state, { id }) => {
 		const updatedState = {
 			...state,
-			tuotteet: state.tuotteet.filter((item) => item.id !== id),
+			tuotteet: state.tuotteet.filter((item: any) => item.id !== id),
 		};
 		localStorage.setItem('ostoskori', JSON.stringify(updatedState));
 		return updatedState;
