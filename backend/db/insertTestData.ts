@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import db from './knex';
 import { keskusdivari } from './initDb';
 
+// Funktio salasanan hashaukseen
 const hashSalasana = async (salasana: string) => {
 	return await bcrypt.hash(salasana, 10);
 };
@@ -151,7 +152,7 @@ const teosInstanssit = [
 ];
 
 // Lisää testidata tietokantaan
-export const insertTestData = async () => {
+export const lisaaTestidata = async () => {
 	try {
 		await db.transaction(async (trx) => {
 			await trx(`${keskusdivari}.Kayttaja`).insert(kayttajat);

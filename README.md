@@ -33,5 +33,3 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 - UI tyylin parantaminen ja selkeytys
 - frontend authorization sivuille ym.
 - tarkista hakutoiminto, vastaako oletettua (R4)
-- Tyypit any ja modelit/typet selkeiksi
-- ä ja ö samanlaisiksi

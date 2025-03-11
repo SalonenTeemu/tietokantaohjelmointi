@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { initializeDatabase } from './db/initDb';
+import { alustaTietokanta } from './db/initDb';
 import teosRoutes from './routes/teosRoutes';
 import tilausRoutes from './routes/tilausRoutes';
 import kayttajaRoutes from './routes/kayttajaRoutes';
@@ -13,7 +13,7 @@ const hostname = 'localhost';
 const port = 8041;
 
 app.listen(port, () => {
-	initializeDatabase();
+	alustaTietokanta();
 	console.log(`Palvelin käynnissä osoitteessa http://${hostname}:${port}`);
 });
 

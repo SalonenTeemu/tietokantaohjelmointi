@@ -1,35 +1,34 @@
 import db from './knex';
-import { insertTestData } from './insertTestData';
-import { initViews } from './views';
-//import { testaaHakuja } from './queries';
+import { lisaaTestidata } from './insertTestData';
+import { luoNakymat } from './views';
 
 // Skeemat
 export const keskusdivari = 'keskusdivari';
 export const divarit = ['d1', 'd3'];
 
 // Testaa yhteyttä tietokantaan ja luo skeemat ja taulut onnistuessaan
-export const initializeDatabase = async () => {
+export const alustaTietokanta = async () => {
 	try {
 		await db.raw('SELECT 1');
 		console.log('Yhteys tietokantaan onnistui');
 
-		await createSchemas();
-		await createTypes();
-		await createKeskusDivariTables();
+		await luoSkeemat();
+		await luoTyypit();
+		await luoKeskusdivarinTaulut();
 
 		for (const divari of divarit) {
-			await createDivariTables(divari);
+			await luoDivarintaulut(divari);
 		}
 		console.log('Tietokantataulut luotu onnistuneesti');
-		await initViews();
-		await insertTestData();
+		await luoNakymat();
+		await lisaaTestidata();
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
 	}
 };
 
 // Luo skeemat, jos niitä ei ole olemassa
-const createSchemas = async () => {
+const luoSkeemat = async () => {
 	await db.schema.createSchemaIfNotExists(keskusdivari);
 	for (const divari of divarit) {
 		await db.schema.createSchemaIfNotExists(divari);
@@ -37,7 +36,7 @@ const createSchemas = async () => {
 };
 
 // Luo tietokantatyypit keskusdivarille, jos niitä ei ole olemassa
-const createTypes = async () => {
+const luoTyypit = async () => {
 	await createTypeIfNotExists('kayttajarooli', "ENUM ('asiakas', 'divariAdmin', 'admin')");
 	await createTypeIfNotExists('teoskunto', "ENUM ('heikko', 'kohtalainen', 'erinomainen')");
 	await createTypeIfNotExists('tilaustila', "ENUM ('kesken', 'peruutettu', 'valmis')");
@@ -59,7 +58,7 @@ const createTypeIfNotExists = async (tyyppi: string, nimi: string) => {
 };
 
 // Luo keskusdivarin taulut, jos niitä ei ole olemassa
-const createKeskusDivariTables = async () => {
+const luoKeskusdivarinTaulut = async () => {
 	if (!(await db.schema.withSchema(keskusdivari).hasTable('Kayttaja'))) {
 		await db.schema.withSchema(keskusdivari).createTable('Kayttaja', (table) => {
 			table.increments('kayttajaId').primary();
@@ -153,7 +152,7 @@ const createKeskusDivariTables = async () => {
 };
 
 // Luo divarin taulut, jos niitä ei ole olemassa
-const createDivariTables = async (divari: string) => {
+const luoDivarintaulut = async (divari: string) => {
 	if (!(await db.schema.withSchema(divari).hasTable('Luokka'))) {
 		await db.schema.withSchema(divari).createTable('Luokka', (table) => {
 			table.increments('luokkaId').primary();

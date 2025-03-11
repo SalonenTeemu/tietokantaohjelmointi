@@ -2,7 +2,7 @@ import db from './knex';
 import { keskusdivari } from './initDb';
 
 // Tarkasta löytyykö näkymää jo
-const checkView = async (view: string, schema: string) => {
+const tarkastaNakyma = async (view: string, schema: string) => {
 	const viewExists = await db.raw(`
         SELECT EXISTS (
             SELECT 1 
@@ -14,8 +14,8 @@ const checkView = async (view: string, schema: string) => {
 };
 
 // Luo näkymä, jos sitä ei ole olemassa
-const createView = async (schema: string, view: string, query: string) => {
-	const exists = await checkView(view, schema);
+const luoNakyma = async (schema: string, view: string, query: string) => {
+	const exists = await tarkastaNakyma(view, schema);
 	if (exists) {
 		await db.raw(`DROP VIEW IF EXISTS "${schema}"."${view}"`);
 	}
@@ -23,7 +23,7 @@ const createView = async (schema: string, view: string, query: string) => {
 };
 
 // Näkymä hakukyselyille (R1)
-const createHakunäkymä = async () => {
+const luoHakunakyma = async () => {
 	const schema = keskusdivari;
 	const view = 'HakuNakyma';
 	const query = `
@@ -44,11 +44,11 @@ const createHakunäkymä = async () => {
         JOIN "${schema}"."Tyyppi" ty ON t."tyyppiId" = ty."tyyppiId"
         JOIN "${schema}"."Luokka" l ON t."luokkaId" = l."luokkaId";
     `;
-	await createView(schema, view, query);
+	await luoNakyma(schema, view, query);
 };
 
 // Näkymä tietyn luokan myynnissä olevista teoksista (R2)
-const createLuokanMyynnissaOlevatTeokset = async () => {
+const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
 	const schema = keskusdivari;
 	const view = 'LuokanMyynnissaOlevatTeokset';
 	const query = `
@@ -63,11 +63,11 @@ const createLuokanMyynnissaOlevatTeokset = async () => {
         WHERE ti.tila = 'vapaa'
         GROUP BY l.nimi;
     `;
-	await createView(schema, view, query);
+	await luoNakyma(schema, view, query);
 };
 
 // Näkymä raportille asiakkaiden viime vuonna ostamien teosten lukumäärästä (R3):
-const createAsiakasRaporttiViimeVuosi = async () => {
+const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
 	const schema = keskusdivari;
 	const view = 'AsiakasRaporttiViimeVuosi';
 	const query = `
@@ -88,14 +88,15 @@ const createAsiakasRaporttiViimeVuosi = async () => {
         GROUP BY 
             K."kayttajaId", K.nimi, K.email;
     `;
-	await createView(schema, view, query);
+	await luoNakyma(schema, view, query);
 };
 
-export const initViews = async () => {
+// Luo kaikki näkymät
+export const luoNakymat = async () => {
 	try {
-		await createHakunäkymä();
-		await createLuokanMyynnissaOlevatTeokset();
-		await createAsiakasRaporttiViimeVuosi();
+		await luoHakunakyma();
+		await luoLuokanMyynnissaOlevatTeoksetNakyma();
+		await luoAsiakasRaporttiViimeVuosiNakyma();
 		console.log('Näkymät luotu onnistuneesti');
 	} catch (err) {
 		console.error('Virhe näkymien luonnissa');
