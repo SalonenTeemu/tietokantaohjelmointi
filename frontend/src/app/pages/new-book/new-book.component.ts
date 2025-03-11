@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { tarkistaTeoksenLisäys } from '../../utils/validate';
 import { BookService } from '../../services/book.service';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
 
 @Component({
 	selector: 'app-new-book',
@@ -12,14 +15,15 @@ import { BookService } from '../../services/book.service';
 	styleUrl: './new-book.component.css',
 	standalone: true,
 })
-export class NewBookComponent implements OnInit {
+export class NewBookComponent {
 	bookFormGroup: FormGroup;
-	luokat: any[] = [];
-	tyypit: any[] = [];
+	tyypit$: Observable<{ tyyppiId: number; nimi: string }[]>;
+	luokat$: Observable<{ luokkaId: number; nimi: string }[]>;
 
 	constructor(
 		private fb: FormBuilder,
-		private bookService: BookService
+		private bookService: BookService,
+		private store: Store
 	) {
 		this.bookFormGroup = this.fb.group({
 			nimi: [''],
@@ -30,19 +34,8 @@ export class NewBookComponent implements OnInit {
 			julkaisuvuosi: [''],
 			paino: [''],
 		});
-	}
-
-	ngOnInit() {
-		this.lataaLuokatjaTyypit();
-	}
-
-	lataaLuokatjaTyypit() {
-		this.bookService.getTeosLuokat().subscribe((luokat: any[]) => {
-			this.luokat = luokat;
-		});
-		this.bookService.getTeosTyypit().subscribe((tyypit: any[]) => {
-			this.tyypit = tyypit;
-		});
+		this.luokat$ = store.select(selectLuokat);
+		this.tyypit$ = store.select(selectTyypit);
 	}
 
 	lisaaTeos() {

@@ -1,12 +1,12 @@
 <nav>
 	<a routerLink="/">Etusivu</a> | <a routerLink="/hae">Etsi kirjoja</a> | <a routerLink="/ostoskori">Ostoskori</a> |
-	<ng-container *ngIf="(isLoggedIn$ | async) === true">
-		<a *ngIf="(userRole$ | async) === 'admin'" routerLink="/uusi/teos">Lisää teos</a>
-		<a *ngIf="(userRole$ | async) === 'divariAdmin'" routerLink="/divari/teokset">Divarin teokset</a>
+	<ng-container *ngIf="(kirjautunut$ | async) === true">
+		<a *ngIf="(rooli$ | async) === 'admin'" routerLink="/uusi/teos">Lisää teos</a>
+		<a *ngIf="(rooli$ | async) === 'divariAdmin'" routerLink="/divari/teokset">Divarin teokset</a>
 		|
 		<a routerLink="/" (click)="kirjauduUlos()">Kirjaudu ulos</a>
 	</ng-container>
-	<a *ngIf="(isLoggedIn$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
+	<a *ngIf="(kirjautunut$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
 </nav>
 
 <router-outlet></router-outlet>

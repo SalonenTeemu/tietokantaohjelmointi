@@ -6,7 +6,8 @@ import { removeFromCart, clearCart } from '../../store/actions/cart.actions';
 import { selectIsLoggedIn, selectUserId } from '../../store/selectors/auth.selector';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Observable, take } from 'rxjs';
+import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 
 @Component({
 	selector: 'app-cart',
@@ -16,6 +17,11 @@ import { combineLatest, take } from 'rxjs';
 	imports: [CommonModule],
 })
 export class CartComponent {
+	ostoskoriTuotteet$: Observable<OstoskoriTuote[]>;
+	yhteensa$: Observable<number>;
+	kirjautunut$: Observable<boolean>;
+	kayttajaId$: Observable<number | undefined>;
+
 	constructor(
 		private store: Store,
 		private router: Router,
@@ -26,11 +32,6 @@ export class CartComponent {
 		this.kirjautunut$ = this.store.select(selectIsLoggedIn);
 		this.kayttajaId$ = this.store.select(selectUserId);
 	}
-
-	ostoskoriTuotteet$;
-	yhteensa$;
-	kirjautunut$;
-	kayttajaId$;
 
 	poistaOstoskorista(id: number) {
 		this.store.dispatch(removeFromCart({ id }));

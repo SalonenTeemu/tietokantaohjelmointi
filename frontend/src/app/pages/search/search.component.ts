@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -7,6 +7,8 @@ import { Teos } from '../../models/teos';
 import { TeosInstanssi } from '../../models/teosInstanssi';
 import { BookService } from '../../services/book.service';
 import { tarkistaHaku } from '../../utils/validate';
+import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-search',
@@ -15,9 +17,9 @@ import { tarkistaHaku } from '../../utils/validate';
 	styleUrls: ['./search.component.css'],
 	imports: [CommonModule, FormsModule],
 })
-export class SearchComponent implements OnInit {
-	luokat: any[] = [];
-	tyypit: any[] = [];
+export class SearchComponent {
+	luokat$: Observable<{ luokkaId: number; nimi: string }[]>;
+	tyypit$: Observable<{ tyyppiId: number; nimi: string }[]>;
 	queryNimi = '';
 	queryTekija = '';
 	queryTyyppi = '';
@@ -31,19 +33,9 @@ export class SearchComponent implements OnInit {
 	constructor(
 		private bookService: BookService,
 		private store: Store
-	) {}
-
-	ngOnInit() {
-		this.lataaLuokatjaTyypit();
-	}
-
-	lataaLuokatjaTyypit() {
-		this.bookService.getTeosLuokat().subscribe((luokat: any[]) => {
-			this.luokat = luokat;
-		});
-		this.bookService.getTeosTyypit().subscribe((tyypit: any[]) => {
-			this.tyypit = tyypit;
-		});
+	) {
+		this.luokat$ = store.select(selectLuokat);
+		this.tyypit$ = store.select(selectTyypit);
 	}
 
 	haeTeoksia() {

@@ -10,12 +10,12 @@
 	<label for="tyyppi">Tyyppi</label>
 	<select id="tyyppi" [(ngModel)]="queryTyyppi">
 		<option value="">-- Valitse tyyppi --</option>
-		<option *ngFor="let tyyppi of tyypit" [value]="tyyppi.nimi">{{ tyyppi.nimi }}</option>
+		<option *ngFor="let tyyppi of tyypit$ | async" [value]="tyyppi.nimi">{{ tyyppi.nimi }}</option>
 	</select>
 	<label for="luokka">Luokka</label>
 	<select id="luokka" [(ngModel)]="queryLuokka">
 		<option value="">-- Valitse luokka --</option>
-		<option *ngFor="let luokka of luokat" [value]="luokka.nimi">{{ luokka.nimi }}</option>
+		<option *ngFor="let luokka of luokat$ | async" [value]="luokka.nimi">{{ luokka.nimi }}</option>
 	</select>
 
 	<button (click)="haeTeoksia()">Hae</button>
@@ -24,13 +24,13 @@
 
 	<ul *ngIf="teokset.length > 0">
 		<li *ngFor="let teos of teokset" tabindex="0" (keydown.enter)="haeTeosInstanssit(teos)" (click)="haeTeosInstanssit(teos)">
-			{{ teos.nimi }} - {{ teos.tekija }} ({{ teos.tyyppi }}) ({{ teos.luokka }})
+			{{ teos.nimi }} - {{ teos.tekija }} - {{ teos.julkaisuvuosi }} - ({{ teos.tyyppi }}, {{ teos.luokka }})
 		</li>
 	</ul>
 	<p *ngIf="teokset.length === 0 && !virheViesti">Ei tuloksia</p>
 
 	<div *ngIf="valittuTeos">
-		<h3>Instanssit: {{ valittuTeos.nimi }}</h3>
+		<h3>Instanssit: {{ valittuTeos.nimi }} ({{ instanssit.length }} kpl)</h3>
 
 		<p *ngIf="virheViesti" class="error">{{ virheViesti }}</p>
 

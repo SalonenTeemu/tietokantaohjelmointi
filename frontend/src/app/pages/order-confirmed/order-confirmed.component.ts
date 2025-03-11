@@ -21,9 +21,6 @@ export class OrderConfirmedComponent {
 		this.tuotteet = state['tuotteet'] || [];
 		this.toimituskulut = state['toimituskulut'] || 0;
 		this.yhteensa = state['yhteensa'] || 0;
-
-		console.log(state);
-		console.log(this.tuotteet, this.toimituskulut, this.yhteensa);
 	}
 
 	siirryEtusivulle() {

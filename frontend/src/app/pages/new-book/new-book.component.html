@@ -14,12 +14,12 @@
 
 				<label for="type">Tyyppi:</label>
 				<select formControlName="tyyppiId" class="form-control" id="type" placeholder="Valitse teoksen tyyppi" required>
-					<option *ngFor="let tyyppi of tyypit" [value]="tyyppi.tyyppiId">{{ tyyppi.nimi }}</option>
+					<option *ngFor="let tyyppi of tyypit$ | async" [value]="tyyppi.tyyppiId">{{ tyyppi.nimi }}</option>
 				</select>
 
 				<label for="class">Luokka:</label>
 				<select formControlName="luokkaId" class="form-control" id="class" placeholder="Valitse teoksen luokka" required>
-					<option *ngFor="let luokka of luokat" [value]="luokka.luokkaId">{{ luokka.nimi }}</option>
+					<option *ngFor="let luokka of luokat$ | async" [value]="luokka.luokkaId">{{ luokka.nimi }}</option>
 				</select>
 
 				<label for="year">Julkaisuvuosi:</label>
