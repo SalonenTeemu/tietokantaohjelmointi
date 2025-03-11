@@ -1,21 +1,24 @@
 <div class="cart-container">
 	<h2>Ostoskori</h2>
 
-	<ul>
-		<li *ngFor="let tuote of ostoskoriTuotteet$ | async">
-			<span
-				>{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €</span
-			>
-			<button (click)="poistaOstoskorista(tuote.id)">Poista</button>
+	<ul class="cart-list">
+		<li *ngFor="let tuote of ostoskoriTuotteet$ | async" class="cart-item">
+			<span class="cart-item-details">
+				{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €
+			</span>
+			<button class="btn btn-remove" (click)="poistaOstoskorista(tuote.id)">Poista</button>
 		</li>
 	</ul>
 
-	<h3>Kokonaissumma: {{ yhteensa$ | async }} €</h3>
+	<h3 class="cart-total">Kokonaissumma: {{ yhteensa$ | async }} €</h3>
 
-	<button (click)="tyhjennaOstoskori()">Tyhjennä ostoskori</button>
-	<ng-container *ngIf="(kirjautunut$ | async) === true">
-		<ng-container *ngIf="ostoskoriTuotteet$ | async as ostoskoriTuotteet">
-			<button *ngIf="ostoskoriTuotteet.length > 0" (click)="tilaa()">Tilaa</button>
+	<div class="cart-actions">
+		<button class="btn btn-secondary" (click)="tyhjennaOstoskori()">Tyhjennä ostoskori</button>
+
+		<ng-container *ngIf="(kirjautunut$ | async) === true">
+			<ng-container *ngIf="ostoskoriTuotteet$ | async as ostoskoriTuotteet">
+				<button *ngIf="ostoskoriTuotteet.length > 0" class="btn btn-primary" (click)="tilaa()">Tilaa</button>
+			</ng-container>
 		</ng-container>
-	</ng-container>
+	</div>
 </div>

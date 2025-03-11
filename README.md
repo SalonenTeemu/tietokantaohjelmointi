@@ -27,5 +27,4 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 - ilmoitukset sovelluksen frontendiin
 - raportit admin käyttäjille
 - triggeri divarien synkronoimiseksi
-- UI tyylin parantaminen ja selkeytys
 - frontend authorization sivuille ym.

@@ -75,6 +75,11 @@ export class SearchComponent {
 
 	haeTeosInstanssit(teos: Teos) {
 		this.virheViesti = '';
+		if (this.valittuTeos && this.valittuTeos.teosId === teos.teosId) {
+			this.valittuTeos = null;
+			this.instanssit = [];
+			return;
+		}
 		this.valittuTeos = teos;
 		this.bookService.getTeosInstanssit(teos.teosId).subscribe({
 			next: (data: TeosInstanssi[]) => {
