@@ -26,3 +26,9 @@ export const paivitaTeosInstanssinTilaus = async (teosInstanssiId: string, tilau
 export const asetaTeosInstanssinMyyntiPvm = async (teosInstanssiId: string, myyntipvm: Date, trx: Knex.Transaction) => {
 	await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).update({ myyntipvm }).transacting(trx);
 };
+
+// Hae asiakkaiden viime vuoden teosostot
+export const haeAsiakkaidenViimeVuodenOstot = async () => {
+	const raportti = await db('keskusdivari.AsiakasRaporttiViimeVuosi').select('*');
+	return raportti;
+};

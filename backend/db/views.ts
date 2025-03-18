@@ -75,8 +75,10 @@ const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
 	const query = `
         SELECT
             K."kayttajaId" AS "kayttajaId",
-            K.nimi AS asiakas, 
+            K.rooli AS rooli,
+            K.nimi AS nimi, 
             K.email AS email,
+            T.tila AS tila,
             COUNT(*) AS "ostettujenTeostenLkm"
         FROM 
             ${schema}."Kayttaja" K
@@ -84,11 +86,13 @@ const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
             ${schema}."Tilaus" T ON K."kayttajaId" = T."kayttajaId"
         JOIN 
             ${schema}."TeosInstanssi" TI ON T."tilausId" = TI."tilausId"
-        WHERE 
-            T.tilauspvm >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'
+        WHERE
+            T.tila = 'valmis'
+            AND K.rooli = 'asiakas'
+            AND T.tilauspvm >= DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'
             AND T.tilauspvm < DATE_TRUNC('year', CURRENT_DATE)
         GROUP BY 
-            K."kayttajaId", K.nimi, K.email;
+            K."kayttajaId", K.nimi, K.email, K.rooli, T.tila;
     `;
 	await luoNakyma(schema, view, query);
 };
