@@ -22,10 +22,9 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 ## TODO
 
-- fixaa auth.guard käyttäjän haku
-- frontend authorization sivuille ym.
-- backend rooli authorisointi
+- fixaa auth.guard käyttäjän haku -> frontend authorization sivuille
+- frontend sivu, jossa admin näkee luokan myynnissä olevat teokset koko keskusdivarista
+- frontend sivu, jossa admin voi ladata asiakasraportin (yleinen admin sivu?)
 
 - divarin tietojen muokkaus
-- raportit admin käyttäjille
 - triggeri divarien synkronoimiseksi

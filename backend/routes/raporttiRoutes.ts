@@ -10,6 +10,6 @@ const raporttiRoutes = express.Router({ mergeParams: true });
 
 raporttiRoutes.get('/luokkamyynti', validoiJWT, tarkistaRooli(['admin']), haeLuokanMyynnissaOlevatTeokset);
 raporttiRoutes.get('/luokkamyynti/:divariId', validoiJWT, tarkistaRooli(['admin', 'divariAdmin']), haeDivarinLuokanMyynnissaOlevatTeokset);
-raporttiRoutes.get('/asiakasraportti', validoiJWT, tarkistaRooli(['admin']), haeAsiakasRaporttiViimeVuosi);
+raporttiRoutes.get('/asiakas-viime-vuosi', validoiJWT, tarkistaRooli(['admin']), haeAsiakasRaporttiViimeVuosi);
 
 export default raporttiRoutes;

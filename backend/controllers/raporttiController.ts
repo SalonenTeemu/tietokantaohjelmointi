@@ -39,7 +39,7 @@ export const haeAsiakasRaporttiViimeVuosi = async (req: Request, res: Response) 
 			return;
 		}
 		const fields = ['kayttajaId', 'nimi', 'email', 'ostettujenTeostenLkm'];
-		const opts = { delimiters: { field: ';' }, keys: fields };
+		const opts = { delimiter: { field: ';' }, keys: fields };
 		const csv = await json2csv(raportti, opts);
 		res.header('Content-Type', 'text/csv');
 		res.attachment('asiakasraportti_viime_vuosi.csv');
