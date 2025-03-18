@@ -21,7 +21,6 @@ export const JWTAsetukset = {
 passport.use(
 	new JWTStrategy(JWTAsetukset, async (jwt_payload, done) => {
 		try {
-			console.log('JWT-strategia, jwt_payload:', jwt_payload);
 			const user = await haeProfiiliIDlla(jwt_payload.kayttajaId);
 			if (!user) {
 				return done(null, false);

@@ -57,8 +57,8 @@ const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
             ti."divariId" AS "divariId",
             COUNT(ti."teosInstanssiId") AS "lkmMyynnissa", 
             COUNT(DISTINCT t."teosId") AS "lkmTeoksia",
-            SUM(ti.hinta) AS "kokonaisMyyntihinta", 
-            AVG(ti.hinta) AS "keskiMyyntihinta"
+            ROUND(SUM(ti.hinta), 2) AS "kokonaisMyyntihinta", 
+            ROUND(AVG(ti.hinta), 2) AS "keskiMyyntihinta"
         FROM ${schema}."TeosInstanssi" ti
         JOIN ${schema}."Teos" t ON ti."teosId" = t."teosId"
         JOIN ${schema}."Luokka" l ON t."luokkaId" = l."luokkaId"

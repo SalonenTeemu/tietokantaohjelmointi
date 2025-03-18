@@ -31,7 +31,7 @@ export const kirjaudu = async (req: Request, res: Response) => {
 		delete user.salasana;
 		const token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli }, JWTAsetukset.secretOrKey, { expiresIn: '1h' });
 
-		res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+		res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
 		res.status(200).json({ message: { ...user, divariId } });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);

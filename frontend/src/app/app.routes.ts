@@ -9,6 +9,8 @@ import { OrderOverviewComponent } from './pages/order-overview/order-overview.co
 import { OrderConfirmedComponent } from './pages/order-confirmed/order-confirmed.component';
 import { NewBookComponent } from './pages/new-book/new-book.component';
 import { DivariBooksComponent } from './pages/divari-books/divari-books.component';
+import { DivariComponent } from './pages/divari/divari.component';
+import { DivariRaportitComponent } from './pages/divari-raportit/divari-raportit.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -29,5 +31,7 @@ export const routes: Routes = [
 	{ path: 'rekisteroidy', component: RegisterComponent },
 	{ path: 'hae', component: SearchComponent },
 	{ path: 'uusi/teos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: 'divari', component: DivariComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
+	{ path: 'divari/raportit', component: DivariRaportitComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
 	{ path: 'divari/teokset', component: DivariBooksComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
 ];

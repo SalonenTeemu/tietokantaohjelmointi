@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { reducers } from './store';
@@ -14,9 +14,9 @@ export const appConfig: ApplicationConfig = {
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes),
 		provideStore(reducers),
-		provideHttpClient(),
+		provideHttpClient(withInterceptorsFromDi()),
 		provideEffects(),
-		provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+		provideStoreDevtools({ maxAge: 25, logOnly: isDevMode() }),
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: AuthInterceptor,

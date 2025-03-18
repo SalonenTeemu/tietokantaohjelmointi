@@ -7,10 +7,11 @@ import { Kayttaja } from '../../models/kayttaja';
 import { tarkistaInstanssiLisäys } from '../../utils/validate';
 import { NotificationService } from '../../services/notification.service';
 import { selectUser } from '../../store/selectors/auth.selector';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'app-divari-books',
-	imports: [CommonModule, ReactiveFormsModule],
+	imports: [CommonModule, ReactiveFormsModule, RouterLink],
 	templateUrl: './divari-books.component.html',
 	styleUrl: './divari-books.component.css',
 })

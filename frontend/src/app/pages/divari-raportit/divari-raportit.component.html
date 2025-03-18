@@ -1,0 +1,18 @@
+<div class="divari-raportit-container">
+	<h1>Myynnissä olevien teosten luokkaraportti</h1>
+	<div class="divari-raportit">
+		<div *ngFor="let luokka of raportti; let i = index" class="divari-raportti">
+			<div class="divari-raportti-header" (click)="toggleLuokka(i)" (keyup.enter)="toggleLuokka(i)" tabindex="0">
+				<h2>{{ luokka.luokka }}</h2>
+				<span class="arrow" [class.open]="openIndexes.includes(i)">&#x25BC;</span>
+			</div>
+			<div class="divari-raportti-content" *ngIf="openIndexes.includes(i)">
+				<p><strong>Teosten määrä:</strong> {{ luokka.lkmTeoksia }}</p>
+				<p><strong>Myynnissä olevien instanssien määrä:</strong> {{ luokka.lkmMyynnissa }}</p>
+				<p><strong>Myynnissä olevien instanssien keskihinta:</strong> {{ luokka.keskiMyyntihinta }} €</p>
+				<p><strong>Myynnissä olevien instanssien yhteishinta:</strong> {{ luokka.kokonaisMyyntihinta }} €</p>
+			</div>
+		</div>
+	</div>
+	<a class="back-button" routerLink="/divari">Palaa divari-sivulle</a>
+</div>
