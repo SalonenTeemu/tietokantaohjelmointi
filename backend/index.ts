@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { alustaTietokanta } from './db/initDb';
 import teosRoutes from './routes/teosRoutes';
 import tilausRoutes from './routes/tilausRoutes';
 import kayttajaRoutes from './routes/kayttajaRoutes';
-import cookieParser from 'cookie-parser';
+import raporttiRoutes from './routes/raporttiRoutes';
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:8040', credentials: true }));
@@ -22,3 +23,4 @@ app.listen(port, () => {
 app.use('/api/teos', teosRoutes);
 app.use('/api/tilaus', tilausRoutes);
 app.use('/api/auth', kayttajaRoutes);
+app.use('/api/raportti', raporttiRoutes);

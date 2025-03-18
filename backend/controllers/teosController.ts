@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import {
 	haeTeoksetHakusanalla,
-	haeLuokanMyynnissaOlevatTeokset,
 	haeTeoksenInstanssit,
 	haeLuokat,
 	haeTyypit,
@@ -93,17 +92,6 @@ export const haeTeosInstanssit = async (req: Request, res: Response) => {
 		res.status(200).json({ message: instanssit });
 	} catch (error) {
 		console.error('Virhe haettaessa teoksen instansseja:', error);
-		res.status(500).json({ message: 'Virhe' });
-	}
-};
-
-// Hae luokan teosten kokonaismyyntihinta ja keskihinta
-export const haeLuokanKokonaismyynti = async (req: Request, res: Response) => {
-	try {
-		const tiedot = await haeLuokanMyynnissaOlevatTeokset();
-		res.status(200).json({ message: tiedot });
-	} catch (error) {
-		console.error('Virhe haettaessa luokan kokonaismyyntiä:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };

@@ -11,13 +11,19 @@ export const haeTeokset = async () => {
 };
 
 // R2
-export const haeLuokanMyynnissaOlevatTeokset = async () => {
-	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
+export const haeKaikkiLuokanMyynnissaOlevatTeokset = async (divariId?: number) => {
+	let query = db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
 		'lmot.luokka',
 		'lmot.lkmMyynnissa',
+		'lmot.lkmTeoksia',
 		'lmot.kokonaisMyyntihinta',
 		'lmot.keskiMyyntihinta'
 	);
+
+	if (divariId) {
+		query = query.where('lmot.divariId', divariId);
+	}
+	const teokset = await query;
 	return teokset;
 };
 

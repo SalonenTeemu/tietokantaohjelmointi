@@ -54,14 +54,16 @@ const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
 	const query = `
         SELECT
             l.nimi AS luokka, 
+            ti."divariId" AS "divariId",
             COUNT(ti."teosInstanssiId") AS "lkmMyynnissa", 
+            COUNT(DISTINCT t."teosId") AS "lkmTeoksia",
             SUM(ti.hinta) AS "kokonaisMyyntihinta", 
             AVG(ti.hinta) AS "keskiMyyntihinta"
         FROM ${schema}."TeosInstanssi" ti
         JOIN ${schema}."Teos" t ON ti."teosId" = t."teosId"
         JOIN ${schema}."Luokka" l ON t."luokkaId" = l."luokkaId"
         WHERE ti.tila = 'vapaa'
-        GROUP BY l.nimi;
+        GROUP BY l.nimi, ti."divariId";
     `;
 	await luoNakyma(schema, view, query);
 };
