@@ -36,8 +36,8 @@ export class NewBookComponent {
 			julkaisuvuosi: [''],
 			paino: [''],
 		});
-		this.luokat$ = store.select(selectLuokat);
-		this.tyypit$ = store.select(selectTyypit);
+		this.luokat$ = this.store.select(selectLuokat);
+		this.tyypit$ = this.store.select(selectTyypit);
 	}
 
 	lisaaTeos() {

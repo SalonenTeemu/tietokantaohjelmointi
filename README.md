@@ -22,7 +22,7 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 ## TODO
 
-- autentikaatio sen vaatimiin endpointteihin ja frontendin toteutus -> oman divarin admin ym.
+- fixaa auth.guard käyttäjän haku
 - divarin tietojen muokkaus
 - raportit admin käyttäjille
 - triggeri divarien synkronoimiseksi

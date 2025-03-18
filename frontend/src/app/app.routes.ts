@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { SearchComponent } from './pages/search/search.component';
 import { CartComponent } from './pages/cart/cart.component';
@@ -11,12 +12,22 @@ import { DivariBooksComponent } from './pages/divari-books/divari-books.componen
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
-	{ path: 'tilaus', component: OrderOverviewComponent },
+	{
+		path: 'tilaus',
+		component: OrderOverviewComponent,
+		canActivate: [AuthGuard],
+		data: { roles: ['asiakas', 'divariAdmin', 'admin'] },
+	},
 	{ path: 'ostoskori', component: CartComponent },
-	{ path: 'tilaus/vahvistettu', component: OrderConfirmedComponent },
+	{
+		path: 'tilaus/vahvistettu',
+		component: OrderConfirmedComponent,
+		canActivate: [AuthGuard],
+		data: { roles: ['asiakas', 'divariAdmin', 'admin'] },
+	},
 	{ path: 'kirjaudu', component: LoginComponent },
-	{ path: 'rekisteröidy', component: RegisterComponent },
+	{ path: 'rekisteroidy', component: RegisterComponent },
 	{ path: 'hae', component: SearchComponent },
-	{ path: 'uusi/teos', component: NewBookComponent },
-	{ path: 'divari/teokset', component: DivariBooksComponent },
+	{ path: 'uusi/teos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: 'divari/teokset', component: DivariBooksComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
 ];

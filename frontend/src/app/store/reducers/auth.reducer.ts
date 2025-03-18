@@ -1,17 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
-import { login, logout } from '../actions/auth.actions';
-import { Kayttaja } from '../../models/kayttaja';
+import { setUser, logout } from '../actions/auth.actions';
 
-export const initialAuthState: Kayttaja | null = JSON.parse(localStorage.getItem('user') || 'null');
+export const initialAuthState: any | null = null;
 
 export const authReducer = createReducer(
 	initialAuthState,
-	on(login, (_, { user }) => {
-		localStorage.setItem('user', JSON.stringify(user));
-		return user;
-	}),
-	on(logout, () => {
-		localStorage.removeItem('user');
-		return null;
-	})
+	on(setUser, (_, { user }) => (user ? user : null)),
+	on(logout, () => null)
 );

@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.authService.getKayttaja().subscribe();
 		this.bookService.getTeosLuokat().subscribe((luokat: string[]) => {
 			this.store.dispatch(addLuokat({ luokat }));
 		});
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit {
 	}
 
 	kirjauduUlos() {
-		this.authService.logout();
+		this.authService.postKirjauduUlos().subscribe();
 		this.notificationService.newNotification('success', 'Kirjauduttu ulos');
 	}
 }

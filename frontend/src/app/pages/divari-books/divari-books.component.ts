@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../services/book.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
 import { Kayttaja } from '../../models/kayttaja';
 import { tarkistaInstanssiLisäys } from '../../utils/validate';
 import { NotificationService } from '../../services/notification.service';
+import { selectUser } from '../../store/selectors/auth.selector';
 
 @Component({
 	selector: 'app-divari-books',
@@ -17,15 +18,17 @@ export class DivariBooksComponent implements OnInit {
 	instanceFormGroup: FormGroup;
 	teokset: any[] = [];
 	valittuTeos: string | null = null;
-	kayttaja: Kayttaja | null;
+	kayttaja!: Kayttaja | null;
 
 	constructor(
 		private bookService: BookService,
 		private fb: FormBuilder,
-		private authService: AuthService,
+		private store: Store,
 		private notificationService: NotificationService
 	) {
-		this.kayttaja = this.authService.haeKayttaja();
+		this.store.select(selectUser).subscribe((user) => {
+			this.kayttaja = user;
+		});
 		this.instanceFormGroup = this.fb.group({
 			hinta: [''],
 			kpl: [''],
@@ -35,6 +38,9 @@ export class DivariBooksComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		if (!this.kayttaja) {
+			return;
+		}
 		this.lataaTeokset();
 	}
 
