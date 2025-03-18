@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja, haeKayttajanDivariId } from '../db/queries/kayttaja';
+import jwt from 'jsonwebtoken';
+import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja, haeKayttajanDivariId, haeProfiiliIDlla } from '../db/queries/kayttaja';
 import { tarkistaKirjautuminen, tarkistaRekisteroityminen } from '../utils/validate';
+import { JWTAsetukset } from '../middleware';
 
 // Kirjaudu sisään
 export const kirjaudu = async (req: Request, res: Response) => {
@@ -17,26 +19,20 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			res.status(401).json({ message: 'Käyttäjää annetulla sähköpostilla ei löydy.' });
 			return;
 		}
-		let divariId;
-		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
-			divariId = await haeKayttajanDivariId(user.kayttajaId);
-		}
 		const salasanaOikein = await bcrypt.compare(salasana, user.salasana);
 		if (!salasanaOikein) {
 			res.status(401).json({ message: 'Väärä salasana.' });
 			return;
 		}
-		res.status(200).json({
-			message: {
-				kayttajaId: user.kayttajaId,
-				email: user.email,
-				nimi: user.nimi,
-				osoite: user.osoite,
-				puhelin: user.puhelin,
-				rooli: user.rooli,
-				divariId: divariId,
-			},
-		});
+		let divariId;
+		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
+			divariId = await haeKayttajanDivariId(user.kayttajaId);
+		}
+		delete user.salasana;
+		const token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli }, JWTAsetukset.secretOrKey, { expiresIn: '1h' });
+
+		res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+		res.status(200).json({ message: { ...user, divariId } });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);
 		res.status(500).json({ message: 'Virhe kirjautumisessa.' });
@@ -67,6 +63,32 @@ export const rekisteroidy = async (req: Request, res: Response) => {
 		res.status(201).json({ message: 'Rekisteröityminen onnistui.' });
 	} catch (error) {
 		console.error('Virhe rekisteröitymisessä:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+// Kirjaudu ulos
+export const kirjauduUlos = (req: Request, res: Response) => {
+	res.clearCookie('token');
+	res.status(200).json({ message: 'Kirjauduttu ulos.' });
+};
+
+// Hae kirjautuneen käyttäjän tiedot
+export const haeProfiili = async (req: Request, res: Response) => {
+	try {
+		const id = (req.user as any).kayttajaId;
+		const user = await haeProfiiliIDlla(id);
+		if (!user) {
+			res.status(403).json({ message: 'Käyttäjää ei löydy.' });
+			return;
+		}
+		let divariId;
+		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
+			divariId = await haeKayttajanDivariId(user.kayttajaId);
+		}
+		res.status(200).json({ message: { ...user, divariId } });
+	} catch (error) {
+		console.error('Virhe profiilin hakemisessa:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };
