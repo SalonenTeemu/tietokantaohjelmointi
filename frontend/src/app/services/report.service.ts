@@ -19,4 +19,23 @@ export class ReportService {
 			})
 		);
 	}
+
+	getKeskusdivariLuokkaRaportti(): Observable<any[]> {
+		return this.http.get<{ message: any[] }>(`${this.apiUrl}/raportti/luokkamyynti`).pipe(
+			map((response) => response.message),
+			catchError((error: unknown) => {
+				console.error('Raportin haku epäonnistui:', error);
+				return throwError(() => new Error('Raportin haku epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
+
+	getKeskusdivariAsiakasRaportti(): Observable<Blob> {
+		return this.http.get(`${this.apiUrl}/raportti/asiakas-viime-vuosi`, { responseType: 'blob' }).pipe(
+			catchError((error: unknown) => {
+				console.error('Raportin haku epäonnistui:', error);
+				return throwError(() => new Error('Raportin haku epäonnistui. Yritä uudelleen.'));
+			})
+		);
+	}
 }

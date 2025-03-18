@@ -7,12 +7,12 @@ import { Store } from '@ngrx/store';
 import { selectUser } from '../../store/selectors/auth.selector';
 
 @Component({
-	selector: 'app-divari-raportit',
+	selector: 'app-divari-reports',
 	imports: [CommonModule, RouterModule],
-	templateUrl: './divari-raportit.component.html',
-	styleUrl: './divari-raportit.component.css',
+	templateUrl: './divari-reports.component.html',
+	styleUrl: './divari-reports.component.css',
 })
-export class DivariRaportitComponent implements OnInit {
+export class DivariReportsComponent implements OnInit {
 	raportti: any[] = [];
 	kayttaja!: Kayttaja | null;
 	openIndexes: number[] = [];
@@ -36,7 +36,6 @@ export class DivariRaportitComponent implements OnInit {
 			return;
 		}
 		this.reportService.getDivariLuokkaRaportti(this.kayttaja?.divariId).subscribe((raportti: any[]) => {
-			console.log(raportti);
 			this.raportti = raportti;
 		});
 	}

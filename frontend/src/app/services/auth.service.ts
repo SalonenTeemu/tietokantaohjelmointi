@@ -68,7 +68,6 @@ export class AuthService {
 	postKirjauduUlos(): Observable<boolean> {
 		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu-ulos`, {}, { observe: 'response' }).pipe(
 			map((response) => {
-				console.log('Uloskirjautumine', response);
 				if (response.ok) {
 					this.store.dispatch(logout());
 					return true;

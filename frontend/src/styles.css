@@ -39,6 +39,7 @@ nav {
 }
 
 nav a {
+	font-weight: 600;
 	color: #fff;
 	margin: 0 1rem;
 	padding: 0.5rem 1rem;
@@ -52,11 +53,6 @@ nav a:hover {
 	background-color: #0056b3;
 	color: #fff;
 	transform: translateY(-2px);
-}
-
-nav a.active {
-	background-color: #007bff;
-	font-weight: bold;
 }
 
 /* ======= Utility Classes ======= */

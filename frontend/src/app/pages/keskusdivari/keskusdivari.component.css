@@ -1,15 +1,15 @@
-.divari-container {
+.keskusdivari-container {
 	max-width: 600px;
 	margin: 60px auto;
 	padding: 30px;
-	background-color: #f0f8ff;
+	background-color: #f0f8ff; /* Light blue for a welcoming look */
 	border: 2px solid #0078a8;
 	border-radius: 12px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 	text-align: center;
 }
 
-.divari-container h1 {
+.keskusdivari-container h1 {
 	color: #005f87;
 	margin-bottom: 24px;
 	font-size: 28px;

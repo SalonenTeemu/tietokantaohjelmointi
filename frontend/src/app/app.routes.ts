@@ -10,7 +10,9 @@ import { OrderConfirmedComponent } from './pages/order-confirmed/order-confirmed
 import { NewBookComponent } from './pages/new-book/new-book.component';
 import { DivariBooksComponent } from './pages/divari-books/divari-books.component';
 import { DivariComponent } from './pages/divari/divari.component';
-import { DivariRaportitComponent } from './pages/divari-raportit/divari-raportit.component';
+import { DivariReportsComponent } from './pages/divari-reports/divari-reports.component';
+import { KeskusdivariComponent } from './pages/keskusdivari/keskusdivari.component';
+import { KeskusdivariReportsComponent } from './pages/keskusdivari-reports/keskusdivari-reports.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -30,8 +32,10 @@ export const routes: Routes = [
 	{ path: 'kirjaudu', component: LoginComponent },
 	{ path: 'rekisteroidy', component: RegisterComponent },
 	{ path: 'hae', component: SearchComponent },
-	{ path: 'uusi/teos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
 	{ path: 'divari', component: DivariComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
-	{ path: 'divari/raportit', component: DivariRaportitComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
+	{ path: 'divari/raportit', component: DivariReportsComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
 	{ path: 'divari/teokset', component: DivariBooksComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
+	{ path: 'keskusdivari', component: KeskusdivariComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: 'keskusdivari/raportit', component: KeskusdivariReportsComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: 'keskusdivari/uusiteos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
 ];

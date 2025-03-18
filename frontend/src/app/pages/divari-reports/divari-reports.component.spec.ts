@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DivariRaportitComponent } from './divari-raportit.component';
+import { DivariRaportitComponent } from './divari-reports.component';
 
 describe('DivariRaportitComponent', () => {
 	let component: DivariRaportitComponent;
