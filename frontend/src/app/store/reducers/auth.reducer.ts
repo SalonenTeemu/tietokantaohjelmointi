@@ -1,10 +1,27 @@
 import { createReducer, on } from '@ngrx/store';
-import { setUser, logout } from '../actions/auth.actions';
+import { setUser, logout, setLoading } from '../actions/auth.actions';
+import { Kayttaja } from '../../models/kayttaja';
 
-export const initialAuthState: any | null = null;
+export interface AuthState {
+	user: Kayttaja | null;
+	loading: boolean;
+}
+
+export const initialAuthState: AuthState = {
+	user: null,
+	loading: false,
+};
 
 export const authReducer = createReducer(
 	initialAuthState,
-	on(setUser, (_, { user }) => (user ? user : null)),
-	on(logout, () => null)
+	on(setUser, (state, { user }) => ({
+		...state,
+		user: user ? user : null,
+		loading: false,
+	})),
+	on(logout, () => initialAuthState),
+	on(setLoading, (state) => ({
+		...state,
+		loading: true,
+	}))
 );

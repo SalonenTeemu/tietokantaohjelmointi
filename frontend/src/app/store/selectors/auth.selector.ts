@@ -1,9 +1,11 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { Kayttaja } from '../../models/kayttaja';
+import { AuthState } from '../reducers/auth.reducer';
 
-export const selectAuthState = createFeatureSelector<Kayttaja | null>('auth');
+export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
-export const selectIsLoggedIn = createSelector(selectAuthState, (user) => (user == null ? false : true));
-export const selectUser = createSelector(selectAuthState, (user) => user);
-export const selectUserRole = createSelector(selectAuthState, (user) => user?.rooli);
-export const selectUserId = createSelector(selectAuthState, (user) => user?.kayttajaId);
+export const selectIsLoggedIn = createSelector(selectAuthState, (state) => state.user != null);
+export const selectUser = createSelector(selectAuthState, (state) => state.user);
+export const selectUserRole = createSelector(selectAuthState, (state) => state.user?.rooli);
+export const selectUserId = createSelector(selectAuthState, (state) => state.user?.kayttajaId);
+
+export const selectIsLoadingUser = createSelector(selectAuthState, (state) => state.loading);

@@ -13,6 +13,7 @@ import { DivariComponent } from './pages/divari/divari.component';
 import { DivariReportsComponent } from './pages/divari-reports/divari-reports.component';
 import { KeskusdivariComponent } from './pages/keskusdivari/keskusdivari.component';
 import { KeskusdivariReportsComponent } from './pages/keskusdivari-reports/keskusdivari-reports.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -38,4 +39,5 @@ export const routes: Routes = [
 	{ path: 'keskusdivari', component: KeskusdivariComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
 	{ path: 'keskusdivari/raportit', component: KeskusdivariReportsComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
 	{ path: 'keskusdivari/uusiteos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: '**', component: NotFoundComponent },
 ];

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { logout, setUser } from '../store/actions/auth.actions';
+import { logout, setLoading, setUser } from '../store/actions/auth.actions';
 import { Observable, of, map, catchError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Kayttaja } from '../models/kayttaja';
@@ -82,22 +82,25 @@ export class AuthService {
 	}
 
 	getKayttaja(): Observable<boolean> {
+		this.store.dispatch(setLoading());
+
 		return this.http.get<{ success: boolean; message: Kayttaja }>(`${this.apiUrl}/profiili`, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
-					const responseBody = response.body;
-					const kayttaja = responseBody?.message;
+					const kayttaja = response.body?.message;
 					if (kayttaja) {
 						this.store.dispatch(setUser({ user: kayttaja }));
 					} else {
-						return false;
+						this.store.dispatch(setUser({ user: null }));
 					}
 				} else {
-					return false;
+					this.store.dispatch(setUser({ user: null }));
 				}
-				return true;
+
+				return response.ok;
 			}),
 			catchError(() => {
+				this.store.dispatch(setUser({ user: null }));
 				return of(false);
 			})
 		);
