@@ -2,7 +2,7 @@
 
 Repositorio TUNI kurssin DATA.DB.210: Tietokantaohjelmointi ryhmätyölle.
 
-Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL tietokantaratkaisuna.
+Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-tietokantaa.
 
 ## Sovelluksen asennus ja ajaminen
 
@@ -22,7 +22,9 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 ## TODO
 
+- koodin kattavampi kommentointi
 - paranna UI:ta
-    - linkkien yhteneväisyys
-    - konditionaalinen tekstin vaihtuminen
-    - ostoskori back-nappi
+- github publiciksi
+- dokumentaatio
+- Excel-kaavakkeen täyttö
+- vaiheen 1 dokumentaation viimeistely

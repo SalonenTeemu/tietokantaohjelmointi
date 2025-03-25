@@ -103,3 +103,21 @@ button:hover {
 .back-button:hover {
 	background-color: #005f87;
 }
+
+.back-button {
+	display: inline-block;
+	padding: 0.5rem 1.5rem;
+	font-size: 18px;
+	color: white;
+	background-color: #007bff;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	text-align: center;
+	transition: background-color 0.3s;
+	margin-top: 10px;
+}
+
+.back-button:hover {
+	background-color: #0056b3;
+}

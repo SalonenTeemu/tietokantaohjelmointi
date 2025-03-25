@@ -13,7 +13,9 @@
 				<p><strong>Julkaisuvuosi:</strong> {{ teos.julkaisuvuosi }}</p>
 				<p><strong>Paino:</strong> {{ teos.paino }} g</p>
 				<p><strong>Myynnissä olevat kappaleet:</strong> {{ teos.instanssi_lkm }}</p>
-				<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">Lisää uusi myytävä instanssi</button>
+				<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">
+					{{ valittuTeos === teos.teosId ? 'Sulje' : 'Lisää uusi myytävä instanssi' }}
+				</button>
 			</div>
 
 			<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
@@ -69,10 +71,12 @@
 		</div>
 	</div>
 
-	<button class="add-new-instance-button" (click)="naytaKaikkiTeokset()">Lisää instanssi teokseen, jota divarisi ei vielä myy</button>
+	<button class="add-new-instance-button" (click)="naytaKaikkiTeokset()">
+		{{ naytaSaatavatTeokset ? 'Sulje' : 'Lisää instanssi teoksesta, jota divarisi ei vielä myy' }}
+	</button>
 
 	<div *ngIf="naytaSaatavatTeokset && saatavillaOlevatTeokset && saatavillaOlevatTeokset.length > 0" class="available-books">
-		<h2>Kaikki teokset</h2>
+		<h2>Kaikki saatavilla olevat teokset</h2>
 		<div *ngFor="let teos of saatavillaOlevatTeokset" class="available-book">
 			<h2>{{ teos.nimi }}</h2>
 			<p><strong>Tekijä:</strong> {{ teos.tekija }}</p>
@@ -81,7 +85,9 @@
 			<p><strong>Luokka:</strong> {{ teos.luokka }}</p>
 			<p><strong>Julkaisuvuosi:</strong> {{ teos.julkaisuvuosi }}</p>
 			<p><strong>Paino:</strong> {{ teos.paino }} g</p>
-			<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">Lisää uusi myytävä instanssi</button>
+			<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">
+				{{ valittuTeos === teos.teosId ? 'Sulje' : 'Lisää uusi myytävä instanssi' }}
+			</button>
 			<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
 				<h2>Lisää uusi myytävä instanssi</h2>
 				<form [formGroup]="instanceFormGroup" (ngSubmit)="lisaaInstanssi()">
