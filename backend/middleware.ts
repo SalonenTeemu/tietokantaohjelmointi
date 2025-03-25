@@ -25,7 +25,7 @@ passport.use(
 			if (!user) {
 				return done(null, false);
 			}
-			return done(null, user);
+			return done(null, { kayttajaId: user.kayttajaId, divariId: jwt_payload.divariId, rooli: user.rooli });
 		} catch (error) {
 			console.error('Virhe JWT-strategiassa:', error);
 			return done(error, false);

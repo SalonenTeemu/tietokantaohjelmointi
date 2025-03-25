@@ -29,7 +29,7 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			divariId = await haeKayttajanDivariId(user.kayttajaId);
 		}
 		delete user.salasana;
-		const token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli }, JWTAsetukset.secretOrKey, { expiresIn: '1h' });
+		const token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli, divariId: divariId }, JWTAsetukset.secretOrKey, { expiresIn: '1h' });
 
 		res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
 		res.status(200).json({ message: { ...user, divariId } });

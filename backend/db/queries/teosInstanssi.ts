@@ -8,8 +8,8 @@ export const haeTeosInstanssi = async (teosInstanssiId: string) => {
 };
 
 // Lisää uusi teosInstanssi
-export const lisaaUusiTeosInstanssi = async (instanssi: any) => {
-	await db('keskusdivari.TeosInstanssi').insert(instanssi);
+export const lisaaUusiTeosInstanssi = async (instanssi: any, tietokanta = 'keskusdivari') => {
+	await db(tietokanta + '.TeosInstanssi').insert(instanssi);
 };
 
 // Päivitys teosInstanssin tila

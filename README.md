@@ -22,5 +22,5 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL 
 
 ## TODO
 
-- divarin tietojen muokkaus
+- mahdollisuus alkaa myymään instansseja, joita ei vielä ole myynnissä (jokin valikko ym. josta voi valita mitä teosta aletaan myymään)
 - triggeri divarien synkronoimiseksi

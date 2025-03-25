@@ -111,7 +111,6 @@ export const lisaaTeos = async (req: Request, res: Response): Promise<any> => {
 
 		const { rooli, kayttajaId } = req.user as any;
 		const kayttajanOmaTietokanta = await haeKayttajanOmaTietokanta(kayttajaId);
-		console.log('kayttajanOmaTietokanta', kayttajanOmaTietokanta);
 
 		const teosHaku = async (isbn: string | undefined, tekija: string, nimi: string, tietokanta?: any) =>
 			isbn ? await haeTeosISBNlla(isbn, tietokanta) : await haeTeosTekijanJaNimenPerusteella(tekija, nimi, tietokanta);
@@ -169,15 +168,28 @@ export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 			res.status(400).json({ message: tarkistus.message });
 			return;
 		}
+		const { kayttajaId, divariId: kayttajanDivariId } = req.user as any;
+		if (divariId !== kayttajanDivariId) {
+			res.status(401).json({ message: 'Ei voi lisätä teosInstanssia toisen divariin.' });
+			return;
+		}
 		const divari = await haeDivariIdlla(divariId);
 		if (!divari) {
 			res.status(400).json({ message: 'Annettua divaria ei löydy.' });
 			return;
 		}
-		for (let i = 0; i < kpl; i++) {
-			await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
+		const kayttajanOmaTietokanta = await haeKayttajanOmaTietokanta(kayttajaId);
+		if (kayttajanOmaTietokanta) {
+			for (let i = 0; i < kpl; i++) {
+				await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, teosId }, kayttajanOmaTietokanta);
+			}
+			res.status(201).json({ message: 'TeosInstanssi(t) lisätty.' });
+		} else {
+			for (let i = 0; i < kpl; i++) {
+				await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
+			}
+			res.status(201).json({ message: 'TeosInstanssi(t) lisätty.' });
 		}
-		res.status(201).json({ message: 'TeosInstanssi lisätty.' });
 	} catch (error) {
 		console.error('Virhe teoksen instanssin lisäämisessä:', error);
 		res.status(500).json({ message: 'Virhe' });

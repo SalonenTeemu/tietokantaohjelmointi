@@ -7,7 +7,7 @@ import { Kayttaja } from '../../models/kayttaja';
 import { tarkistaInstanssiLisäys } from '../../utils/validate';
 import { NotificationService } from '../../services/notification.service';
 import { selectUser } from '../../store/selectors/auth.selector';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'app-divari-books',
@@ -25,7 +25,8 @@ export class DivariBooksComponent implements OnInit {
 		private bookService: BookService,
 		private fb: FormBuilder,
 		private store: Store,
-		private notificationService: NotificationService
+		private notificationService: NotificationService,
+		private router: Router
 	) {
 		this.store.select(selectUser).subscribe((user) => {
 			this.kayttaja = user;
@@ -43,6 +44,10 @@ export class DivariBooksComponent implements OnInit {
 			return;
 		}
 		this.lataaTeokset();
+	}
+
+	lisaaTeos() {
+		this.router.navigate(['/uusiteos']);
 	}
 
 	paivitaTeosLkm(lkm: number) {
