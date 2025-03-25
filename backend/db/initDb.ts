@@ -22,6 +22,9 @@ export const alustaTietokanta = async () => {
 		console.log('Tietokantataulut luotu onnistuneesti');
 		await luoNakymat();
 		await lisaaTestidata();
+		for (const divari of divarit) {
+			await luoInstanssiTriggeri(divari);
+		}
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
 	}
@@ -190,5 +193,44 @@ const luoDivarintaulut = async (divari: string) => {
 			table.specificType('tila', 'teostila').defaultTo('vapaa');
 			table.uuid('teosId').notNullable().references('teosId').inTable(`${divari}.Teos`);
 		});
+	}
+};
+
+// Luo funktio triggerille, joka lisää instanssin keskusdivariin
+const luoInstanssiTriggeriFunktio = async (divari: string) => {
+	// Hae divarin id, jotta osataan lisätä instanssi oikeaan divariin keskusdivarissa
+	const divariId = await db.raw(`SELECT "divariId" FROM ${keskusdivari}."Divari" WHERE "omaTietokanta" = '${divari}'`);
+	await db.raw(`
+        CREATE OR REPLACE FUNCTION ${divari}.lisaa_instanssi()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            INSERT INTO ${keskusdivari}."TeosInstanssi" ("teosInstanssiId", hinta, kunto, sisaanostohinta, myyntipvm, tila, "teosId", "divariId")
+            VALUES (NEW."teosInstanssiId", NEW.hinta, NEW.kunto, NEW.sisaanostohinta, NEW.myyntipvm, NEW.tila, NEW."teosId", ${divariId.rows[0].divariId});
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    `);
+};
+
+// Luo triggeri, joka lisää instanssin keskusdivariin
+const luoInstanssiTriggeri = async (divari: string) => {
+	await luoInstanssiTriggeriFunktio(divari);
+	// Tarkasta, että triggeri ei ole jo olemassa
+	const triggeri = await db.raw(`
+        SELECT EXISTS (
+            SELECT 1
+            FROM pg_trigger
+            WHERE tgname = 'lisaa_instanssi'
+            AND tgrelid = '${divari}."TeosInstanssi"'::regclass
+        );
+    `);
+	if (!triggeri.rows[0].exists) {
+		await db.raw(`
+			CREATE TRIGGER lisaa_instanssi
+			AFTER INSERT ON ${divari}."TeosInstanssi"
+			FOR
+			EACH ROW
+			EXECUTE FUNCTION ${divari}.lisaa_instanssi();
+		`);
 	}
 };
