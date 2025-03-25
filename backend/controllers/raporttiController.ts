@@ -7,7 +7,37 @@ import { haeAsiakkaidenViimeVuodenOstot } from '../db/queries/teosInstanssi';
 export const haeLuokanMyynnissaOlevatTeokset = async (req: Request, res: Response) => {
 	try {
 		const tiedot = await haeKaikkiLuokanMyynnissaOlevatTeokset();
-		res.status(200).json({ message: tiedot });
+
+		const aggregatedData = tiedot.reduce((acc, item) => {
+			if (!acc[item.luokka]) {
+				acc[item.luokka] = {
+					luokka: item.luokka,
+					lkmMyynnissa: 0,
+					lkmTeoksia: 0,
+					kokonaisMyyntihinta: 0,
+					keskiMyyntihinta: 0,
+				};
+			}
+			acc[item.luokka].lkmMyynnissa += parseInt(item.lkmMyynnissa);
+			acc[item.luokka].lkmTeoksia += parseInt(item.lkmTeoksia);
+
+			acc[item.luokka].kokonaisMyyntihinta += parseFloat(item.kokonaisMyyntihinta.replace(/^0+/, ''));
+
+			if (acc[item.luokka].lkmMyynnissa > 0) {
+				acc[item.luokka].keskiMyyntihinta = parseFloat((acc[item.luokka].kokonaisMyyntihinta / acc[item.luokka].lkmMyynnissa).toFixed(2));
+			} else {
+				acc[item.luokka].keskiMyyntihinta = 0;
+			}
+
+			return acc;
+		}, {});
+
+		const result = Object.values(aggregatedData).map((item: any) => ({
+			...item,
+			kokonaisMyyntihinta: item.kokonaisMyyntihinta.toFixed(2),
+		}));
+
+		res.status(200).json({ message: result });
 	} catch (error) {
 		console.error('Virhe haettaessa luokan kokonaismyyntiä:', error);
 		res.status(500).json({ message: 'Virhe' });

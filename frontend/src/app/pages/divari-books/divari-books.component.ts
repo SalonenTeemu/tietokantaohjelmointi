@@ -17,9 +17,11 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class DivariBooksComponent implements OnInit {
 	instanceFormGroup: FormGroup;
+	saatavillaOlevatTeokset: any[] = [];
 	teokset: any[] = [];
 	valittuTeos: string | null = null;
 	kayttaja!: Kayttaja | null;
+	naytaSaatavatTeokset = false;
 
 	constructor(
 		private bookService: BookService,
@@ -74,6 +76,23 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
+	lataaKaikkiTeokset() {
+		this.bookService.getKaikkiTeokset().subscribe((teokset) => {
+			const filteredTeokset = teokset.filter((teos) => {
+				return !this.teokset.some((divarinTeos) => divarinTeos.teosId === teos.teosId);
+			});
+			this.saatavillaOlevatTeokset = filteredTeokset;
+		});
+	}
+
+	naytaKaikkiTeokset() {
+		this.naytaSaatavatTeokset = !this.naytaSaatavatTeokset;
+		if (this.naytaSaatavatTeokset) {
+			this.lataaKaikkiTeokset();
+			this.valittuTeos = null;
+		}
+	}
+
 	valitseTeos(teosId: string) {
 		if (this.valittuTeos === teosId) {
 			this.valittuTeos = null;
@@ -97,10 +116,16 @@ export class DivariBooksComponent implements OnInit {
 		}
 		this.bookService.postLisaaTeosInstanssi(instanssi).subscribe((success: boolean) => {
 			if (success) {
-				this.paivitaTeosLkm(instanssi.kpl);
-				this.notificationService.newNotification('success', 'Teoksen lisäys onnistui');
+				if (!this.teokset.some((teos) => teos.teosId === this.valittuTeos)) {
+					this.lataaTeokset();
+				} else {
+					this.paivitaTeosLkm(instanssi.kpl);
+				}
+				this.notificationService.newNotification('success', 'Teoksen instanssin lisäys onnistui');
+				this.valittuTeos = null;
+				this.naytaSaatavatTeokset = false;
 			} else {
-				this.notificationService.newNotification('error', 'Teoksen lisäys epäonnistui');
+				this.notificationService.newNotification('error', 'Teoksen intanssin lisäys epäonnistui');
 			}
 		});
 	}
