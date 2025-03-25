@@ -31,3 +31,13 @@ export const haeKayttajanDivariId = async (kayttajaId: number) => {
 	const kayttaja = await db('keskusdivari.Divari_Admin').where('kayttajaId', kayttajaId).first();
 	return kayttaja.divariId;
 };
+
+// Hae käyttäjän oma tietokanta
+export const haeKayttajanOmaTietokanta = async (kayttajaId: number) => {
+	const result = await db('keskusdivari.Divari_Admin as da')
+		.join('keskusdivari.Divari as d', 'da.divariId', 'd.divariId')
+		.where('da.kayttajaId', kayttajaId)
+		.select('d.omaTietokanta')
+		.first();
+	return result ? result.omaTietokanta : null;
+};

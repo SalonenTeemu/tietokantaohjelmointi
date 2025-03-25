@@ -14,7 +14,7 @@ import {
 const teosRoutes = express.Router({ mergeParams: true });
 
 teosRoutes.get('/', haeKaikkiTeokset);
-teosRoutes.post('/', validoiJWT, tarkistaRooli(['admin']), lisaaTeos);
+teosRoutes.post('/', validoiJWT, tarkistaRooli(['admin', 'divariAdmin']), lisaaTeos);
 teosRoutes.get('/hae', haeTeoksia);
 teosRoutes.get('/luokat', haeKaikkiLuokat);
 teosRoutes.get('/tyypit', haeKaikkiTyypit);

@@ -92,8 +92,10 @@ export const haeTeosIdlla = async (teosId: string) => {
 };
 
 // Hae teos ISBN:llä
-export const haeTeosISBNlla = async (isbn: string) => {
-	const teos = await db('keskusdivari.Teos').where('isbn', isbn).first();
+export const haeTeosISBNlla = async (isbn: string, tietokanta = 'keskusdivari') => {
+	const teos = await db(tietokanta + '.Teos')
+		.where('isbn', isbn)
+		.first();
 	return teos;
 };
 
@@ -130,8 +132,13 @@ export const haeTeoksenInstanssit = async (teosId: string) => {
 };
 
 // Lisää uusi teos
-export const lisaaUusiTeos = async (teos: any) => {
-	await db('keskusdivari.Teos').insert(teos);
+export const lisaaUusiTeos = async (teos: any, tietokanta = 'keskusdivari') => {
+	if (teos.isbn == null || teos.isbn === '') {
+		delete teos.isbn;
+	}
+	return await db(tietokanta + '.Teos')
+		.insert(teos)
+		.returning('*');
 };
 
 // Hae kaikki luokat
@@ -144,4 +151,20 @@ export const haeLuokat = async () => {
 export const haeTyypit = async () => {
 	const tyypit = await db('keskusdivari.Tyyppi').select('tyyppiId', 'nimi');
 	return tyypit;
+};
+
+// Hae teos tekijän ja nimen perusteella
+export const haeTeosTekijanJaNimenPerusteella = async (tekija: string, nimi: string, tietokanta = 'keskusdivari') => {
+	const teos = await db(tietokanta + '.Teos')
+		.where('tekija', tekija)
+		.andWhere('nimi', nimi)
+		.first();
+	return teos;
+};
+
+export const haeOmanTietokannanTeos = async (teosId: string, tietokanta = 'keskusdivari') => {
+	const teos = await db(tietokanta + '.Teos')
+		.where('teosId', teosId)
+		.first();
+	return teos;
 };

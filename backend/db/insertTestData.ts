@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import db from './knex';
-import { keskusdivari } from './initDb';
+import { keskusdivari, divarit as divariSkeemat } from './initDb';
 
 // Funktio salasanan hashaukseen
 const hashSalasana = async (salasana: string) => {
@@ -50,10 +50,10 @@ const kayttajat = [
 ];
 
 const divarit = [
-	{ nimi: 'Keskusdivari', osoite: 'Keskusdivarintie 1', webSivu: 'www.keskusdivari.fi', onKeskusdivari: true, omaTietokanta: true },
-	{ nimi: 'Divari 1', osoite: 'Divarintie 1' },
+	{ nimi: 'Keskusdivari', osoite: 'Keskusdivarintie 1', webSivu: 'www.keskusdivari.fi', onKeskusdivari: true, omaTietokanta: 'keskusdivari' },
+	{ nimi: 'Divari 1', osoite: 'Divarintie 1', omaTietokanta: 'd1' },
 	{ nimi: 'Divari 2', osoite: 'Divarintie 2' },
-	{ nimi: 'Divari 3', osoite: 'Divarintie 3' },
+	{ nimi: 'Divari 3', osoite: 'Divarintie 3', omaTietokanta: 'd3' },
 ];
 
 const luokat = [
@@ -94,6 +94,7 @@ const teokset = [
 		tyyppiId: 1,
 	},
 	{
+		teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd',
 		nimi: 'Tuulentavoittelijan morsian',
 		tekija: 'Madeleine Brent',
 		isbn: '9156381451',
@@ -155,6 +156,21 @@ const teosInstanssit = [
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5', divariId: 4, tilausId: 3 },
 ];
 
+const teosInstanssitD1 = [
+	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 5.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
+	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
+	{ hinta: 15.0, kunto: 'heikko', sisaanostohinta: 7.0, teosId: '8a9a88c7-3487-47d5-a73d-1bfcfbaa17ef' },
+	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 5.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
+	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
+	{ hinta: 15.0, kunto: 'heikko', sisaanostohinta: 7.0, teosId: '8a9a88c7-3487-47d5-a73d-1bfcfbaa17ef' },
+];
+
+const teosInstanssitD3 = [
+	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
+
+	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
+];
+
 const tilaukset = [
 	{ tila: 'valmis', tilauspvm: '2025-03-01', postikulut: 5.0, kokonaishinta: 50.0, kayttajaId: 5 },
 	{ tila: 'valmis', tilauspvm: '2024-03-18', postikulut: 10.0, kokonaishinta: 100.0, kayttajaId: 5 },
@@ -177,6 +193,23 @@ export const lisaaTestidata = async () => {
 			await trx(`${keskusdivari}.Tilaus`).insert(tilaukset);
 			await trx(`${keskusdivari}.TeosInstanssi`).insert(teosInstanssit);
 		});
+		for (const divari of divariSkeemat) {
+			await db.transaction(async (trx) => {
+				await trx(`${divari}.Luokka`).insert(luokat);
+				await trx(`${divari}.Tyyppi`).insert(tyypit);
+				await trx(`${divari}.Teos`).insert(teokset);
+			});
+		}
+		for (const divari of divariSkeemat) {
+			await db.transaction(async (trx) => {
+				if (divari == 'd1') {
+					await trx(`${divari}.TeosInstanssi`).insert(teosInstanssitD1);
+				} else if (divari == 'd3') {
+					await trx(`${divari}.TeosInstanssi`).insert(teosInstanssitD3);
+				}
+			});
+		}
+
 		console.log('Testidata lisätty onnistuneesti');
 	} catch {
 		console.error('Tietokannassa oli jo testidataa.');

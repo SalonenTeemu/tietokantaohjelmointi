@@ -78,7 +78,7 @@ const luoKeskusdivarinTaulut = async () => {
 			table.string('osoite', 255).notNullable();
 			table.string('webSivu', 255);
 			table.boolean('onKeskusdivari').defaultTo(false).notNullable();
-			table.boolean('omaTietokanta').defaultTo(false).notNullable();
+			table.string('omaTietokanta', 255).defaultTo(null);
 		});
 	}
 
