@@ -38,6 +38,6 @@ export const routes: Routes = [
 	{ path: 'divari/teokset', component: DivariBooksComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin'] } },
 	{ path: 'keskusdivari', component: KeskusdivariComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
 	{ path: 'keskusdivari/raportit', component: KeskusdivariReportsComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
-	{ path: 'keskusdivari/uusiteos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['admin'] } },
+	{ path: 'uusiteos', component: NewBookComponent, canActivate: [AuthGuard], data: { roles: ['divariAdmin', 'admin'] } },
 	{ path: '**', component: NotFoundComponent },
 ];

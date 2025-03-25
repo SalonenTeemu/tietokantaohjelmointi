@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
 import { NotificationService } from '../../services/notification.service';
+import { Location } from '@angular/common';
 
 @Component({
 	selector: 'app-new-book',
@@ -25,7 +26,8 @@ export class NewBookComponent {
 		private fb: FormBuilder,
 		private bookService: BookService,
 		private store: Store,
-		private notificationService: NotificationService
+		private notificationService: NotificationService,
+		private location: Location
 	) {
 		this.bookFormGroup = this.fb.group({
 			nimi: [''],
@@ -55,5 +57,9 @@ export class NewBookComponent {
 				this.notificationService.newNotification('error', 'Teoksen lisäys epäonnistui');
 			}
 		});
+	}
+
+	palaaTakaisin() {
+		this.location.back();
 	}
 }

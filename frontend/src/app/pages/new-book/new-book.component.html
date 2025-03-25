@@ -1,6 +1,6 @@
 <div class="new-book-container">
 	<div class="new-book-form">
-		<h1>Lisää uusi teos keskusdivariin</h1>
+		<h1>Lisää uusi teos</h1>
 
 		<form [formGroup]="bookFormGroup" (ngSubmit)="lisaaTeos()" class="form-content">
 			<div class="form-group">
@@ -42,7 +42,7 @@
 		</form>
 
 		<p class="back-link">
-			<a routerLink="/keskusdivari">Palaa keskusdivari-sivulle</a>
+			<a (click)="palaaTakaisin()" (keydown.enter)="palaaTakaisin()" tabindex="0">Palaa takaisin</a>
 		</p>
 	</div>
 </div>

@@ -18,7 +18,6 @@ export class AuthGuard implements CanActivate {
 
 	canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
 		const requiredRoles = route.data['roles'] as string[];
-		console.log('isloadinguser', this.store.select(selectIsLoadingUser).pipe(take(1)));
 
 		return this.store.select(selectIsLoadingUser).pipe(
 			filter((loading) => !loading),
