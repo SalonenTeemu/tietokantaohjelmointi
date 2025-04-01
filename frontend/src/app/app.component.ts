@@ -43,6 +43,20 @@ export class AppComponent implements OnInit, OnDestroy {
 		this.bookService.getTeosTyypit().subscribe((tyypit: string[]) => {
 			this.store.dispatch(addTyypit({ tyypit }));
 		});
+		this.kirjautunut$.subscribe((isLoggedIn) => {
+			if (!isLoggedIn) {
+				this.authService.paivitaTokenit().subscribe({
+					next: (success) => {
+						if (!success) {
+							this.authService.postKirjauduUlos().subscribe();
+						}
+					},
+					error: () => {
+						this.authService.postKirjauduUlos().subscribe();
+					},
+				});
+			}
+		});
 		this.tokenRefreshSubscription = interval(840000).subscribe(() => {
 			this.kirjautunut$.subscribe((isLoggedIn) => {
 				// Jos käyttäjä on kirjautunut sisään, päivitetään tokenit

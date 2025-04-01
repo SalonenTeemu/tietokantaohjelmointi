@@ -22,9 +22,9 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
-- Uusi teos -> muu luokka/tyyppi -> lisää luokka/tyyppi
-- Käyttäjän tilaukset
+- Käyttäjäsivu, jossa tilaukset ja käyttäjätietoja
 - Paranna UI:ta (ostokori ainakin)
+- Kun kirjautuu ulos tilauskohdassa, teokset jää varatuiksi
 
 - Github julkiseksi
 - Dokumentaation teko
