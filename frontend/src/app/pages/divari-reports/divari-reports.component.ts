@@ -12,11 +12,14 @@ import { selectUser } from '../../store/selectors/auth.selector';
 	templateUrl: './divari-reports.component.html',
 	styleUrl: './divari-reports.component.css',
 })
+
+//Divarin raporttisivun komponentti, joka näyttää divarin luokkaraportin
 export class DivariReportsComponent implements OnInit {
 	raportti: any[] = [];
 	kayttaja!: Kayttaja | null;
 	openIndexes: number[] = [];
 
+	// Rakentaja alustaa käyttäjän ja raporttipalvelun
 	constructor(
 		private reportService: ReportService,
 		private store: Store,
@@ -27,11 +30,13 @@ export class DivariReportsComponent implements OnInit {
 		});
 	}
 
+	// Lataa raportin kun komponentti alustuu
 	ngOnInit() {
-		this.lataaTeokset();
+		this.lataaRaportti();
 	}
 
-	lataaTeokset() {
+	// Lataa raportti käyttäjän divariId:llä
+	lataaRaportti() {
 		if (!this.kayttaja || !this.kayttaja.divariId) {
 			return;
 		}
@@ -40,6 +45,7 @@ export class DivariReportsComponent implements OnInit {
 		});
 	}
 
+	// Piilottaa tai näyttää luokan raportin
 	toggleLuokka(index: number): void {
 		if (this.openIndexes.includes(index)) {
 			this.openIndexes = this.openIndexes.filter((i) => i !== index);

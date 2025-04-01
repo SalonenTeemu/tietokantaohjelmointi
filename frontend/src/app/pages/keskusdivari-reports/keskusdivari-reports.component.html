@@ -1,16 +1,17 @@
+<!--Keskusdivarin raportti sivu-->
 <div class="keskusdivari-reports-container">
 	<div>
 		<h2>Raportti asiakkaiden viime vuonna ostamien teosten lukumäärästä</h2>
-		<button (click)="lataaRaportti()">Lataa raportti</button>
+		<button (click)="lataaAsiakasRaportti()">Lataa raportti</button>
 	</div>
 	<h2>Keskusdivarissa myynnissä olevien teosten luokkaraportti</h2>
 	<div class="keskusdivari-reports">
 		<div *ngFor="let luokka of raportti; let i = index" class="keskusdivari-report">
 			<div class="keskusdivari-report-header" (click)="toggleLuokka(i)" (keyup.enter)="toggleLuokka(i)" tabindex="0">
 				<h2 class="luokka">{{ luokka.luokka }}</h2>
-				<span class="arrow" [class.open]="openIndexes.includes(i)">&#x25BC;</span>
+				<span class="arrow" [class.open]="avatut.includes(i)">&#x25BC;</span>
 			</div>
-			<div class="divari-raportti-content" *ngIf="openIndexes.includes(i)">
+			<div class="divari-raportti-content" *ngIf="avatut.includes(i)">
 				<p><strong>Teosten määrä:</strong> {{ luokka.lkmTeoksia }}</p>
 				<p><strong>Myynnissä olevien instanssien määrä:</strong> {{ luokka.lkmMyynnissa }}</p>
 				<p><strong>Myynnissä olevien instanssien keskihinta:</strong> {{ luokka.keskiMyyntihinta }} €</p>

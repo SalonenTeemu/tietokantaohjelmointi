@@ -17,6 +17,7 @@ import { NotificationService } from '../../services/notification.service';
 	styleUrls: ['./order-overview.component.css'],
 	standalone: true,
 })
+// Tilauksen yhteenvetokomponentti
 export class OrderOverviewComponent {
 	ostoskoriTuotteet$: Observable<OstoskoriTuote[]>;
 	toimituskulut$: Observable<number>;
@@ -26,6 +27,7 @@ export class OrderOverviewComponent {
 
 	private store = inject(Store);
 
+	// Rakentaja alustaa tilauksen yhteenvetokomponentin ja tilat reduxista
 	constructor(
 		private router: Router,
 		private orderService: OrderService,
@@ -40,16 +42,19 @@ export class OrderOverviewComponent {
 		);
 	}
 
+	// Vahvistaa tilauksen ja ohjaa käyttäjän tilausvahvistussivulle
 	vahvistaTilaus() {
 		this.tilausId$.pipe(take(1)).subscribe((tilausId) => {
 			if (tilausId !== null) {
 				this.orderService.postVahvistaTilaus(tilausId).subscribe((success: boolean) => {
+					// Tilauksen vahvistaminen onnistui, ohjataan käyttäjä tilausvahvistussivulle
 					if (success) {
 						this.notificationService.newNotification('success', 'Tilaus vahvistettu');
 						combineLatest([this.ostoskoriTuotteet$, this.toimituskulut$, this.yhteensa$])
 							.pipe(take(1))
 							.subscribe(([ostoskoriTuotteet, toimituskulut, yhteensa]) => {
 								this.store.dispatch(clearCart());
+								// Annetaan tilauksen tiedot tilausvahvistussivulle
 								this.router.navigate(['/tilaus/vahvistettu'], { state: { tuotteet: ostoskoriTuotteet, toimituskulut, yhteensa } });
 							});
 					} else {
@@ -62,11 +67,14 @@ export class OrderOverviewComponent {
 		});
 	}
 
+	// Peruuta tilaus ja ohjaa käyttäjän ostoskoriin
 	peruutaTilaus() {
 		this.tilausId$.pipe(take(1)).subscribe((tilausId) => {
 			if (tilausId !== null) {
 				this.orderService.postPeruutaTilaus(tilausId).subscribe((success: boolean) => {
+					// Tilauksen peruminen onnistui
 					if (success) {
+						// Poistetaan tilausid
 						this.store.dispatch(cancelOrder());
 						this.notificationService.newNotification('success', 'Tilaus peruttu');
 					} else {

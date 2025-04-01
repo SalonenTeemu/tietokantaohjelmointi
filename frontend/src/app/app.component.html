@@ -1,3 +1,4 @@
+<!--Sovelluksen sivu, jossa yhdistyy navigointipalkki sekä ilmoitukset jne.-->
 <nav>
 	<a routerLink="/">Etusivu</a><a routerLink="/hae">Etsi kirjoja</a><a routerLink="/ostoskori">Ostoskori</a>
 	<ng-container *ngIf="(kirjautunut$ | async) === true">

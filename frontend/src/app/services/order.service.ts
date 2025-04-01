@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 @Injectable({
 	providedIn: 'root',
 })
+// Tilauksen palvelu, joka käsittelee tilauksen luontia, vahvistamista ja perumista
 export class OrderService {
 	private apiUrl = 'http://localhost:8041/api/tilaus';
 	constructor(
@@ -14,6 +15,12 @@ export class OrderService {
 		private store: Store
 	) {}
 
+	/**
+	 * Lähettää uuden tilauksen palvelimelle ja tallentaa onnistuneen tilauksen redux-tilaan.
+	 * 
+	 * @param tilaus - Tilaustiedot
+	 * @returns Observable, joka palauttaa true, jos tilauksen luonti onnistui, muuten false
+	 */
 	postLuoTilaus(tilaus: unknown): Observable<unknown> {
 		return this.http.post(this.apiUrl, tilaus, { observe: 'response' }).pipe(
 			map((response) => {
@@ -35,6 +42,12 @@ export class OrderService {
 		);
 	}
 
+	/**
+	 * Vahvistaa tilauksen palvelimella ja palauttaa tilauksen vahvistamisen tuloksen.
+	 * 
+	 * @param tilausId - Tilaus ID, joka halutaan vahvistaa
+	 * @returns True, jos tilauksen vahvistaminen onnistui, muuten false
+	 */
 	postVahvistaTilaus(tilausId: number): Observable<boolean> {
 		return this.http.post(`${this.apiUrl}/vahvista/${tilausId}`, null, { observe: 'response' }).pipe(
 			map((response) => {
@@ -52,6 +65,12 @@ export class OrderService {
 		);
 	}
 
+	/**
+	 * Peruuttaa tilauksen palvelimella ja palauttaa tilauksen perumisen tuloksen.
+	 * 
+	 * @param tilausId - Tilaus ID, joka halutaan peruuttaa
+	 * @returns True, jos tilauksen peruminen onnistui, muuten false
+	 */
 	postPeruutaTilaus(tilausId: number): Observable<boolean> {
 		return this.http.post(`${this.apiUrl}/peruuta/${tilausId}`, null, { observe: 'response' }).pipe(
 			map((response) => {

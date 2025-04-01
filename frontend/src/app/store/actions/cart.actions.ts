@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 
+// Ostoskorin tilan toiminnot
 export const addToCart = createAction('[Cart] Add Item', props<{ item: OstoskoriTuote }>());
 export const removeFromCart = createAction('[Cart] Remove Item', props<{ id: number }>());
 export const clearCart = createAction('[Cart] Clear Cart');

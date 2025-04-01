@@ -17,10 +17,12 @@ import { NotificationComponent } from './notification.component';
 	styleUrls: ['./app.component.css'],
 	imports: [RouterModule, CommonModule, NotificationComponent],
 })
+// Pääkomponentti, joka sisältää sovelluksen navigaation ja tilan hallinnan
 export class AppComponent implements OnInit {
 	kirjautunut$: Observable<boolean>;
 	rooli$: Observable<string | undefined>;
 
+	// Rakentaja alustaa käyttäjän ja roolin tilat reduxista sekä palvelut
 	constructor(
 		private store: Store,
 		private authService: AuthService,
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit {
 		this.rooli$ = this.store.select(selectUserRole) || undefined;
 	}
 
+	// Komponentti alustuu ja lataa luokat, tyypit sekä käyttäjän tiedot
 	ngOnInit() {
 		this.authService.getKayttaja().subscribe();
 		this.bookService.getTeosLuokat().subscribe((luokat: string[]) => {
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit {
 		});
 	}
 
+	// Kirjaa käyttäjän ulos ja näyttää ilmoituksen
 	kirjauduUlos() {
 		this.authService.postKirjauduUlos().subscribe();
 		this.notificationService.newNotification('success', 'Kirjauduttu ulos');

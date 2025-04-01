@@ -10,11 +10,13 @@ import { CommonModule } from '@angular/common';
 	styleUrl: './order-confirmed.component.css',
 	standalone: true,
 })
+// Komponentti, joka näyttää tilauksen vahvistussivun
 export class OrderConfirmedComponent {
 	tuotteet: OstoskoriTuote[];
 	toimituskulut: number;
 	yhteensa: number;
 
+	// Rakentaja alustaa tuotteet, toimituskulut ja yhteensä arvot tilauksen vahvistussivulle
 	constructor(private router: Router) {
 		const navigation = this.router.getCurrentNavigation();
 		const state = navigation?.extras.state || {};
@@ -23,6 +25,7 @@ export class OrderConfirmedComponent {
 		this.yhteensa = state['yhteensa'] || 0;
 	}
 
+	// Navigointi etusivulle
 	siirryEtusivulle() {
 		this.router.navigate(['/']);
 	}

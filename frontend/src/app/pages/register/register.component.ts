@@ -12,9 +12,11 @@ import { NotificationService } from '../../services/notification.service';
 	styleUrl: './register.component.css',
 	standalone: true,
 })
+// Rekisteröitymiskomponentti
 export class RegisterComponent {
 	registerForm: FormGroup;
 
+	// Rakentaja alustaa lomakkeen ja palvelut
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
@@ -30,14 +32,18 @@ export class RegisterComponent {
 		});
 	}
 
+	// Rekisteröi käyttäjä ja tarkista syötteet
 	rekisteroidy() {
 		const { nimi, email, puhelin, osoite, salasana } = this.registerForm.value;
+		// Tarkista käyttäjän syöte
 		const tarkistus = tarkistaRekisteroityminen(nimi, email, puhelin, osoite, salasana);
 		if (!tarkistus.success) {
 			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
+		// Rekisteröi käyttäjä
 		this.authService.postRekisteroidy(nimi, email, puhelin, osoite, salasana).subscribe((success: boolean) => {
+			// Ohjaa käyttäjä kirjautumissivulle onnistuneen rekisteröitymisen jälkeen
 			if (success) {
 				this.notificationService.newNotification('success', 'Rekisteröityminen onnistui');
 				this.router.navigate(['/kirjaudu']);

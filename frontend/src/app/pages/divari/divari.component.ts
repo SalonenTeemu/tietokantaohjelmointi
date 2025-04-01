@@ -8,4 +8,6 @@ import { RouterModule } from '@angular/router';
 	templateUrl: './divari.component.html',
 	styleUrl: './divari.component.css',
 })
+
+// Divari komponentti, jossa linkit divariin liittyviin toimintoihin
 export class DivariComponent {}

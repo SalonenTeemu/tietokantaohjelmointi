@@ -12,13 +12,16 @@ import { removeNotification } from './store/actions/notification.actions';
 	styleUrls: ['./notification.component.css'],
 	standalone: true,
 })
+// Ilmoituskomponentti, joka näyttää käyttäjälle ilmoituksia
 export class NotificationComponent implements OnInit {
 	notifications$: Observable<{ type: string; message: string }[]>;
 
+	// Rakentaja alustaa ilmoitukset reduxista
 	constructor(private store: Store) {
 		this.notifications$ = this.store.select(selectNotifications);
 	}
 
+	// Komponentti alustuu ja asettaa 4 sekunnin ajan ilmoituksille
 	ngOnInit() {
 		this.notifications$.subscribe((notifications) => {
 			notifications.forEach((notification, index) => {

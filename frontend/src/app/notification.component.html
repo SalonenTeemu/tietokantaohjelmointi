@@ -1,3 +1,4 @@
+<!--Komponentti ilmoituksille-->
 <div class="notification-container" *ngIf="notifications$ | async as notifications">
 	<div *ngFor="let notification of notifications" class="notification-item">
 		<div class="notification {{ notification.type }}">
