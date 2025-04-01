@@ -23,6 +23,7 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 ## TODO
 
 - Paranna UI:ta (ostokori ainakin)
+- Kun kirjautuu ulos tilauskohdassa, teokset jää varatuiksi
 
 - Github julkiseksi
 - Dokumentaation teko
