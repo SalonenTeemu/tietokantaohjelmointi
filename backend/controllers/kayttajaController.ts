@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { haeKayttajaSahkopostilla, haeKayttajaPuhelimella, lisaaKayttaja, haeKayttajanDivariId, haeProfiiliIDlla } from '../db/queries/kayttaja';
+import { haeDivariIdlla } from '../db/queries/divari';
 import { tarkistaKirjautuminen, tarkistaRekisteroityminen } from '../utils/validate';
 import { JWTAsetukset } from '../middleware';
 
@@ -29,9 +30,14 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			return;
 		}
 		let divariId;
-		// Jos käyttäjä on divariAdmin tai admin, hae divariId
+		let divariNimi;
+		// Jos käyttäjä on divariAdmin tai admin, hae divariId ja divariNimi
 		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
 			divariId = await haeKayttajanDivariId(user.kayttajaId);
+			if (divariId) {
+				const divari = await haeDivariIdlla(divariId);
+				divariNimi = divari.nimi;
+			}
 		}
 		delete user.salasana;
 		// Luodaan tunnin kestävä access-token ja viikon kestävä refresh-token
@@ -45,7 +51,7 @@ export const kirjaudu = async (req: Request, res: Response) => {
 		// Asetetaan access_token evästeeseen iällä 15 min ja refresh_token evästeeseen iällä 7 päivää
 		res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 900000 });
 		res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 604800000 });
-		res.status(200).json({ message: { ...user, divariId } });
+		res.status(200).json({ message: { ...user, divariId, divariNimi } });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);
 		res.status(500).json({ message: 'Virhe kirjautumisessa.' });
@@ -151,11 +157,16 @@ export const haeProfiili = async (req: Request, res: Response) => {
 			return;
 		}
 		let divariId;
-		// Jos käyttäjä on divariAdmin tai admin, hae divariId
+		let divariNimi;
+		// Jos käyttäjä on divariAdmin tai admin, hae divariId ja divariNimi
 		if (user.rooli === 'divariAdmin' || user.rooli === 'admin') {
 			divariId = await haeKayttajanDivariId(user.kayttajaId);
+			if (divariId) {
+				const divari = await haeDivariIdlla(divariId);
+				divariNimi = divari.nimi;
+			}
 		}
-		res.status(200).json({ message: { ...user, divariId } });
+		res.status(200).json({ message: { ...user, divariId, divariNimi } });
 	} catch (error) {
 		console.error('Virhe profiilin hakemisessa:', error);
 		res.status(500).json({ message: 'Virhe' });

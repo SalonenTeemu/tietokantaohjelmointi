@@ -5,6 +5,7 @@ import { SearchComponent } from './pages/search/search.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 import { OrderOverviewComponent } from './pages/order-overview/order-overview.component';
 import { OrderConfirmedComponent } from './pages/order-confirmed/order-confirmed.component';
 import { NewBookComponent } from './pages/new-book/new-book.component';
@@ -18,6 +19,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 // Sovelluksen reititys, jossa myös määritellään niiden suojaus roolien mukaan
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
+	{ path: 'profiili', component: ProfileComponent, canActivate: [AuthGuard], data: { roles: ['asiakas', 'divariAdmin', 'admin'] } },
 	{
 		path: 'tilaus',
 		component: OrderOverviewComponent,

@@ -1,0 +1,102 @@
+.profiili-container {
+	max-width: 800px;
+	margin: 40px auto;
+	padding: 20px;
+	background-color: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profiili-container h1 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 20px;
+}
+
+.profiili-container p {
+	color: #555;
+	font-size: 16px;
+	margin: 8px 0;
+}
+
+.tilaus-container {
+	margin-top: 30px;
+	padding: 15px;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tilaus-container h2 {
+	color: #0078a8;
+	margin-bottom: 10px;
+}
+
+.tilaus-container ul {
+	list-style: none;
+	padding: 0;
+}
+
+.tilaus-container li {
+	background-color: #eef7fb;
+	padding: 12px;
+	margin-bottom: 10px;
+	border-radius: 6px;
+	border-left: 4px solid #0078a8;
+}
+
+.teos-container,
+.instanssi-container {
+	background-color: #f5f5f5;
+	padding: 10px;
+	border-radius: 6px;
+	margin-top: 10px;
+}
+
+.teos-container h4,
+.instanssi-container h4 {
+	color: #444;
+	margin-bottom: 8px;
+}
+
+.teos-container p,
+.instanssi-container p {
+	font-size: 14px;
+	color: #666;
+	margin: 4px 0;
+}
+
+.ei-tilauksia {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+	margin-top: 10px;
+}
+
+button {
+	display: inline-block;
+	margin-top: 20px;
+	padding: 8px 16px;
+	background-color: #0078a8;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	text-align: center;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #005f87;
+}
+
+@media (max-width: 600px) {
+	.profiili-container {
+		padding: 15px;
+	}
+	.teos-container,
+	.instanssi-container {
+		padding: 8px;
+	}
+}

@@ -4,7 +4,7 @@ import { haeTilaukset, luoTilaus, vahvistaTilaus, peruutaTilaus } from '../contr
 
 const tilausRoutes = express.Router({ mergeParams: true });
 
-tilausRoutes.get('/:kayttajaId', validoiJWT, haeTilaukset);
+tilausRoutes.get('/', validoiJWT, haeTilaukset);
 tilausRoutes.post('/', validoiJWT, luoTilaus);
 tilausRoutes.post('/vahvista/:tilausId', validoiJWT, vahvistaTilaus);
 tilausRoutes.post('/peruuta/:tilausId', validoiJWT, peruutaTilaus);

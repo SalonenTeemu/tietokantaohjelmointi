@@ -7,4 +7,5 @@ export interface Kayttaja {
 	email: string;
 	rooli: string;
 	divariId?: number;
+	divariNimi?: string;
 }

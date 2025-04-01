@@ -2,6 +2,7 @@
 <nav>
 	<a routerLink="/">Etusivu</a><a routerLink="/hae">Etsi kirjoja</a><a routerLink="/ostoskori">Ostoskori</a>
 	<ng-container *ngIf="(kirjautunut$ | async) === true">
+		<a routerLink="/profiili">Profiili</a>
 		<a *ngIf="(rooli$ | async) === 'divariAdmin'" routerLink="/divari">Divari</a>
 		<a *ngIf="(rooli$ | async) === 'admin'" routerLink="/keskusdivari">Keskusdivari</a>
 		<a routerLink="/" (click)="kirjauduUlos()">Kirjaudu ulos</a>

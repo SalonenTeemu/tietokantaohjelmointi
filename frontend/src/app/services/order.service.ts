@@ -7,13 +7,37 @@ import { Store } from '@ngrx/store';
 @Injectable({
 	providedIn: 'root',
 })
-// Tilauksen palvelu, joka käsittelee tilauksen luontia, vahvistamista ja perumista
+// Tilauksen palvelu, joka käsittelee tilausten hakua, luontia, vahvistamista ja perumista
 export class OrderService {
 	private apiUrl = 'http://localhost:8041/api/tilaus';
 	constructor(
 		private http: HttpClient,
 		private store: Store
 	) {}
+
+	/**
+	 * Hakee käyttäjän tekemät tilaukset palvelimelta.
+	 *
+	 * @param kayttajaId - Käyttäjän ID, jonka tilaukset halutaan hakea
+	 * @returns Observable, joka palauttaa käyttäjän tilaukset tai null, jos haku epäonnistuu
+	 */
+	getTilaukset(): Observable<unknown> {
+		return this.http.get(`${this.apiUrl}`, { observe: 'response' }).pipe(
+			map((response) => {
+				if (response.ok && response.body) {
+					const tilaukset = response.body as { message: unknown[] };
+					return tilaukset.message;
+				} else {
+					console.log('Tilauksen haku epäonnistui');
+					return null;
+				}
+			}),
+			catchError((error) => {
+				console.error('Tilauksen haku epäonnistui:', error);
+				return of(null);
+			})
+		);
+	}
 
 	/**
 	 * Lähettää uuden tilauksen palvelimelle ja tallentaa onnistuneen tilauksen store-tilaan.

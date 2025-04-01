@@ -1,0 +1,45 @@
+<!-- Profiilin komponentti -->
+<div class="profiili-container">
+	<h1>Profiili</h1>
+	<div *ngIf="kayttaja; else eiKayttajaa">
+		<p><strong>Nimi:</strong> {{ kayttaja.nimi }}</p>
+		<p><strong>Osoite:</strong> {{ kayttaja.osoite }}</p>
+		<p><strong>Puhelin:</strong> {{ kayttaja.puhelin }}</p>
+		<p><strong>Sähköpostiosoite:</strong> {{ kayttaja.email }}</p>
+		<p *ngIf="kayttaja.divariNimi"><strong>Divari:</strong> {{ kayttaja.divariNimi }}</p>
+
+		<div class="tilaus-container">
+			<h2>Omat tilaukset</h2>
+			<div *ngIf="tilaukset.length > 0; else eiTilauksia">
+				<ul>
+					<li *ngFor="let tilaus of tilaukset">
+						<strong>Tilaus ID:</strong> {{ tilaus.tilausId }}<br />
+						<strong>Päivämäärä:</strong> {{ tilaus.tilauspvm | date }}<br />
+						<strong>Postikulut:</strong> {{ tilaus.postikulut }} €<br />
+						<strong>Kokonaishinta:</strong> {{ tilaus.kokonaishinta }} €<br />
+
+						<div class="tuotteet-container">
+							<h3>Tuotteet</h3>
+							<ul>
+								<li *ngFor="let instanssi of tilaus.instanssit">
+									<p><strong>Nimi:</strong> {{ instanssi.teos.nimi }}</p>
+									<p><strong>Tekijä:</strong> {{ instanssi.teos.tekija }}</p>
+									<p *ngIf="instanssi.teos.isbn"><strong>ISBN:</strong> {{ instanssi.teos.isbn }}</p>
+									<p><strong>Julkaisuvuosi:</strong> {{ instanssi.teos.julkaisuvuosi }}</p>
+									<p><strong>Hinta:</strong> {{ instanssi.hinta }} €</p>
+									<p><strong>Kunto:</strong> {{ instanssi.kunto }}</p>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<ng-template #eiTilauksia>
+				<p>Ei tilauksia.</p>
+			</ng-template>
+		</div>
+	</div>
+	<ng-template #eiKayttajaa>
+		<p>Käyttäjätietoja ei löytynyt.</p>
+	</ng-template>
+</div>

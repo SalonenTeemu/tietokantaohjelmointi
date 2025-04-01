@@ -22,8 +22,6 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
-- Uusi teos -> muu luokka/tyyppi -> lisää luokka/tyyppi
-- Käyttäjän tilaukset
 - Paranna UI:ta (ostokori ainakin)
 
 - Github julkiseksi
