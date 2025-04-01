@@ -17,7 +17,7 @@ export const JWTAsetukset = {
 	secretOrKey: 'tietokantaohjelmointi-secret',
 };
 
-// Tarkista JWT-tokenin käyttäjä
+// Määritä JWT-strategia tokenin tarkistamiseksi passport-kirjaston avulla
 passport.use(
 	new JWTStrategy(JWTAsetukset, async (jwt_payload, done) => {
 		try {
@@ -33,10 +33,10 @@ passport.use(
 	})
 );
 
-// Tarkista JWT-token
+// Tarkista JWT-token ja aseta käyttäjätiedot pyyntöön
 export const validoiJWT = passport.authenticate('jwt', { session: false });
 
-// Tarkista käyttäjän rooli
+// Tarkista pyynnön tekijän käyttäjärooli
 export const tarkistaRooli = (roles: string[]) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const user = req.user as any;

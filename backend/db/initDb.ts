@@ -2,11 +2,11 @@ import db from './knex';
 import { lisaaTestidata } from './insertTestData';
 import { luoNakymat } from './views';
 
-// Skeemat
+// Skeemat keskusdivarille ja yksittäisille divareille
 export const keskusdivari = 'keskusdivari';
 export const divarit = ['d1', 'd3'];
 
-// Testaa yhteyttä tietokantaan ja luo skeemat ja taulut onnistuessaan
+// Testaa yhteyttä tietokantaan ja luo skeemat, näkymät, tyypit, taulut ja triggerit jos yhteys onnistuu
 export const alustaTietokanta = async () => {
 	try {
 		await db.raw('SELECT 1');

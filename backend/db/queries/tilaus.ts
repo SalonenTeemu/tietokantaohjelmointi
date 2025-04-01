@@ -1,29 +1,23 @@
 import db from '../knex';
 import { Knex } from 'knex';
 
-// Hae tilaus
+// Hae tilaus ID:n perusteella keskusdivarista
 export const haeTilaus = async (tilausId: number) => {
 	const tilaus = await db('keskusdivari.Tilaus').where('tilausId', tilausId).first();
 	return tilaus;
 };
 
-// Lisää uusi tilaus
+// Lisää uusi tilaus ja palauta tilauksen ID ja postikulut. Käytä transaktiota.
 export const lisaaTilaus = async (tilausTiedot: any, trx: Knex.Transaction) => {
-	const formattedTilausTiedot = {
-		...tilausTiedot,
-		kokonaishinta: tilausTiedot.kokonaishinta,
-		postikulut: tilausTiedot.postikulut,
-	};
-
 	const tilaus = await db('keskusdivari.Tilaus')
-		.insert(formattedTilausTiedot)
+		.insert(tilausTiedot)
 		.returning(['tilausId', 'postikulut'])
 		.transacting(trx)
 		.then((rows) => rows[0]);
 	return tilaus;
 };
 
-// Päivitys tilauksen tila
+// Päivitä tilauksen tila ID:n perusteella keskusdivarista. Käytä transaktiota, jos trx on määritelty.
 export const paivitaTilauksenTila = async (tilausId: number, uusiTila: string, trx?: Knex.Transaction) => {
 	if (!trx) {
 		await db('keskusdivari.Tilaus').where('tilausId', tilausId).update({ tila: uusiTila });
@@ -32,7 +26,7 @@ export const paivitaTilauksenTila = async (tilausId: number, uusiTila: string, t
 	}
 };
 
-// Asiakkaan tilaukset
+// Hae kaikki asiakkaan tilaukset keskusdivarista ID:n perusteella
 export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {
 	const tilaukset = await db('keskusdivari.Tilaus as t')
 		.select('k.kayttajaId as kayttajaId', 'k.nimi as asiakas_nimi', 't.tilausId', 't.tilauspvm', 't.kokonaishinta', 't.postikulut')
@@ -42,7 +36,7 @@ export const haeAsiakkaanTilaukset = async (kayttajaId: number) => {
 	return tilaukset;
 };
 
-// Hae tilauksen sisätämät instanssit
+// Hae tilauksen instanssit tilauksen ID:n perusteella keskusdivarista
 export const haeTilauksenInstanssit = async (tilausId: number) => {
 	const instanssit = await db('keskusdivari.TeosInstanssi').where('tilausId', tilausId);
 	return instanssit;

@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 
 /**
- * Yhdistä tietokantaan knex-kirjaston avulla.
+ * Tee yhteys PostgreSQL-tietokantaan käyttäen Knex-kirjastoa ja annetua konfiguraatiota.
  */
 const db: Knex = knex({
 	client: 'pg',

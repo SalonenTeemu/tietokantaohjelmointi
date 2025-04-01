@@ -2,7 +2,17 @@ import { haePostitusHinnasto } from '../db/queries/postitusHinnasto';
 
 // Laske postikulut annetun kokonaispainon perusteella
 export async function laskePostikulut(paino: number) {
+	// Hae postitushinnasto tietokannasta
 	const painoluokat = await haePostitusHinnasto();
+
+	// Selvitä suurin painoluokka ja sen hinta
+	const suurinLuokka = painoluokat.reduce((max, luokka) => {
+		return luokka.paino > max.paino ? luokka : max;
+	}, painoluokat[0]);
+
+	const maksimiPaino = suurinLuokka.paino;
+	const ylimaaraHinta = parseFloat(suurinLuokka.hinta);
+
 	let painoJaljella = paino;
 	let postikulut = 0;
 
@@ -16,10 +26,10 @@ export async function laskePostikulut(paino: number) {
 			}
 		}
 
-		// Jos paino ylittää suurimman luokan (2000g)
+		// Jos paino ylittää suurimman luokan lisää hinta suurimman luokan mukaan ja vähennä jäljellä olevaa painoa
 		if (painoJaljella > 0) {
-			postikulut += 15.0; // Lisää hinta jokaisesta 2000g osasta
-			painoJaljella -= 2000;
+			postikulut += ylimaaraHinta;
+			painoJaljella -= maksimiPaino;
 		}
 	}
 

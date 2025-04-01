@@ -1,6 +1,7 @@
 import express from 'express';
 import { kirjaudu, rekisteroidy, kirjauduUlos, haeProfiili } from '../controllers/kayttajaController';
 import { validoiJWT } from '../middleware';
+
 const kayttajaRoutes = express.Router({ mergeParams: true });
 
 kayttajaRoutes.post('/kirjaudu', kirjaudu);

@@ -25,7 +25,7 @@ function tarkistaPuhelin(puhelin: string): boolean {
 	return re.test(puhelin);
 }
 
-// Tarkista kirjautumisessa annettujen tietojen oikeellisuus
+// Tarkista kirjautumisessa annettujen tietojen oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export function tarkistaKirjautuminen(email: string, salasana: string): { success: boolean; message?: string } {
 	if (!email || !salasana) {
 		return { success: false, message: 'Käyttäjätunnus ja salasana vaaditaan.' };
@@ -39,7 +39,7 @@ export function tarkistaKirjautuminen(email: string, salasana: string): { succes
 	return { success: true };
 }
 
-// Tarkista rekisteröitymisessä annettujen tietojen oikeellisuus
+// Tarkista rekisteröitymisessä annettujen tietojen oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export function tarkistaRekisteroityminen(
 	email: string,
 	salasana: string,
@@ -79,7 +79,7 @@ export function tarkistaJulkaisuvuosi(julkaisuvuosi: number): boolean {
 	return julkaisuvuosi >= 0 && julkaisuvuosi <= new Date().getFullYear();
 }
 
-// Tarkista teoksen luomisen oikeellisuus
+// Tarkista uuden teoksen tietojen oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export function tarkistaLuoTeos(teos: any): { success: boolean; message?: string } {
 	if (!teos.nimi || !teos.tekija || !teos.julkaisuvuosi || !teos.paino || !teos.tyyppiId || !teos.luokkaId) {
 		return { success: false, message: 'Kaikki tiedot vaaditaan.' };
@@ -105,7 +105,7 @@ export function tarkistaLuoTeos(teos: any): { success: boolean; message?: string
 	return { success: true };
 }
 
-// Tarkista teoshaun oikeellisuus
+// Tarkista teoshaun oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export function tarkistaTeosHaku(haku: any): { success: boolean; message?: string; hakusanat?: any } {
 	if (!haku.nimi && !haku.tekija && !haku.luokka && !haku.tyyppi) {
 		return { success: false, message: 'Ei annettuja hakusanoja.' };
@@ -113,7 +113,7 @@ export function tarkistaTeosHaku(haku: any): { success: boolean; message?: strin
 	return { success: true, hakusanat: haku };
 }
 
-// Tarkista teosInstanssin luomisen oikeellisuus
+// Tarkista teosInstanssin luomisen oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export const tarkistaLuoTeosInstanssi = (instanssi: any, kpl: number): { success: boolean; message?: string } => {
 	if (instanssi.hinta == null || instanssi.divariId == null || kpl == null) {
 		return { success: false, message: 'Hinta, kappalemäärä ja divariId vaaditaan.' };
@@ -136,7 +136,7 @@ export const tarkistaLuoTeosInstanssi = (instanssi: any, kpl: number): { success
 	return { success: true };
 };
 
-// Tarkista tilauksen luomisen oikeellisuus
+// Tarkista uuden tilauksen tietojen oikeellisuus. Palauta onnistuminen ja mahdollinen virheviesti.
 export function tarkistaLuoTilaus(tilaus: any): { success: boolean; message?: string } {
 	if (!tilaus.kayttajaId) return { success: false, message: 'KayttajaId puuttuu.' };
 	if (!tilaus.instanssit || !Array.isArray(tilaus.instanssit) || tilaus.instanssit.length === 0)

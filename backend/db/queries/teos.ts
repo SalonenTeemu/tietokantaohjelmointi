@@ -1,6 +1,6 @@
 import db from '../knex';
 
-// Hae kaikki teokset aakkosjärjestyksessä
+// Hae kaikki teokset keskusdivarista
 export const haeTeokset = async () => {
 	const teokset = await db('keskusdivari.Teos as t')
 		.select('t.teosId', 't.isbn', 't.nimi', 't.tekija', 't.paino', 't.julkaisuvuosi', 'ty.nimi as tyyppi', 'l.nimi as luokka')
@@ -10,7 +10,7 @@ export const haeTeokset = async () => {
 	return teokset;
 };
 
-// R2
+// Hae kaikki teokset keskusdivarista. Jos divariId on annettu, hae vain kyseisen divarin teokset.
 export const haeKaikkiLuokanMyynnissaOlevatTeokset = async (divariId?: number) => {
 	let query = db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
 		'lmot.luokka',
@@ -20,6 +20,7 @@ export const haeKaikkiLuokanMyynnissaOlevatTeokset = async (divariId?: number) =
 		'lmot.keskiMyyntihinta'
 	);
 
+	// Jos divariId on annettu, rajaa kysely vain kyseiseen divariin
 	if (divariId) {
 		query = query.where('lmot.divariId', divariId);
 	}
@@ -27,8 +28,10 @@ export const haeKaikkiLuokanMyynnissaOlevatTeokset = async (divariId?: number) =
 	return teokset;
 };
 
-// R4
+// Hae teokset annetuilla hakusanoilla keskusdivarista. Hakusanat sisältää kentät: nimi, tekija, luokka, tyyppi.
 export const haeTeoksetHakusanalla = async (hakusanat: any) => {
+	// Haetaan nimen, tekijän, luokan ja tyypin perusteella osumia teoksista
+	// Jos saadaan osuma, lisätään yksi osumien määrään
 	const query = db('keskusdivari.Teos as t')
 		.select(
 			't.teosId',
@@ -59,25 +62,29 @@ export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 	const hakuEhdot: string[] = [];
 	const hakuArvot: string[] = [];
 
-	const lisaaHakuehto = (column: string, value: string | null) => {
-		if (value) {
-			const sanat = value.split(/\s+/);
+	// Funktio, joka lisää hakuehdon ja arvon listaan
+	const lisaaHakuehtoJaArvo = (sarake: string, arvo: string | null) => {
+		if (arvo) {
+			const sanat = arvo.split(/\s+/);
 			sanat.forEach((sana) => {
-				hakuEhdot.push(`LOWER(${column}) LIKE '%' || LOWER(?) || '%'`);
+				hakuEhdot.push(`LOWER(${sarake}) LIKE '%' || LOWER(?) || '%'`);
 				hakuArvot.push(sana);
 			});
 		}
 	};
 
-	lisaaHakuehto('t.nimi', hakusanat.nimi);
-	lisaaHakuehto('t.tekija', hakusanat.tekija);
-	lisaaHakuehto('l.nimi', hakusanat.luokka);
-	lisaaHakuehto('ty.nimi', hakusanat.tyyppi);
+	// Lisätään hakuehdot ja arvot kyselystä
+	lisaaHakuehtoJaArvo('t.nimi', hakusanat.nimi);
+	lisaaHakuehtoJaArvo('t.tekija', hakusanat.tekija);
+	lisaaHakuehtoJaArvo('l.nimi', hakusanat.luokka);
+	lisaaHakuehtoJaArvo('ty.nimi', hakusanat.tyyppi);
 
+	// Jos hakuehtoja on, tehdään kysely
 	if (hakuEhdot.length > 0) {
 		query.whereRaw(hakuEhdot.join(' AND '), hakuArvot);
 	}
 
+	// Ryhmitellään ja järjestetään tulokset osumien määrän ja nimen mukaan
 	query
 		.groupBy('t.teosId', 't.isbn', 't.nimi', 't.tekija', 'ty.nimi', 'l.nimi', 't.julkaisuvuosi')
 		.orderBy([{ column: 'osumien_maara', order: 'desc' }, { column: 't.nimi' }]);
@@ -85,13 +92,13 @@ export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 	return query;
 };
 
-// Hae teos ID:llä
+// Hae teos ID:n perusteella keskusdivarista
 export const haeTeosIdlla = async (teosId: string) => {
 	const teos = await db('keskusdivari.Teos').where('teosId', teosId).first();
 	return teos;
 };
 
-// Hae teos ISBN:llä
+// Hae teos ISBN:n perusteella tietokannasta. Jos tietokantaa ei annettu, käytetään keskusdivaria.
 export const haeTeosISBNlla = async (isbn: string, tietokanta = 'keskusdivari') => {
 	const teos = await db(tietokanta + '.Teos')
 		.where('isbn', isbn)
@@ -99,7 +106,7 @@ export const haeTeosISBNlla = async (isbn: string, tietokanta = 'keskusdivari') 
 	return teos;
 };
 
-// Hae teokset, jotka ovat myynnissä tietyssä divarissa
+// Hae teokset, jotka ovat myynnissä tietyssä divarissa ID:n perusteella keskusdivarista
 export const haeDivarinMyymatTeokset = async (divariId: number) => {
 	const teokset = await db('keskusdivari.TeosInstanssi as ti')
 		.select(
@@ -121,7 +128,7 @@ export const haeDivarinMyymatTeokset = async (divariId: number) => {
 	return teokset;
 };
 
-// Teoksen instanssit
+// Hae teoksen instanssit teosID:n perusteella keskusdivarista
 export const haeTeoksenInstanssit = async (teosId: string) => {
 	const instanssit = await db('keskusdivari.TeosInstanssi as ti')
 		.select('ti.teosInstanssiId', 'ti.hinta', 'ti.tila', 'ti.kunto', 'd.nimi as divari')
@@ -131,7 +138,7 @@ export const haeTeoksenInstanssit = async (teosId: string) => {
 	return instanssit;
 };
 
-// Lisää uusi teos
+// Lisää uusi teos tietokantaan. Jos tietokantaa ei annettu, käytetään keskusdivaria.
 export const lisaaUusiTeos = async (teos: any, tietokanta = 'keskusdivari') => {
 	if (teos.isbn == null || teos.isbn === '') {
 		delete teos.isbn;
@@ -141,30 +148,23 @@ export const lisaaUusiTeos = async (teos: any, tietokanta = 'keskusdivari') => {
 		.returning('*');
 };
 
-// Hae kaikki luokat
+// Hae kaikki luokat keskusdivarista
 export const haeLuokat = async () => {
 	const luokat = await db('keskusdivari.Luokka').select('luokkaId', 'nimi');
 	return luokat;
 };
 
-// Hae kaikki tyypit
+// Hae kaikki tyypit keskusdivarista
 export const haeTyypit = async () => {
 	const tyypit = await db('keskusdivari.Tyyppi').select('tyyppiId', 'nimi');
 	return tyypit;
 };
 
-// Hae teos tekijän ja nimen perusteella
+// Hae teos tekijän ja nimen perusteella tietokannasta. Jos tietokantaa ei annettu, käytetään keskusdivaria.
 export const haeTeosTekijanJaNimenPerusteella = async (tekija: string, nimi: string, tietokanta = 'keskusdivari') => {
 	const teos = await db(tietokanta + '.Teos')
 		.where('tekija', tekija)
 		.andWhere('nimi', nimi)
-		.first();
-	return teos;
-};
-
-export const haeOmanTietokannanTeos = async (teosId: string, tietokanta = 'keskusdivari') => {
-	const teos = await db(tietokanta + '.Teos')
-		.where('teosId', teosId)
 		.first();
 	return teos;
 };

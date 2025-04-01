@@ -1,7 +1,7 @@
 import db from './knex';
 import { keskusdivari } from './initDb';
 
-// Tarkasta löytyykö näkymää jo
+// Tarkista, onko näkymä olemassa. Palauttaa true, jos näkymä löytyy, muuten false.
 const tarkastaNakyma = async (view: string, schema: string) => {
 	const viewExists = await db.raw(`
         SELECT EXISTS (
@@ -16,38 +16,10 @@ const tarkastaNakyma = async (view: string, schema: string) => {
 // Luo näkymä, jos sitä ei ole olemassa
 const luoNakyma = async (schema: string, view: string, query: string) => {
 	const exists = await tarkastaNakyma(view, schema);
-	if (exists) {
-		await db.raw(`DROP VIEW IF EXISTS "${schema}"."${view}"`);
-	}
-	await db.raw(`CREATE VIEW "${schema}"."${view}" AS ${query}`);
+	if (!exists) await db.raw(`CREATE VIEW "${schema}"."${view}" AS ${query}`);
 };
 
-// Näkymä hakukyselyille (R1)
-const luoHakunakyma = async () => {
-	const schema = keskusdivari;
-	const view = 'HakuNakyma';
-	const query = `
-        SELECT 
-            t."teosId" AS id,
-            t."isbn" AS isbn, 
-            t."nimi" AS nimi, 
-            t."tekija" AS tekija, 
-            ty."nimi" AS tyyppi, 
-            l."nimi" AS luokka, 
-            ti."hinta" AS hinta, 
-            ti."tila" AS tila, 
-            ti."kunto" AS kunto, 
-            d."nimi" AS "divariNimi"
-        FROM "${schema}"."Teos" t
-        JOIN "${schema}"."TeosInstanssi" ti ON t."teosId" = ti."teosId"
-        JOIN "${schema}"."Divari" d ON ti."divariId" = d."divariId"
-        JOIN "${schema}"."Tyyppi" ty ON t."tyyppiId" = ty."tyyppiId"
-        JOIN "${schema}"."Luokka" l ON t."luokkaId" = l."luokkaId";
-    `;
-	await luoNakyma(schema, view, query);
-};
-
-// Näkymä tietyn luokan myynnissä olevista teoksista (R2)
+// Luo näkymä luokan myynnissä olevista teoksista
 const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
 	const schema = keskusdivari;
 	const view = 'LuokanMyynnissaOlevatTeokset';
@@ -68,7 +40,7 @@ const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
 	await luoNakyma(schema, view, query);
 };
 
-// Näkymä raportille asiakkaiden viime vuonna ostamien teosten lukumäärästä (R3):
+// Luo näkymä asiakkaiden viime vuoden teosten ostotiedoista
 const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
 	const schema = keskusdivari;
 	const view = 'AsiakasRaporttiViimeVuosi';
@@ -100,7 +72,6 @@ const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
 // Luo kaikki näkymät
 export const luoNakymat = async () => {
 	try {
-		await luoHakunakyma();
 		await luoLuokanMyynnissaOlevatTeoksetNakyma();
 		await luoAsiakasRaporttiViimeVuosiNakyma();
 		console.log('Näkymät luotu onnistuneesti');

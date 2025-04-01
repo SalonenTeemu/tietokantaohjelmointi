@@ -6,10 +6,13 @@ import { haeTeosInstanssi, paivitaTeosInstanssinTila, paivitaTeosInstanssinTilau
 import { laskePostikulut } from '../utils/postikulut';
 import { tarkistaLuoTilaus } from '../utils/validate';
 
-// Hae asiakkaan tilaukset
+/**
+ * Vastaa pyyntöön asiakkaan omista tilauksista. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa asiakkaan omat tilaukset. Muuten virheviesti.
+ */
 export const haeTilaukset = async (req: Request, res: Response) => {
 	try {
-		const kayttajaId = Number(req.params.kayttajaId);
+		const { kayttajaId } = req.user as any;
 		if (!kayttajaId) {
 			res.status(400).json({ message: 'Virheellinen kayttajaId.' });
 			return;
@@ -22,10 +25,14 @@ export const haeTilaukset = async (req: Request, res: Response) => {
 	}
 };
 
-// Luo uusi tilaus
+/**
+ * Vastaa pyyntöön uuden tilauksen luomisesta. Tarkistaa syötteet ja lisää uuden tilauksen tietokantaan.
+ * @returns Onnistuessa viestin tilauksen luomisesta. Muuten virheviesti.
+ */
 export const luoTilaus = async (req: Request, res: Response) => {
 	try {
 		const tilaus = req.body;
+		// Tarkistetaan, että tilaus sisältää tarvittavat tiedot oikeassa muodossa
 		const tarkistus = tarkistaLuoTilaus(tilaus);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
@@ -33,6 +40,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 		}
 
 		const tilauksenInstanssit: any[] = [];
+		// Tarkistetaan, että tilauksen instanssit ovat olemassa ja vapaita. Lisätään ne tilauksenInstanssit-taulukkoon.
 		for (const instanssi of tilaus.instanssit) {
 			const teosInstanssi = await haeTeosInstanssi(instanssi);
 			if (!teosInstanssi) {
@@ -52,11 +60,13 @@ export const luoTilaus = async (req: Request, res: Response) => {
 			tilauksenInstanssit.push(teosInstanssi);
 		}
 
+		// Luo uusi tilaus tietokantaan ja päivitetään tilauksen instanssit varatuksi
 		const uusiTilaus = await db.transaction(async (trx) => {
 			for (const instanssi of tilaus.instanssit) {
 				await paivitaTeosInstanssinTila(instanssi, 'varattu', trx);
 			}
 
+			// Lasketaan postikulut tilauksen instanssien painon perusteella
 			const postikulut = await laskePostikulut(tilauksenInstanssit.reduce((sum: number, instanssi: any) => sum + (instanssi.paino ?? 0), 0));
 
 			const tilausTiedot = {
@@ -67,6 +77,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 			};
 
 			const lisattyTilaus: any = await lisaaTilaus(tilausTiedot, trx);
+			// Päivitetään tilauksen instanssien tilausId
 			for (const instanssi of tilaus.instanssit) {
 				await paivitaTeosInstanssinTilaus(instanssi, lisattyTilaus.tilausId, trx);
 			}
@@ -74,6 +85,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 			return lisattyTilaus;
 		});
 
+		// Jos tilaus on onnistuneesti luotu, palautetaan tilauksen tiedot
 		if (uusiTilaus) {
 			res.status(201).json({ message: uusiTilaus });
 		} else {
@@ -85,32 +97,40 @@ export const luoTilaus = async (req: Request, res: Response) => {
 	}
 };
 
-// Vahvista kesken oleva tilaus
+/**
+ * Vastaa pyyntöön tilauksen vahvistamisesta. Tarkistaa tilauksen tilan ja päivittää sen tilan tietokannassa.
+ * @returns Onnistuessa viestin tilauksen vahvistamisesta. Muuten virheviesti.
+ */
 export const vahvistaTilaus = async (req: Request, res: Response) => {
 	try {
+		// Tarkistetaan, että tilausId on annettu
 		const tilausId = Number(req.params.tilausId);
 		if (!tilausId) {
 			res.status(400).json({ message: 'Virheellinen tilausId.' });
 			return;
 		}
 
+		// Hae tilaus tietokannasta
 		const tilaus = await haeTilaus(tilausId);
 		if (!tilaus) {
 			res.status(400).json({ message: 'Tilausta ei löytynyt.' });
 			return;
 		}
 
+		// Tarkista, että tilauksen tila on kesken
 		if (tilaus.tila !== 'kesken') {
 			res.status(400).json({ message: 'Tilaus on jo vahvistettu tai peruutettu.' });
 			return;
 		}
 
+		// Hae tilauksen instanssit tietokannasta
 		const instannsit = await haeTilauksenInstanssit(tilausId);
 		if (!instannsit || instannsit.length === 0) {
 			res.status(400).json({ message: 'Tilauksella ei ole instansseja.' });
 			return;
 		}
 
+		// Tarkista, että kaikki tilauksen instanssit ovat varattu
 		for (const instanssi of instannsit) {
 			if (instanssi.tila !== 'varattu') {
 				res.status(400).json({ message: 'Tilauksella on instansseja, jotka eivät ole varattu.' });
@@ -118,6 +138,7 @@ export const vahvistaTilaus = async (req: Request, res: Response) => {
 			}
 		}
 
+		// Vahvista tilaus ja päivitä instanssien tila myydyksi
 		const vahvistettuTilaus = await db.transaction(async (trx) => {
 			for (const instanssi of instannsit) {
 				await paivitaTeosInstanssinTila(instanssi.teosInstanssiId, 'myyty', trx);
@@ -139,26 +160,33 @@ export const vahvistaTilaus = async (req: Request, res: Response) => {
 	}
 };
 
-// Peruuta kesken oleva tilaus
+/**
+ * Vastaa pyyntöön tilauksen peruuttamisesta. Tarkistaa tilauksen tilan ja päivittää sen tilan tietokannassa.
+ * @returns Onnistuessa viestin tilauksen peruuttamisesta. Muuten virheviesti.
+ */
 export const peruutaTilaus = async (req: Request, res: Response) => {
 	try {
+		// Tarkistetaan, että tilausId on annettu
 		const tilausId = Number(req.params.tilausId);
 		if (!tilausId) {
 			res.status(400).json({ message: 'Virheellinen tilausId.' });
 			return;
 		}
 
+		// Hae tilaus tietokannasta
 		const tilaus = await haeTilaus(tilausId);
 		if (!tilaus) {
 			res.status(400).json({ message: 'Tilausta ei löytynyt.' });
 			return;
 		}
 
+		// Tarkista, että tilauksen tila on kesken
 		if (tilaus.tila !== 'kesken') {
 			res.status(400).json({ message: 'Tilaus on jo vahvistettu tai peruutettu.' });
 			return;
 		}
 
+		// Hae tilauksen instanssit tietokannasta
 		const instannsit = await haeTilauksenInstanssit(tilausId);
 		if (!instannsit || instannsit.length === 0) {
 			await paivitaTilauksenTila(tilausId, 'peruutettu');
@@ -166,6 +194,7 @@ export const peruutaTilaus = async (req: Request, res: Response) => {
 			return;
 		}
 
+		// Peruutetaan tilaus ja päivitetään instanssien tila vapaaksi
 		const peruutettuTilaus = await db.transaction(async (trx) => {
 			for (const instanssi of instannsit) {
 				await paivitaTeosInstanssinTila(instanssi.teosInstanssiId, 'vapaa', trx);
