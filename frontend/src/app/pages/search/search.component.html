@@ -34,11 +34,13 @@
 					<p class="type-class">{{ teos.tyyppi }}, {{ teos.luokka }}</p>
 				</div>
 				<div *ngIf="valittuTeos && valittuTeos.teosId === teos.teosId" class="instanssit-container">
-					<h4>Instanssit: {{ valittuTeos.nimi }} ({{ instanssit.length }} kpl)</h4>
+					<h4>Vaihtoehdot ({{instanssit.length}})</h4>
 					<ul *ngIf="instanssit.length > 0" class="instanssit-list">
 						<li *ngFor="let instanssi of instanssit" class="instanssi-item">
 							<p>Hinta: {{ instanssi.hinta }}€</p>
 							<p>Kunto: {{ instanssi.kunto || 'Ei tietoa' }}</p>
+							<p>Divari: {{ instanssi.divari || 'Ei tietoa' }}</p>
+							<p>Myynnissä: {{ instanssi.instanssiIdt.length }} kpl</p>
 							<button (click)="lisaaOstoskoriin(instanssi)" class="btn btn-success">Lisää ostoskoriin</button>
 						</li>
 					</ul>

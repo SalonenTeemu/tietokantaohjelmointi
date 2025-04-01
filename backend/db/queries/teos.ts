@@ -122,11 +122,12 @@ export const haeDivarinMyymatTeokset = async (divariId: number) => {
 };
 
 // Teoksen instanssit
-export const haeTeoksenInstanssit = async (teosId: string) => {
+export const haeTeoksenVapaatInstanssit = async (teosId: string) => {
 	const instanssit = await db('keskusdivari.TeosInstanssi as ti')
 		.select('ti.teosInstanssiId', 'ti.hinta', 'ti.tila', 'ti.kunto', 'd.nimi as divari')
 		.join('keskusdivari.Divari as d', 'ti.divariId', 'd.divariId')
-		.where('ti.teosId', teosId);
+		.where('ti.teosId', teosId)
+		.where('ti.tila', 'vapaa');
 
 	return instanssit;
 };

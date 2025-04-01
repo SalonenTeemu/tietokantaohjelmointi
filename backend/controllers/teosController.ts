@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {
 	haeTeoksetHakusanalla,
-	haeTeoksenInstanssit,
+	haeTeoksenVapaatInstanssit,
 	haeLuokat,
 	haeTyypit,
 	haeTeosISBNlla,
@@ -90,7 +90,7 @@ export const haeTeosInstanssit = async (req: Request, res: Response) => {
 			res.status(400).json({ message: 'Virheellinen teosId.' });
 			return;
 		}
-		const instanssit = await haeTeoksenInstanssit(teosId);
+		const instanssit = await haeTeoksenVapaatInstanssit(teosId);
 		res.status(200).json({ message: instanssit });
 	} catch (error) {
 		console.error('Virhe haettaessa teoksen instansseja:', error);
