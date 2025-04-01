@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { logout, setLoading, setUser } from '../store/actions/auth.actions';
-import { Observable, of, map, catchError } from 'rxjs';
+import { Observable, of, map, catchError, take, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Kayttaja } from '../models/kayttaja';
+import { selectCartOrderId } from '../store/selectors/cart.selector';
+import { OrderService } from './order.service';
+import { cancelOrder } from '../store/actions/cart.actions';
 
 @Injectable({
 	providedIn: 'root',
@@ -11,11 +14,14 @@ import { Kayttaja } from '../models/kayttaja';
 // Autentikointipalvelu, joka käsittelee käyttäjän kirjautumista, rekisteröitymistä, tokenien päivitystä ja uloskirjautumista
 export class AuthService {
 	private apiUrl = 'http://localhost:8041/api/auth';
-
+	private tilausId$;
 	constructor(
 		private store: Store,
+		private orderService: OrderService,
 		private http: HttpClient
-	) {}
+	) {
+		this.tilausId$ = this.store.select(selectCartOrderId);
+	}
 
 	/**
 	 * Kirjautuu käyttäjän sisään annetulla sähköpostiosoitteella ja salasanalla.
@@ -85,23 +91,43 @@ export class AuthService {
 	}
 
 	/**
-	 * Lähettää uloskirjautumispyynnön palvelimelle ja käsittelee vastauksen.
-	 *
+	 * Lähettää uloskirjautumispyynnön palvelimelle ja käsittelee vastauksen
+	 * Peruu tilauksen, mikäli käyttäjä on kirjautumassa ulos ja tilaus on kesken
 	 * @return Palauttaa true, jos uloskirjautuminen onnistuu, muuten false
 	 */
 	postKirjauduUlos(): Observable<boolean> {
-		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu-ulos`, {}, { observe: 'response' }).pipe(
-			map((response) => {
-				// Jos uloskirjautuminen onnistui, tyhjennetään käyttäjätiedot store-tilasta
-				if (response.ok) {
-					this.store.dispatch(logout());
-					return true;
+		return this.tilausId$.pipe(
+			take(1),
+			switchMap((tilausId) => {
+				if (tilausId !== null) {
+					return this.orderService.postPeruutaTilaus(tilausId).pipe(
+						map((success: boolean) => {
+							if (success) {
+								this.store.dispatch(cancelOrder());
+							}
+							return success;
+						}),
+						catchError(() => {
+							return of(false);
+						})
+					);
 				}
-				return false;
+				return of(true);
 			}),
-			catchError((error) => {
-				console.error('Uloskirjautuminen epäonnistui:', error);
-				return of(false);
+			switchMap(() => {
+				return this.http.post<unknown>(`${this.apiUrl}/kirjaudu-ulos`, {}, { observe: 'response' }).pipe(
+					map((response) => {
+						if (response.ok) {
+							this.store.dispatch(logout());
+							return true;
+						}
+						return false;
+					}),
+					catchError((error) => {
+						console.error('Uloskirjautuminen epäonnistui:', error);
+						return of(false);
+					})
+				);
 			})
 		);
 	}
@@ -122,8 +148,7 @@ export class AuthService {
 					return false;
 				}
 			}),
-			catchError((error) => {
-				console.error('Virhe tokenien päivityksessä:', error);
+			catchError(() => {
 				return of(false);
 			})
 		);

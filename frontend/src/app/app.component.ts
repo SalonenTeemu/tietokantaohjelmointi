@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Observable, Subscription, take } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { BookService } from './services/book.service';
 import { selectIsLoggedIn, selectUserRole } from './store/selectors/auth.selector';
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
 		this.bookService.getTeosTyypit().subscribe((tyypit: string[]) => {
 			this.store.dispatch(addTyypit({ tyypit }));
 		});
-		this.kirjautunut$.subscribe((isLoggedIn) => {
+		this.kirjautunut$.pipe(take(1)).subscribe((isLoggedIn) => {
 			if (!isLoggedIn) {
 				this.authService.paivitaTokenit().subscribe({
 					next: (success) => {

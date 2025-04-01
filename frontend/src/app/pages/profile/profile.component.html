@@ -14,7 +14,7 @@
 				<ul>
 					<li *ngFor="let tilaus of tilaukset">
 						<strong>Tilaus ID:</strong> {{ tilaus.tilausId }}<br />
-						<strong>Päivämäärä:</strong> {{ tilaus.tilauspvm | date }}<br />
+						<strong>Päivämäärä:</strong> {{ tilaus.tilauspvm | date: 'dd.MM.yyyy' }}<br />
 						<strong>Postikulut:</strong> {{ tilaus.postikulut }} €<br />
 						<strong>Kokonaishinta:</strong> {{ tilaus.kokonaishinta }} €<br />
 
