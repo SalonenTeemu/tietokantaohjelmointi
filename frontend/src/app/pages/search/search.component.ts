@@ -32,7 +32,7 @@ export class SearchComponent {
 	valittuTeos: Teos | null = null;
 	instanssit: TeosInstanssi[] = [];
 
-	// Rakentaja alustaa tyypit, luokat, palvelut ja tilat reduxista
+	// Rakentaja alustaa tyypit, luokat, palvelut ja tilat storesta
 	constructor(
 		private bookService: BookService,
 		private store: Store,
@@ -106,7 +106,7 @@ export class SearchComponent {
 				teos: this.valittuTeos,
 				teosInstanssi: instanssi,
 			};
-			// Lisää ostoskoriTuote redux-tilaan
+			// Lisää ostoskoriTuote store-tilaan
 			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
 			this.notificationService.newNotification('success', `Tuote "${ostoskoriTuote.teos.nimi}" lisätty ostoskoriin`);
 		} else {

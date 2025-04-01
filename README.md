@@ -22,13 +22,12 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
-- koodin kattavampi kommentointi
-- paranna UI:ta
-- github publiciksi
-- dokumentaatio
-- Excel-kaavakkeen täyttö
-- vaiheen 1 dokumentaation viimeistely
-- Tuotehaku myyjä saman kuntoiset kirjat kappalemäärä yhteen
-- Refresh token
 - Uusi teos -> muu luokka/tyyppi -> lisää luokka/tyyppi
 - Käyttäjän tilaukset
+- Paranna UI:ta (ostokori ainakin)
+
+- Github julkiseksi
+- Dokumentaation teko
+- Excel-kaavakkeen täyttö
+- Vaiheen 1 dokumentaation viimeistely ja tarkistus
+- README päivitys

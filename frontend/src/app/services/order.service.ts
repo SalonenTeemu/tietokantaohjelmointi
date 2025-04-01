@@ -16,8 +16,8 @@ export class OrderService {
 	) {}
 
 	/**
-	 * Lähettää uuden tilauksen palvelimelle ja tallentaa onnistuneen tilauksen redux-tilaan.
-	 * 
+	 * Lähettää uuden tilauksen palvelimelle ja tallentaa onnistuneen tilauksen store-tilaan.
+	 *
 	 * @param tilaus - Tilaustiedot
 	 * @returns Observable, joka palauttaa true, jos tilauksen luonti onnistui, muuten false
 	 */
@@ -44,7 +44,7 @@ export class OrderService {
 
 	/**
 	 * Vahvistaa tilauksen palvelimella ja palauttaa tilauksen vahvistamisen tuloksen.
-	 * 
+	 *
 	 * @param tilausId - Tilaus ID, joka halutaan vahvistaa
 	 * @returns True, jos tilauksen vahvistaminen onnistui, muuten false
 	 */
@@ -67,7 +67,7 @@ export class OrderService {
 
 	/**
 	 * Peruuttaa tilauksen palvelimella ja palauttaa tilauksen perumisen tuloksen.
-	 * 
+	 *
 	 * @param tilausId - Tilaus ID, joka halutaan peruuttaa
 	 * @returns True, jos tilauksen peruminen onnistui, muuten false
 	 */

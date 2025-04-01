@@ -10,7 +10,7 @@ export const JWTAsetukset = {
 	jwtFromRequest: (req: Request) => {
 		let token = null;
 		if (req && req.cookies) {
-			token = req.cookies['token'];
+			token = req.cookies['access_token'];
 		}
 		return token;
 	},

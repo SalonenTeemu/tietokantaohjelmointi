@@ -6,7 +6,7 @@ import { tarkistaKirjautuminen, tarkistaRekisteroityminen } from '../utils/valid
 import { JWTAsetukset } from '../middleware';
 
 /**
- * Vastaa pyyntöön käyttäjän kirjautumisesta. Asettaa onnistuessaan JWT-tokenin evästeisiin ja palauttaa käyttäjätiedot.
+ * Vastaa pyyntöön käyttäjän kirjautumisesta. Asettaa onnistuessaan JWT-tokenit evästeisiin ja palauttaa käyttäjätiedot.
  * @returns Onnistuessa käyttäjän tiedot mukaan lukien divariId, jos käyttäjä on divariAdmin tai admin. Muuten virheviesti.
  */
 export const kirjaudu = async (req: Request, res: Response) => {
@@ -34,13 +34,17 @@ export const kirjaudu = async (req: Request, res: Response) => {
 			divariId = await haeKayttajanDivariId(user.kayttajaId);
 		}
 		delete user.salasana;
-		// Luodaan tunnin kestävä JWT-token
-		const token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli, divariId: divariId }, JWTAsetukset.secretOrKey, {
-			expiresIn: '1h',
+		// Luodaan tunnin kestävä access-token ja viikon kestävä refresh-token
+		const access_token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli, divariId: divariId }, JWTAsetukset.secretOrKey, {
+			expiresIn: '15m',
+		});
+		const refresh_token = jwt.sign({ kayttajaId: user.kayttajaId, rooli: user.rooli, divariId: divariId }, JWTAsetukset.secretOrKey, {
+			expiresIn: '7d',
 		});
 
-		// Asetetaan token evästeeseen iällä 1 tunti
-		res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 3600000 });
+		// Asetetaan access_token evästeeseen iällä 15 min ja refresh_token evästeeseen iällä 7 päivää
+		res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 900000 });
+		res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 604800000 });
 		res.status(200).json({ message: { ...user, divariId } });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);
@@ -82,12 +86,56 @@ export const rekisteroidy = async (req: Request, res: Response) => {
 };
 
 /**
- * Vastaa pyyntöön käyttäjän uloskirjautumisesta. Poistaa evästeen ja palauttaa viestin uloskirjautumisesta.
+ * Vastaa pyyntöön käyttäjän uloskirjautumisesta. Poistaa evästeet ja palauttaa viestin uloskirjautumisesta.
  * @returns Viestin uloskirjautumisesta.
  */
 export const kirjauduUlos = (req: Request, res: Response) => {
-	res.clearCookie('token');
+	res.clearCookie('access_token');
+	res.clearCookie('refresh_token');
 	res.status(200).json({ message: 'Kirjauduttu ulos.' });
+};
+
+/**
+ * Vastaa pyyntöön tokenien päivittämisestä. Tarkistaa refresh-tokenin ja luo uudet access- ja refresh-tokenit.
+ * @returns Onnistuessa viestin tokenien päivityksestä. Muuten virheviesti.
+ */
+export const paivitaTokenit = async (req: Request, res: Response): Promise<void> => {
+	const { refresh_token } = req.cookies;
+	if (!refresh_token) {
+		res.status(401).json({ message: 'Ei refresh-tokenia.' });
+		return;
+	}
+	try {
+		// Tarkista refresh-token ja luo uudet tokenit
+		jwt.verify(refresh_token, JWTAsetukset.secretOrKey, (err: any, decoded: any) => {
+			if (err) {
+				res.status(403).json({ message: 'Virhe tokenin tarkistuksessa.' });
+				return;
+			}
+			const access_token = jwt.sign(
+				{ kayttajaId: decoded.kayttajaId, rooli: decoded.rooli, divariId: decoded.divariId },
+				JWTAsetukset.secretOrKey,
+				{
+					expiresIn: '15m',
+				}
+			);
+			const refresh_token = jwt.sign(
+				{ kayttajaId: decoded.kayttajaId, rooli: decoded.rooli, divariId: decoded.divariId },
+				JWTAsetukset.secretOrKey,
+				{
+					expiresIn: '7d',
+				}
+			);
+			// Asetetaan access_token evästeeseen iällä 15 min ja refresh_token evästeeseen iällä 7 päivää
+			res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 900000 });
+			res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 604800000 });
+			res.status(200).json({ message: 'Tokenit päivitetty onnistuneesti.' });
+		});
+	} catch (error) {
+		console.error('Virhe tokenien päivityksessä:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+	return;
 };
 
 /**

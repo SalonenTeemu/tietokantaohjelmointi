@@ -27,7 +27,7 @@ export class OrderOverviewComponent {
 
 	private store = inject(Store);
 
-	// Rakentaja alustaa tilauksen yhteenvetokomponentin ja tilat reduxista
+	// Rakentaja alustaa tilauksen yhteenvetokomponentin ja tilat storesta
 	constructor(
 		private router: Router,
 		private orderService: OrderService,
