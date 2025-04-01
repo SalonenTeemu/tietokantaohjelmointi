@@ -28,3 +28,7 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 - dokumentaatio
 - Excel-kaavakkeen täyttö
 - vaiheen 1 dokumentaation viimeistely
+- Tuotehaku myyjä saman kuntoiset kirjat kappalemäärä yhteen
+- Refresh token
+- Uusi teos -> muu luokka/tyyppi -> lisää luokka/tyyppi
+- Käyttäjän tilaukset

@@ -12,9 +12,11 @@ import { NotificationService } from '../../services/notification.service';
 	styleUrls: ['./login.component.css'],
 	imports: [FormsModule, RouterModule, ReactiveFormsModule],
 })
+//Kirjautumiskomponetti
 export class LoginComponent {
 	loginForm: FormGroup;
 
+	// Rakentaja alustaa lomakkeen ja palvelut
 	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
@@ -27,8 +29,10 @@ export class LoginComponent {
 		});
 	}
 
+	// Kirjaa käyttäjän sisään ja tarkistaa sähköpostin ja salasanan
 	kirjaudu() {
 		const { email, salasana } = this.loginForm.value;
+		// Tarkista käyttäjän syöte
 		const tarkistus = tarkistaKirjautuminen(email, salasana);
 		if (!tarkistus.success) {
 			this.notificationService.newNotification('error', tarkistus.message);
@@ -36,6 +40,7 @@ export class LoginComponent {
 		}
 		this.authService.postKirjaudu(email, salasana).subscribe((success: boolean) => {
 			if (success) {
+				// Ohjaa käyttäjä etusivulle onnistuneen kirjautumisen jälkeen
 				this.router.navigate(['/']);
 				this.notificationService.newNotification('success', 'Kirjautuminen onnistui');
 			} else {

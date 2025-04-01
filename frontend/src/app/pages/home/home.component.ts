@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 	styleUrl: './home.component.css',
 	standalone: true,
 })
+// Kotisivun komponentti
 export class HomeComponent {}

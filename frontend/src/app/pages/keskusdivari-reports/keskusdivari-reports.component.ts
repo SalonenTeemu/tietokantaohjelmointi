@@ -12,11 +12,13 @@ import { selectUser } from '../../store/selectors/auth.selector';
 	templateUrl: './keskusdivari-reports.component.html',
 	styleUrl: './keskusdivari-reports.component.css',
 })
+// Keskusdivarin raporttisivun komponentti
 export class KeskusdivariReportsComponent implements OnInit {
 	raportti: any[] = [];
 	kayttaja!: Kayttaja | null;
-	openIndexes: number[] = [];
+	avatut: number[] = [];
 
+	// Rakentaja alustaa käyttäjän ja raporttipalvelun
 	constructor(
 		private reportService: ReportService,
 		private store: Store,
@@ -27,11 +29,13 @@ export class KeskusdivariReportsComponent implements OnInit {
 		});
 	}
 
+	// Lataa luokkaraportin kun komponentti alustuu
 	ngOnInit() {
-		this.lataaTeokset();
+		this.lataaLuokkaRaportti();
 	}
 
-	lataaTeokset() {
+	// Lataa luokkaraportti, jos käyttäjä on kirjautunut
+	lataaLuokkaRaportti() {
 		if (!this.kayttaja) {
 			return;
 		}
@@ -40,16 +44,18 @@ export class KeskusdivariReportsComponent implements OnInit {
 		});
 	}
 
-	toggleLuokka(index: number): void {
-		if (this.openIndexes.includes(index)) {
-			this.openIndexes = this.openIndexes.filter((i) => i !== index);
+	// Piilottaa tai näyttää luokan raportin
+	toggleLuokka(indeksi: number): void {
+		if (this.avatut.includes(indeksi)) {
+			this.avatut = this.avatut.filter((i) => i !== indeksi);
 		} else {
-			this.openIndexes.push(index);
+			this.avatut.push(indeksi);
 		}
 		this.cdr.detectChanges();
 	}
 
-	lataaRaportti(): void {
+	// Lataa CSV-asiakasraportin, joka sisältää kaikki asiakkaat ja heidän tietonsa
+	lataaAsiakasRaportti(): void {
 		this.reportService.getKeskusdivariAsiakasRaportti().subscribe((blob: Blob) => {
 			const url = window.URL.createObjectURL(blob);
 			const a = document.createElement('a');

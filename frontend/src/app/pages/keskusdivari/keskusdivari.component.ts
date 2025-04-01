@@ -8,4 +8,5 @@ import { RouterModule } from '@angular/router';
 	templateUrl: './keskusdivari.component.html',
 	styleUrl: './keskusdivari.component.css',
 })
+// Keskusdivarin toimintojen komponentti
 export class KeskusdivariComponent {}

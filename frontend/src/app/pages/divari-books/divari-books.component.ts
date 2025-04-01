@@ -15,6 +15,8 @@ import { Router, RouterLink } from '@angular/router';
 	templateUrl: './divari-books.component.html',
 	styleUrl: './divari-books.component.css',
 })
+
+// Divarin teosten komponentti, jossa divari admin voi lisätä teosinstansseja
 export class DivariBooksComponent implements OnInit {
 	instanceFormGroup: FormGroup;
 	saatavillaOlevatTeokset: any[] = [];
@@ -23,6 +25,7 @@ export class DivariBooksComponent implements OnInit {
 	kayttaja!: Kayttaja | null;
 	naytaSaatavatTeokset = false;
 
+	// Rakentaja alustaa käyttäjän, palvelut ja lomakkeen
 	constructor(
 		private bookService: BookService,
 		private fb: FormBuilder,
@@ -41,6 +44,7 @@ export class DivariBooksComponent implements OnInit {
 		});
 	}
 
+	// Lataa teokset kun komponentti alustuu, jos käyttäjä on kirjautunut
 	ngOnInit() {
 		if (!this.kayttaja) {
 			return;
@@ -48,10 +52,12 @@ export class DivariBooksComponent implements OnInit {
 		this.lataaTeokset();
 	}
 
+	// Navigointi uuden teoksen lisäämissivulle
 	lisaaTeos() {
 		this.router.navigate(['/uusiteos']);
 	}
 
+	// Päivitää valitun teoksen instanssin lukumäärän
 	paivitaTeosLkm(lkm: number) {
 		if (this.valittuTeos) {
 			const teos = this.teokset.find((teos) => teos.teosId === this.valittuTeos);
@@ -61,6 +67,7 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
+	// Ladaa divarin teokset käyttäjän divariId:n perusteella
 	lataaTeokset() {
 		if (this.kayttaja && this.kayttaja.divariId !== undefined) {
 			const divariIdNum = Number(this.kayttaja.divariId);
@@ -76,6 +83,7 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
+	// Lataa kaikki teokset, jotka eivät ole vielä divarissa
 	lataaKaikkiTeokset() {
 		this.bookService.getKaikkiTeokset().subscribe((teokset) => {
 			const filteredTeokset = teokset.filter((teos) => {
@@ -85,6 +93,7 @@ export class DivariBooksComponent implements OnInit {
 		});
 	}
 
+	// Näyttää tai piilottaa saatavilla olevat teokset
 	naytaKaikkiTeokset() {
 		this.naytaSaatavatTeokset = !this.naytaSaatavatTeokset;
 		if (this.naytaSaatavatTeokset) {
@@ -93,6 +102,7 @@ export class DivariBooksComponent implements OnInit {
 		}
 	}
 
+	// Valitsee teoksen, jonka instanssia ollaan lisäämässä
 	valitseTeos(teosId: string) {
 		if (this.valittuTeos === teosId) {
 			this.valittuTeos = null;
@@ -101,6 +111,7 @@ export class DivariBooksComponent implements OnInit {
 		this.valittuTeos = teosId;
 	}
 
+	// Lisää teoksen instanssi divariin
 	lisaaInstanssi() {
 		const instanssi = { divariId: this.kayttaja?.divariId, teosId: this.valittuTeos, ...this.instanceFormGroup.value };
 		if (!instanssi.sisaanostohinta) {
@@ -109,11 +120,13 @@ export class DivariBooksComponent implements OnInit {
 		if (!instanssi.kunto) {
 			delete instanssi.kunto;
 		}
+		// Tarkista instanssin formaatti
 		const tarkistus = tarkistaInstanssiLisäys(instanssi);
 		if (!tarkistus.success && tarkistus.message) {
 			this.notificationService.newNotification('error', tarkistus.message);
 			return;
 		}
+		// Lähetä instanssin lisäys
 		this.bookService.postLisaaTeosInstanssi(instanssi).subscribe((success: boolean) => {
 			if (success) {
 				if (!this.teokset.some((teos) => teos.teosId === this.valittuTeos)) {

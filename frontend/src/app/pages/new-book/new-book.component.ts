@@ -17,11 +17,13 @@ import { Location } from '@angular/common';
 	styleUrl: './new-book.component.css',
 	standalone: true,
 })
+// Uuden teoksen lisäämisen komponentti
 export class NewBookComponent {
 	bookFormGroup: FormGroup;
 	tyypit$: Observable<{ tyyppiId: number; nimi: string }[]>;
 	luokat$: Observable<{ luokkaId: number; nimi: string }[]>;
 
+	// Rakentaja alustaa tyypit, luokat, lomakkeen ja palvelut
 	constructor(
 		private fb: FormBuilder,
 		private bookService: BookService,
@@ -42,9 +44,10 @@ export class NewBookComponent {
 		this.tyypit$ = this.store.select(selectTyypit);
 	}
 
+	// Lisää uusi teos keskusdivariin
 	lisaaTeos() {
 		const { nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino } = this.bookFormGroup.value;
-
+		// Tarkista käyttäjän syöte
 		const tarkistus = tarkistaTeoksenLisäys(nimi, isbn, tekija, tyyppiId, luokkaId, julkaisuvuosi, paino);
 		if (!tarkistus.success && tarkistus.message) {
 			this.notificationService.newNotification('error', tarkistus.message);

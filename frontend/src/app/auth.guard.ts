@@ -9,13 +9,16 @@ import { selectIsLoadingUser, selectUser } from './store/selectors/auth.selector
 @Injectable({
 	providedIn: 'root',
 })
+// AuthGuard on reitinhallintakomponentti, joka tarkistaa käyttäjän oikeudet ennen kuin päästää sivulle
 export class AuthGuard implements CanActivate {
+	// Rakentaja alustaa reitinhallintakomponentin ja palvelut
 	constructor(
 		private store: Store,
 		private router: Router,
 		private notificationService: NotificationService
 	) {}
 
+	// Tarkistaa käyttäjän oikeudet ennen kuin päästää sivulle
 	canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
 		const requiredRoles = route.data['roles'] as string[];
 

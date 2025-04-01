@@ -10,6 +10,7 @@ import { tarkistaHaku } from '../../utils/validate';
 import { selectLuokat, selectTyypit } from '../../store/selectors/category.selector';
 import { Observable } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
+import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 
 @Component({
 	selector: 'app-search',
@@ -18,6 +19,7 @@ import { NotificationService } from '../../services/notification.service';
 	styleUrls: ['./search.component.css'],
 	imports: [CommonModule, FormsModule],
 })
+// Teosten hakukomponentti
 export class SearchComponent {
 	luokat$: Observable<{ luokkaId: number; nimi: string }[]>;
 	tyypit$: Observable<{ tyyppiId: number; nimi: string }[]>;
@@ -30,6 +32,7 @@ export class SearchComponent {
 	valittuTeos: Teos | null = null;
 	instanssit: TeosInstanssi[] = [];
 
+	// Rakentaja alustaa tyypit, luokat, palvelut ja tilat reduxista
 	constructor(
 		private bookService: BookService,
 		private store: Store,
@@ -39,7 +42,9 @@ export class SearchComponent {
 		this.tyypit$ = store.select(selectTyypit);
 	}
 
+	// Hakee teokset ja instanssit käyttäjän syötteen perusteella
 	haeTeoksia() {
+		// Tarkista käyttäjän syöte ja hae kaikki teokset, jos syöte on tyhjää
 		if (!tarkistaHaku(this.queryNimi, this.queryTekija, this.queryLuokka, this.queryTyyppi)) {
 			this.bookService.getKaikkiTeokset().subscribe({
 				next: (data: Teos[]) => {
@@ -53,6 +58,7 @@ export class SearchComponent {
 			});
 			return;
 		}
+		// Muuten hae teokset käyttäjän syötteen perusteella
 		this.bookService
 			.getTeokset({
 				nimi: this.queryNimi,
@@ -72,6 +78,7 @@ export class SearchComponent {
 			});
 	}
 
+	// Hakee valitun teoksen instanssit
 	haeTeosInstanssit(teos: Teos) {
 		if (this.valittuTeos && this.valittuTeos.teosId === teos.teosId) {
 			this.valittuTeos = null;
@@ -89,13 +96,17 @@ export class SearchComponent {
 		});
 	}
 
+	// Lisää teosinstanssi ostoskoriin
 	lisaaOstoskoriin(instanssi: TeosInstanssi) {
+		// Tarkista, että käyttäjä on valinnut teoksen
 		if (this.valittuTeos) {
-			const ostoskoriTuote = {
+			// Tee ostoskoriTuote ja lisää se ostoskoriin
+			const ostoskoriTuote: OstoskoriTuote = {
 				id: Math.floor(Math.random() * 1000),
 				teos: this.valittuTeos,
 				teosInstanssi: instanssi,
 			};
+			// Lisää ostoskoriTuote redux-tilaan
 			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
 			this.notificationService.newNotification('success', `Tuote "${ostoskoriTuote.teos.nimi}" lisätty ostoskoriin`);
 		} else {

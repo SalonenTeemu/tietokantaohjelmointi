@@ -9,6 +9,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { AuthInterceptor } from './auth.interceptor';
 
+// Sovelluksen konfiguraatio, joka määrittelee reitityksen, tilanhallinnan ja pyyntöjen käsittelyn
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideZoneChangeDetection({ eventCoalescing: true }),

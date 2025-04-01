@@ -1,7 +1,7 @@
 import { Teos } from './teos';
 import { TeosInstanssi } from './teosInstanssi';
 
-// Esittää ostostokorin tuotetta
+// Esittää tuotetta ostoskorissa
 export interface OstoskoriTuote {
 	id: number;
 	teos: Teos;

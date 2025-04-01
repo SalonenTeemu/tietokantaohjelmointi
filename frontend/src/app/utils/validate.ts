@@ -10,23 +10,28 @@ export function tarkistaISBN(isbn: string): boolean {
 	return re.test(isbn);
 }
 
+// Tarkista salasanan oikeellisuus
 const tarkistaSalasana = (salasana: string): boolean => {
 	return salasana.length >= 4 && salasana.length <= 100;
 };
 
+// Tarkista nimen oikeellisuus
 const tarkistaNimi = (nimi: string): boolean => {
 	return nimi.length >= 2 && nimi.length <= 100;
 };
 
+// Tarkista puhelinnumeron oikeellisuus
 const tarkistaPuhelin = (puhelin: string): boolean => {
 	const re = /^[0-9]{9,20}$/;
 	return re.test(puhelin) && puhelin.length >= 5 && puhelin.length <= 20;
 };
 
+// Tarkista osoitteen oikeellisuus
 const tarkistaOsoite = (osoite: string): boolean => {
 	return osoite.length >= 5 && osoite.length <= 255;
 };
 
+// Tarkista kirjautumisen oikeellisuus
 export const tarkistaKirjautuminen = (email: string, salasana: string): any => {
 	if (!email || !salasana) {
 		return { success: false, message: 'Sähköposti ja salasana ovat pakollisia' };
@@ -40,6 +45,7 @@ export const tarkistaKirjautuminen = (email: string, salasana: string): any => {
 	return { success: true, message: '' };
 };
 
+// Tarkista rekisteröitymisen oikeellisuus
 export const tarkistaRekisteroityminen = (nimi: string, email: string, puhelin: string, osoite: string, salasana: string): any => {
 	if (!nimi || !email || !puhelin || !osoite || !salasana) {
 		return { success: false, message: 'Kaikki kentät ovat pakollisia' };
@@ -62,6 +68,7 @@ export const tarkistaRekisteroityminen = (nimi: string, email: string, puhelin: 
 	return { success: true, message: '' };
 };
 
+// Tarklista hakuparametrien oikeellisuus
 export const tarkistaHaku = (nimi: string, tekija: string, luokka: string, tyyppi: string): boolean => {
 	if (!nimi && !tekija && !luokka && !tyyppi) {
 		return false;
@@ -69,6 +76,7 @@ export const tarkistaHaku = (nimi: string, tekija: string, luokka: string, tyypp
 	return true;
 };
 
+// Tarkista teoksen lisäyksen parametrien oikeellisuus
 export const tarkistaTeoksenLisäys = (
 	nimi: string,
 	isbn: string,
@@ -99,6 +107,7 @@ export const tarkistaTeoksenLisäys = (
 	return { success: true, message: '' };
 };
 
+// Tarkista instanssin lisäyksen parametrien oikeellisuus
 export const tarkistaInstanssiLisäys = (instanssi: any): { success: boolean; message?: string } => {
 	if (instanssi.hinta == null || instanssi.divariId == null || instanssi.kpl == null) {
 		return { success: false, message: 'Hinta ja kappalemäärä vaaditaan.' };

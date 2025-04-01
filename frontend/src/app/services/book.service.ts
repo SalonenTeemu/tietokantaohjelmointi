@@ -8,11 +8,16 @@ import { TeosInstanssi } from '../models/teosInstanssi';
 @Injectable({
 	providedIn: 'root',
 })
+// Teospalvelu, joka käsittelee teosten hakua, lisäämistä ja instanssien hallintaa
 export class BookService {
 	private apiUrl = 'http://localhost:8041/api';
 
 	constructor(private http: HttpClient) {}
-
+	/**
+	 * Hakee kaikki teokset palvelimelta.
+	 * 
+	 * @returns Lista kaikista teoksista
+	 */
 	getKaikkiTeokset(): Observable<Teos[]> {
 		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos`).pipe(
 			map((response) => response.message),
@@ -23,6 +28,12 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Hakee teokset hakuehtojen perusteella.
+	 * 
+	 * @param query - Hakuehdot: nimi, tekijä, tyyppi ja luokka
+	 * @returns Lista teoksista, jotka vastaavat hakuehtoja
+	 */
 	getTeokset(query: { nimi?: string; tekija?: string; tyyppi?: string; luokka?: string }): Observable<Teos[]> {
 		return this.http.get<{ message: Teos[] }>(`${this.apiUrl}/teos/hae`, { params: query }).pipe(
 			map((response) => response.message),
@@ -33,6 +44,12 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Hakee divarin teokset.
+	 * 
+	 * @param divariId - Divarin ID
+	 * @returns Lista divarin teoksista
+	 */
 	getDivarinTeokset(divariId: number): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/${divariId}`).pipe(
 			map((response) => response.message),
@@ -43,6 +60,12 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Hakee teoksen instanssit.
+	 * 
+	 * @param teosId - Teoksen ID
+	 * @returns Lista teoksen instansseista
+	 */
 	getTeosInstanssit(teosId: string): Observable<TeosInstanssi[]> {
 		return this.http.get<{ message: TeosInstanssi[] }>(`${this.apiUrl}/teos/${teosId}/instanssit`).pipe(
 			map((response) => response.message),
@@ -53,6 +76,11 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Hakee teoksen luokat.
+	 * 
+	 * @returns Lista teoksen luokista
+	 */
 	getTeosLuokat(): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/luokat`).pipe(
 			map((response) => response.message),
@@ -63,6 +91,11 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Hakee teoksen tyypit.
+	 * 
+	 * @returns Lista teoksen tyypeistä
+	 */
 	getTeosTyypit(): Observable<any[]> {
 		return this.http.get<{ message: any[] }>(`${this.apiUrl}/teos/tyypit`).pipe(
 			map((response) => response.message),
@@ -73,6 +106,12 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Lisää teoksen palvelimelle.
+	 * 
+	 * @param teos - Teos, joka lisätään
+	 * @returns true, jos lisäys onnistui, muuten false
+	 */
 	postLisaaTeos(teos: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos`, teos, { observe: 'response' }).pipe(
 			map((response) => {
@@ -88,6 +127,12 @@ export class BookService {
 		);
 	}
 
+	/**
+	 * Lisää teoksen instanssin palvelimelle.
+	 * 
+	 * @param instanssi - Teosinstanssi, joka lisätään
+	 * @returns true, jos lisäys onnistui, muuten false
+	 */
 	postLisaaTeosInstanssi(instanssi: any): Observable<boolean> {
 		return this.http.post<{ message: string }>(`${this.apiUrl}/teos/${instanssi.teosId}`, instanssi, { observe: 'response' }).pipe(
 			map((response) => {

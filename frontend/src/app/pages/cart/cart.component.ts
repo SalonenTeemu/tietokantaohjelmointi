@@ -17,12 +17,15 @@ import { NotificationService } from '../../services/notification.service';
 	styleUrls: ['./cart.component.css'],
 	imports: [CommonModule],
 })
+
+// Ostoskori komponentti, joka näyttää käyttäjän ostoskorin sisällön ja mahdollistaa tilauksen tekemisen
 export class CartComponent {
 	ostoskoriTuotteet$: Observable<OstoskoriTuote[]>;
 	yhteensa$: Observable<number>;
 	kirjautunut$: Observable<boolean>;
 	kayttajaId$: Observable<number | undefined>;
 
+	// Rakentaja luo komponentin ja alustaa palvelut sekä tilat reduxista
 	constructor(
 		private store: Store,
 		private router: Router,
@@ -35,16 +38,19 @@ export class CartComponent {
 		this.kayttajaId$ = this.store.select(selectUserId);
 	}
 
+	// Tuotteen poistaminen ostoskorista
 	poistaOstoskorista(id: number) {
 		this.store.dispatch(removeFromCart({ id }));
 		this.notificationService.newNotification('success', 'Tuote poistettu ostoskorista');
 	}
 
+	// Tyhjentää ostoskorin
 	tyhjennaOstoskori() {
 		this.store.dispatch(clearCart());
 		this.notificationService.newNotification('success', 'Ostoskori tyhjennetty');
 	}
 
+	// Luo tilauksen ja ohjaa käyttäjän tilaus-sivulle
 	tilaa() {
 		combineLatest([this.ostoskoriTuotteet$, this.kayttajaId$])
 			.pipe(take(1))
@@ -53,13 +59,13 @@ export class CartComponent {
 					this.notificationService.newNotification('error', 'Käyttäjä ei ole kirjautunut sisään');
 					return;
 				}
-
+				// Hae ostoskori tuotteet
 				const instanssit = ostoskoriTuotteet.map((item) => item.teosInstanssi.teosInstanssiId);
 				const tilaus = {
 					kayttajaId,
 					instanssit,
 				};
-
+				// Luo tilaus
 				this.orderService.postLuoTilaus(tilaus).subscribe((response) => {
 					if (response) {
 						this.router.navigate(['/tilaus']);

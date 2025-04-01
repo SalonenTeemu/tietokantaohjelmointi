@@ -15,6 +15,7 @@ import { KeskusdivariComponent } from './pages/keskusdivari/keskusdivari.compone
 import { KeskusdivariReportsComponent } from './pages/keskusdivari-reports/keskusdivari-reports.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
+// Sovelluksen reititys, jossa myös määritellään niiden suojaus roolien mukaan
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
 	{
