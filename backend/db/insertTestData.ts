@@ -2,11 +2,14 @@ import bcrypt from 'bcrypt';
 import db from './knex';
 import { keskusdivari, divarit as divariSkeemat } from './initDb';
 
-// Funktio salasanan hashaukseen
+// Funktio salasanan hashaukseen bcryptillä
 const hashSalasana = async (salasana: string) => {
 	return await bcrypt.hash(salasana, 10);
 };
 
+// Alustava tietokannan testidata ohjelman testausta varten:
+
+// Käyttäjät
 const kayttajat = [
 	{
 		nimi: 'Admin Admin',
@@ -49,6 +52,7 @@ const kayttajat = [
 	},
 ];
 
+// Divarit
 const divarit = [
 	{ nimi: 'Keskusdivari', osoite: 'Keskusdivarintie 1', webSivu: 'www.keskusdivari.fi', onKeskusdivari: true, omaTietokanta: 'keskusdivari' },
 	{ nimi: 'Divari 1', osoite: 'Divarintie 1', omaTietokanta: 'd1' },
@@ -56,6 +60,7 @@ const divarit = [
 	{ nimi: 'Divari 3', osoite: 'Divarintie 3', omaTietokanta: 'd3' },
 ];
 
+// Luokat teoksille
 const luokat = [
 	{ nimi: 'Seikkailu' },
 	{ nimi: 'Sikailu' },
@@ -66,8 +71,10 @@ const luokat = [
 	{ nimi: 'Opas' },
 ];
 
+// Tyypit teoksille
 const tyypit = [{ nimi: 'Romaani' }, { nimi: 'Sarjakuva' }, { nimi: 'Tietokirja' }];
 
+// Postitusmaksut
 const postitusHinnasto = [
 	{ paino: 50, hinta: 2.5 },
 	{ paino: 250, hinta: 5.0 },
@@ -75,6 +82,7 @@ const postitusHinnasto = [
 	{ paino: 2000, hinta: 15.0 },
 ];
 
+// Divari-adminit
 const divariAdminit = [
 	{ divariId: 1, kayttajaId: 1 },
 	{ divariId: 2, kayttajaId: 2 },
@@ -82,6 +90,7 @@ const divariAdminit = [
 	{ divariId: 4, kayttajaId: 4 },
 ];
 
+// Teokset
 const teokset = [
 	{
 		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
@@ -145,6 +154,7 @@ const teokset = [
 	},
 ];
 
+// Teosinstanssit keskusdivarissa, joista osa liitetty tilauksiin
 const teosInstanssit = [
 	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 5.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
 	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
@@ -156,6 +166,7 @@ const teosInstanssit = [
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5', divariId: 4, tilausId: 3 },
 ];
 
+// Divarin 1 teosinstanssit
 const teosInstanssitD1 = [
 	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 5.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
 	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd' },
@@ -165,12 +176,14 @@ const teosInstanssitD1 = [
 	{ hinta: 15.0, kunto: 'heikko', sisaanostohinta: 7.0, teosId: '8a9a88c7-3487-47d5-a73d-1bfcfbaa17ef' },
 ];
 
+// Divarin 3 teosinstanssit
 const teosInstanssitD3 = [
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
 
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
 ];
 
+// Tilaukset, joihin on liitetty teosinstansseja
 const tilaukset = [
 	{ tila: 'valmis', tilauspvm: '2025-03-01', postikulut: 5.0, kokonaishinta: 50.0, kayttajaId: 5 },
 	{ tila: 'valmis', tilauspvm: '2024-03-18', postikulut: 10.0, kokonaishinta: 100.0, kayttajaId: 5 },

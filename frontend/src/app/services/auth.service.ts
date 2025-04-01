@@ -8,7 +8,7 @@ import { Kayttaja } from '../models/kayttaja';
 @Injectable({
 	providedIn: 'root',
 })
-// Autentikointipalvelu, joka käsittelee käyttäjän kirjautumista, rekisteröitymistä ja uloskirjautumista
+// Autentikointipalvelu, joka käsittelee käyttäjän kirjautumista, rekisteröitymistä, tokenien päivitystä ja uloskirjautumista
 export class AuthService {
 	private apiUrl = 'http://localhost:8041/api/auth';
 
@@ -17,9 +17,9 @@ export class AuthService {
 		private http: HttpClient
 	) {}
 
-	/** 
-	 * Kirjautuu käyttäjän sisään antamalla sähköpostiosoitteen ja salasanan.
-	 * 
+	/**
+	 * Kirjautuu käyttäjän sisään annetulla sähköpostiosoitteella ja salasanalla.
+	 *
 	 * @param email - Käyttäjän sähköpostiosoite
 	 * @param salasana Käyttäjän salasana
 	 * @return Palauttaa true, jos kirjautuminen onnistuu, muuten false
@@ -31,7 +31,7 @@ export class AuthService {
 				if (response.ok) {
 					const responseBody = response.body;
 					const kayttaja = responseBody?.message;
-					// Tarkistetaan, että käyttäjä on olemassa ja asetetaan se redux-tilaan
+					// Tarkistetaan, että käyttäjä on olemassa ja asetetaan se store-tilaan
 					if (kayttaja) {
 						this.store.dispatch(setUser({ user: kayttaja }));
 					} else {
@@ -52,7 +52,7 @@ export class AuthService {
 
 	/**
 	 * Lähettää rekisteröitymistiedot palvelimelle ja käsittelee vastauksen.
-	 * 
+	 *
 	 * @param nimi - Käyttäjän nimi
 	 * @param email - Käyttäjän sähköpostiosoite
 	 * @param puhelin - Käyttäjän puhelinnumero
@@ -84,15 +84,15 @@ export class AuthService {
 		);
 	}
 
-	/** 
+	/**
 	 * Lähettää uloskirjautumispyynnön palvelimelle ja käsittelee vastauksen.
-	 * 
+	 *
 	 * @return Palauttaa true, jos uloskirjautuminen onnistuu, muuten false
 	 */
 	postKirjauduUlos(): Observable<boolean> {
 		return this.http.post<unknown>(`${this.apiUrl}/kirjaudu-ulos`, {}, { observe: 'response' }).pipe(
 			map((response) => {
-				// Jos uloskirjautuminen onnistui, tyhjennetään käyttäjätiedot redux-tilasta
+				// Jos uloskirjautuminen onnistui, tyhjennetään käyttäjätiedot store-tilasta
 				if (response.ok) {
 					this.store.dispatch(logout());
 					return true;
@@ -105,10 +105,33 @@ export class AuthService {
 			})
 		);
 	}
-	
-	/** 
-	 * Hakee käyttäjän tiedot palvelimelta ja asettaa ne redux-tilaan. Palauttaa true, jos käyttäjätiedot löytyvät, muuten false
-	 * 
+
+	/**
+	 * Lähettää pyynnön tokenien päivittämiseksi palvelimelle ja käsittelee vastauksen.
+	 *
+	 * @return Palauttaa true, jos tokenien päivitys onnistuu, muuten false
+	 */
+	paivitaTokenit(): Observable<boolean> {
+		return this.http.post(`${this.apiUrl}/paivita`, {}, { observe: 'response' }).pipe(
+			map((response) => {
+				if (response.ok) {
+					console.log('Tokenit päivitetty onnistuneesti');
+					return true;
+				} else {
+					console.error('Tokenien päivitys epäonnistui');
+					return false;
+				}
+			}),
+			catchError((error) => {
+				console.error('Virhe tokenien päivityksessä:', error);
+				return of(false);
+			})
+		);
+	}
+
+	/**
+	 * Hakee käyttäjän tiedot palvelimelta ja asettaa ne store-tilaan. Palauttaa true, jos käyttäjätiedot löytyvät, muuten false
+	 *
 	 * @return Palauttaa true, jos käyttäjätiedot löytyvät, muuten false
 	 */
 	getKayttaja(): Observable<boolean> {
@@ -118,20 +141,20 @@ export class AuthService {
 			map((response) => {
 				if (response.ok) {
 					const kayttaja = response.body?.message;
-					// Tarkistetaan, että käyttäjä on olemassa ja asetetaan se redux-tilaan, muuten asetetaan null
+					// Tarkistetaan, että käyttäjä on olemassa ja asetetaan se store-tilaan, muuten asetetaan null
 					if (kayttaja) {
 						this.store.dispatch(setUser({ user: kayttaja }));
 					} else {
 						this.store.dispatch(setUser({ user: null }));
 					}
 				}
-				// Jos käyttäjätietoja ei löydy, asetetaan redux-tilassa käyttäjä null-arvoksi 
+				// Jos käyttäjätietoja ei löydy, asetetaan store-tilassa käyttäjä null-arvoksi
 				else {
 					this.store.dispatch(setUser({ user: null }));
 				}
 				return response.ok;
 			}),
-			// Jos käyttäjätietojen haku epäonnistuu, asetetaan redux-tilassa käyttäjä null-arvoksi
+			// Jos käyttäjätietojen haku epäonnistuu, asetetaan store-tilassa käyttäjä null-arvoksi
 			catchError(() => {
 				this.store.dispatch(setUser({ user: null }));
 				return of(false);

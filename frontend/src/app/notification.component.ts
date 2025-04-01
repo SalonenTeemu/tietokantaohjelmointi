@@ -16,7 +16,7 @@ import { removeNotification } from './store/actions/notification.actions';
 export class NotificationComponent implements OnInit {
 	notifications$: Observable<{ type: string; message: string }[]>;
 
-	// Rakentaja alustaa ilmoitukset reduxista
+	// Rakentaja alustaa ilmoitukset storesta
 	constructor(private store: Store) {
 		this.notifications$ = this.store.select(selectNotifications);
 	}

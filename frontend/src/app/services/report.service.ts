@@ -13,7 +13,7 @@ export class ReportService {
 
 	/**
 	 * Hakee palvelimelta raportin, joka sisältää divarin luokkien myynnin tiedot.
-	 * 
+	 *
 	 * @param divariId - Divarin ID, jolle halutaan hakea luokkaraportti
 	 * @returns Raportti, joka sisältää luokkamyyntiä koskevat tiedot
 	 */
@@ -29,7 +29,7 @@ export class ReportService {
 
 	/**
 	 * Hakee palvelimelta raportin, joka sisältää kaikkien divarien luokkien myynnin tiedot.
-	 * 
+	 *
 	 * @returns Raportti, joka sisältää kaikkien divarien luokkamyyntiä koskevat tiedot
 	 */
 	getKeskusdivariLuokkaRaportti(): Observable<any[]> {
@@ -44,7 +44,7 @@ export class ReportService {
 
 	/**
 	 * Hakee palvelimelta raportin, joka sisältää asiakastiedot viimeisen vuoden ajalta.
-	 * 
+	 *
 	 * @returns Ladattava CSV-tiedosto, joka sisältää asiakastiedot
 	 */
 	getKeskusdivariAsiakasRaportti(): Observable<Blob> {

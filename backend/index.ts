@@ -7,20 +7,25 @@ import tilausRoutes from './routes/tilausRoutes';
 import kayttajaRoutes from './routes/kayttajaRoutes';
 import raporttiRoutes from './routes/raporttiRoutes';
 
+// Palvelimen tiedot
+const hostname = 'localhost';
+const port = 8041;
+
 const app = express();
+
+// Middleware
 app.use(cors({ origin: 'http://localhost:8040', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-const hostname = 'localhost';
-const port = 8041;
-
-app.listen(port, () => {
-	alustaTietokanta();
-	console.log(`Palvelin käynnissä osoitteessa http://${hostname}:${port}`);
-});
-
+// Reitit
 app.use('/api/teos', teosRoutes);
 app.use('/api/tilaus', tilausRoutes);
 app.use('/api/auth', kayttajaRoutes);
 app.use('/api/raportti', raporttiRoutes);
+
+// Kuuntele porttia ja alusta tietokanta
+app.listen(port, () => {
+	alustaTietokanta();
+	console.log(`Palvelin käynnissä osoitteessa http://${hostname}:${port}`);
+});

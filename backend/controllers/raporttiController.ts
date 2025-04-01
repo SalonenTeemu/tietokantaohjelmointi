@@ -3,11 +3,16 @@ import { json2csv } from 'json-2-csv';
 import { haeKaikkiLuokanMyynnissaOlevatTeokset } from '../db/queries/teos';
 import { haeAsiakkaidenViimeVuodenOstot } from '../db/queries/teosInstanssi';
 
-// Hae luokan myynnissä olevat teokset
+/**
+ * Vastaa pyyntöön luokan myynnissä olevista teoksista. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa luokan myynnissä olevat teokset. Muuten virheviesti.
+ */
 export const haeLuokanMyynnissaOlevatTeokset = async (req: Request, res: Response) => {
 	try {
+		// Haetaan luokan myynnissä olevat teokset tietokannasta
 		const tiedot = await haeKaikkiLuokanMyynnissaOlevatTeokset();
 
+		// Lasketaan yhteen arvot luokan mukaan
 		const aggregatedData = tiedot.reduce((acc, item) => {
 			if (!acc[item.luokka]) {
 				acc[item.luokka] = {
@@ -32,6 +37,7 @@ export const haeLuokanMyynnissaOlevatTeokset = async (req: Request, res: Respons
 			return acc;
 		}, {});
 
+		// Muotoillaan kokonaisMyyntihinta kahden desimaalin tarkkuudella
 		const result = Object.values(aggregatedData).map((item: any) => ({
 			...item,
 			kokonaisMyyntihinta: item.kokonaisMyyntihinta.toFixed(2),
@@ -44,14 +50,19 @@ export const haeLuokanMyynnissaOlevatTeokset = async (req: Request, res: Respons
 	}
 };
 
-// Hae divarin luokan myynnissä olevat teokset
+/**
+ * Vastaa pyyntöön divarin luokan myynnissä olevista teoksista. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa divarin luokan myynnissä olevat teokset. Muuten virheviesti.
+ */
 export const haeDivarinLuokanMyynnissaOlevatTeokset = async (req: Request, res: Response) => {
 	try {
+		// Tarkistetaan, että divariId on annettu ja se on positiivinen kokonaisluku
 		const divariId = parseInt(req.params.divariId);
 		if (!divariId || divariId <= 0) {
 			res.status(400).json({ message: 'Virheellinen divariId.' });
 			return;
 		}
+		// Haetaan divarin luokan myynnissä olevat teokset tietokannasta ja palautetaan ne JSON-muodossa
 		const tiedot = await haeKaikkiLuokanMyynnissaOlevatTeokset(divariId);
 		res.status(200).json({ message: tiedot });
 	} catch (error) {
@@ -60,14 +71,19 @@ export const haeDivarinLuokanMyynnissaOlevatTeokset = async (req: Request, res: 
 	}
 };
 
-// Hae asiakasraportti viime vuodelta CSV-muodossa
+/**
+ * Vastaa pyyntöön asiakasraportista viime vuodelta. Hakee tiedot tietokannasta ja palauttaa ne CSV-muodossa.
+ * @returns Onnistuessa CSV-asiakasraportti viime vuodelta. Muuten virheviesti.
+ */
 export const haeAsiakasRaporttiViimeVuosi = async (req: Request, res: Response) => {
 	try {
+		// Haetaan asiakasraportti viime vuodelta tietokannasta
 		const raportti = await haeAsiakkaidenViimeVuodenOstot();
 		if (!raportti) {
 			res.status(404).json({ message: 'Raporttia ei saatu muodostettua.' });
 			return;
 		}
+		// Asetetaan CSV-tiedoston otsikot ja kentät
 		const fields = ['kayttajaId', 'nimi', 'email', 'ostettujenTeostenLkm'];
 		const opts = { delimiter: { field: ';' }, keys: fields };
 		const csv = await json2csv(raportti, opts);

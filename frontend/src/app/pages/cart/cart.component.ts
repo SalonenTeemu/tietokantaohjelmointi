@@ -25,7 +25,7 @@ export class CartComponent {
 	kirjautunut$: Observable<boolean>;
 	kayttajaId$: Observable<number | undefined>;
 
-	// Rakentaja luo komponentin ja alustaa palvelut sekä tilat reduxista
+	// Rakentaja luo komponentin ja alustaa palvelut sekä tilat storesta
 	constructor(
 		private store: Store,
 		private router: Router,

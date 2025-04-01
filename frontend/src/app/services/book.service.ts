@@ -15,7 +15,7 @@ export class BookService {
 	constructor(private http: HttpClient) {}
 	/**
 	 * Hakee kaikki teokset palvelimelta.
-	 * 
+	 *
 	 * @returns Lista kaikista teoksista
 	 */
 	getKaikkiTeokset(): Observable<Teos[]> {
@@ -30,7 +30,7 @@ export class BookService {
 
 	/**
 	 * Hakee teokset hakuehtojen perusteella.
-	 * 
+	 *
 	 * @param query - Hakuehdot: nimi, tekijä, tyyppi ja luokka
 	 * @returns Lista teoksista, jotka vastaavat hakuehtoja
 	 */
@@ -46,7 +46,7 @@ export class BookService {
 
 	/**
 	 * Hakee divarin teokset.
-	 * 
+	 *
 	 * @param divariId - Divarin ID
 	 * @returns Lista divarin teoksista
 	 */
@@ -62,7 +62,7 @@ export class BookService {
 
 	/**
 	 * Hakee teoksen instanssit.
-	 * 
+	 *
 	 * @param teosId - Teoksen ID
 	 * @returns Lista teoksen instansseista
 	 */
@@ -78,7 +78,7 @@ export class BookService {
 
 	/**
 	 * Hakee teoksen luokat.
-	 * 
+	 *
 	 * @returns Lista teoksen luokista
 	 */
 	getTeosLuokat(): Observable<any[]> {
@@ -93,7 +93,7 @@ export class BookService {
 
 	/**
 	 * Hakee teoksen tyypit.
-	 * 
+	 *
 	 * @returns Lista teoksen tyypeistä
 	 */
 	getTeosTyypit(): Observable<any[]> {
@@ -108,7 +108,7 @@ export class BookService {
 
 	/**
 	 * Lisää teoksen palvelimelle.
-	 * 
+	 *
 	 * @param teos - Teos, joka lisätään
 	 * @returns true, jos lisäys onnistui, muuten false
 	 */
@@ -129,7 +129,7 @@ export class BookService {
 
 	/**
 	 * Lisää teoksen instanssin palvelimelle.
-	 * 
+	 *
 	 * @param instanssi - Teosinstanssi, joka lisätään
 	 * @returns true, jos lisäys onnistui, muuten false
 	 */

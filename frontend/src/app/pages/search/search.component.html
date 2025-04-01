@@ -34,7 +34,7 @@
 					<p class="type-class">{{ teos.tyyppi }}, {{ teos.luokka }}</p>
 				</div>
 				<div *ngIf="valittuTeos && valittuTeos.teosId === teos.teosId" class="instanssit-container">
-					<h4>Vaihtoehdot ({{instanssit.length}})</h4>
+					<h4>Vaihtoehdot ({{ instanssit.length }})</h4>
 					<ul *ngIf="instanssit.length > 0" class="instanssit-list">
 						<li *ngFor="let instanssi of instanssit" class="instanssi-item">
 							<p>Hinta: {{ instanssi.hinta }}€</p>

@@ -15,7 +15,10 @@ import { haeDivariIdlla } from '../db/queries/divari';
 import { lisaaUusiTeosInstanssi } from '../db/queries/teosInstanssi';
 import { haeKayttajanOmaTietokanta } from '../db/queries/kayttaja';
 
-// Hae kaikki teokset
+/**
+ * Vastaa pyyntöön kaikkien teosten hausta. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa kaikki teokset. Muuten virheviesti.
+ */
 export const haeKaikkiTeokset = async (req: Request, res: Response) => {
 	try {
 		const teokset = await haeTeokset();
@@ -26,10 +29,14 @@ export const haeKaikkiTeokset = async (req: Request, res: Response) => {
 	}
 };
 
-// Hae teoksia hakusanoilla (nimi, tekijä, luokka, tyyppi)
+/**
+ * Vastaa pyyntöön teosten hakemisesta hakusanojen perusteella. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa teokset hakusanojen perusteella. Muuten virheviesti.
+ */
 export const haeTeoksia = async (req: Request, res: Response) => {
 	try {
 		const hakusanat = req.query;
+		// Tarkistetaan, että hakusanat ovat oikeanlaisia
 		const tarkistus = tarkistaTeosHaku(hakusanat);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
@@ -43,11 +50,15 @@ export const haeTeoksia = async (req: Request, res: Response) => {
 	}
 };
 
-// Hae divarin myymät teokset
+/**
+ * Vastaa pyyntöön divarin teosten hakemisesta. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa divarin teokset. Muuten virheviesti.
+ */
 export const haeDivarinTeokset = async (req: Request, res: Response) => {
 	try {
 		const divariId = req.params.divariId;
 		const divariIdNum = Number(divariId);
+		// Tarkistetaan, että divariId on annettu ja se on positiivinen kokonaisluku
 		if (!divariId || divariIdNum <= 0) {
 			res.status(400).json({ message: 'Virheellinen divariId.' });
 			return;
@@ -60,7 +71,10 @@ export const haeDivarinTeokset = async (req: Request, res: Response) => {
 	}
 };
 
-// Hae kaiki mahdolliset luokat
+/**
+ * Vastaa pyyntöön hakea kaikki luokat. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa kaikki luokat. Muuten virheviesti.
+ */
 export const haeKaikkiLuokat = async (req: Request, res: Response) => {
 	try {
 		const luokat = await haeLuokat();
@@ -71,7 +85,10 @@ export const haeKaikkiLuokat = async (req: Request, res: Response) => {
 	}
 };
 
-// Hae kaikki mahdolliset tyypit
+/**
+ * Vastaa pyyntöön hakea kaikki tyypit. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa kaikki tyypit. Muuten virheviesti.
+ */
 export const haeKaikkiTyypit = async (req: Request, res: Response) => {
 	try {
 		const tyypit = await haeTyypit();
@@ -82,7 +99,10 @@ export const haeKaikkiTyypit = async (req: Request, res: Response) => {
 	}
 };
 
-// Hae teoksen instanssit
+/**
+ * Vastaa pyyntöön hakea teoksen instanssit teosId:n perusteella. Hakee tiedot tietokannasta ja palauttaa ne JSON-muodossa.
+ * @returns Onnistuessa teoksen instanssit. Muuten virheviesti.
+ */
 export const haeTeosInstanssit = async (req: Request, res: Response) => {
 	try {
 		const teosId = req.params.teosId;
@@ -98,43 +118,56 @@ export const haeTeosInstanssit = async (req: Request, res: Response) => {
 	}
 };
 
-// Lisää uusi teos
+/**
+ * Vastaa pyyntöön lisätä uusi teos. Tarkistaa, että teos ei ole jo olemassa ja lisää sen tietokantaan.
+ * @returns Onnistuessa viestin teoksen lisäämisestä. Muuten virheviesti.
+ */
 export const lisaaTeos = async (req: Request, res: Response): Promise<any> => {
 	try {
+		// Jos isbn on tyhjä (ei annettu), asetetaan se nulliksi
 		if (req.body.isbn === '') req.body.isbn = null;
 		const { isbn, nimi, tekija, julkaisuvuosi, paino, tyyppiId, luokkaId } = req.body;
+		// Tarkistetaan, että syötteet ovat oikeanlaisia
 		const tarkistus = tarkistaLuoTeos(req.body);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
 			return;
 		}
 
+		// Haetaan käyttäjän tiedot ja tarkistetaan, onko käyttäjä divariAdmin, joka käyttää omaa tietokantaansa
 		const { rooli, kayttajaId } = req.user as any;
 		const kayttajanOmaTietokanta = await haeKayttajanOmaTietokanta(kayttajaId);
 
+		// Haku, joka hakee teoksen joko isbn:n tai tekijän ja nimen perusteella
 		const teosHaku = async (isbn: string | undefined, tekija: string, nimi: string, tietokanta?: any) =>
 			isbn ? await haeTeosISBNlla(isbn, tietokanta) : await haeTeosTekijanJaNimenPerusteella(tekija, nimi, tietokanta);
 
+		// Jos käyttäjä on admin tai ei käytä omaa tietokantaansa, tarkistetaan teoksen olemassaolo keskusdivarista
 		if (rooli === 'admin' || !kayttajanOmaTietokanta) {
 			if (await teosHaku(isbn, tekija, nimi)) {
 				return res.status(400).json({ message: 'Teos on jo olemassa.' });
 			}
+			// Lisätään uusi teos keskusdivariin
 			await lisaaUusiTeos({ isbn, nimi, tekija, julkaisuvuosi, paino, tyyppiId, luokkaId });
 		} else {
+			// Jos käyttäjä on divariAdmin ja käyttää omaa tietokantaansa, tarkistetaan teoksen olemassaolo käyttäjän omasta tietokannasta ja keskusdivarista
 			const [teosKeskusdivarissa, teosDivarissa] = await Promise.all([
 				teosHaku(isbn, tekija, nimi),
 				teosHaku(isbn, tekija, nimi, kayttajanOmaTietokanta),
 			]);
 
+			// Jos teos löytyy keskusdivarista ja käyttäjän omasta tietokannasta, palautetaan virhe
 			if (teosKeskusdivarissa && teosDivarissa) {
 				return res.status(400).json({ message: 'Teos on jo olemassa.' });
 			}
 
+			// Lisää teos käyttäjän omaan tietokantaan, jos se ei ole vielä siellä
 			const [teos] =
 				teosDivarissa ||
 				teosKeskusdivarissa ||
 				(await lisaaUusiTeos({ isbn, nimi, tekija, julkaisuvuosi, paino, tyyppiId, luokkaId }, kayttajanOmaTietokanta));
 
+			// Lisää teos keskusdivariin, jos se ei ole vielä siellä
 			await lisaaUusiTeos({
 				teosId: teos.teosId,
 				isbn,
@@ -154,7 +187,10 @@ export const lisaaTeos = async (req: Request, res: Response): Promise<any> => {
 	}
 };
 
-// Lisää uusi instanssi teokselle
+/**
+ * Vastaa pyyntöön lisätä uusia teosintansseja. Tarkistaa, että teosId on annettu ja lisää instanssit tietokantaan.
+ * @returns Onnistuessa viestin teosinstanssin lisäämisestä. Muuten virheviesti.
+ */
 export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 	try {
 		const teosId = req.params.teosId;
@@ -163,28 +199,34 @@ export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 			return;
 		}
 		const { kpl, hinta, kunto, sisaanostohinta, divariId } = req.body;
+		// Tarkistetaan, että syötteet ovat oikeanlaisia
 		const tarkistus = tarkistaLuoTeosInstanssi(req.body, kpl);
 		if (!tarkistus.success) {
 			res.status(400).json({ message: tarkistus.message });
 			return;
 		}
+		// Tarkistetaan, että divariId on annettu ja se vastaa käyttäjän divaria
 		const { kayttajaId, divariId: kayttajanDivariId } = req.user as any;
 		if (divariId !== kayttajanDivariId) {
 			res.status(401).json({ message: 'Ei voi lisätä teosInstanssia toisen divariin.' });
 			return;
 		}
+		// Tarkistetaan, että divari on olemassa
 		const divari = await haeDivariIdlla(divariId);
 		if (!divari) {
 			res.status(400).json({ message: 'Annettua divaria ei löydy.' });
 			return;
 		}
+		// Haetaan käyttäjän oma tietokanta
 		const kayttajanOmaTietokanta = await haeKayttajanOmaTietokanta(kayttajaId);
 		if (kayttajanOmaTietokanta) {
+			// Jos käyttäjä on divariAdmin ja käyttää omaa tietokantaansa, lisätään teosinstanssi(t) käyttäjän omaan tietokantaan
 			for (let i = 0; i < kpl; i++) {
 				await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, teosId }, kayttajanOmaTietokanta);
 			}
 			res.status(201).json({ message: 'TeosInstanssi(t) lisätty.' });
 		} else {
+			// Muuten lisätään teosinstanssi(t) keskusdivariin
 			for (let i = 0; i < kpl; i++) {
 				await lisaaUusiTeosInstanssi({ hinta, kunto, sisaanostohinta, divariId, teosId });
 			}
