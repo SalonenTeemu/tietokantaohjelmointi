@@ -170,45 +170,10 @@ const teokset = [
 // Teosinstanssit keskusdivarissa, joista osa liitetty tilauksiin
 const teosInstanssit = [
 	{ hinta: 30.0, kunto: 'kohtalainen', sisaanostohinta: 15.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 25.0, kunto: 'kohtalainen', sisaanostohinta: 15.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
-	{ hinta: 25.0, kunto: 'kohtalainen', sisaanostohinta: 15.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 18.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 5.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
 	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
 	{ hinta: 15.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
 	{ hinta: 15.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 14.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 2 },
-	{ hinta: 14.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '0fbca8b4-db20-4330-88e5-b76461d32110', divariId: 2 },
-	{ hinta: 15.0, kunto: 'heikko', sisaanostohinta: 7.0, teosId: '8a9a88c7-3487-47d5-a73d-1bfcfbaa17ef', divariId: 2 },
-	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5', divariId: 4 },
-	{
-		hinta: 10.0,
-		kunto: 'kohtalainen',
-		sisaanostohinta: 5.0,
-		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
-		divariId: 2,
-		tila: 'myyty',
-		tilausId: 1,
-	},
-	{
-		hinta: 10.0,
-		kunto: 'kohtalainen',
-		sisaanostohinta: 6.0,
-		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
-		divariId: 2,
-		tila: 'myyty',
-		tilausId: 1,
-	},
-	{ hinta: 15.0, kunto: 'heikko', sisaanostohinta: 7.0, teosId: '8a9a88c7-3487-47d5-a73d-1bfcfbaa17ef', divariId: 2, tila: 'myyty', tilausId: 2 },
-	{
-		hinta: 35.0,
-		kunto: 'erinomainen',
-		sisaanostohinta: 17.0,
-		teosId: '5c68c167-3770-456e-9385-6d58abdce0d5',
-		divariId: 4,
-		tila: 'myyty',
-		tilausId: 3,
-	},
 ];
 
 // Divarin 1 teosinstanssit
@@ -227,19 +192,22 @@ const teosInstanssitD3 = [
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
 ];
 
-// Tilaukset, joihin on liitetty teosinstansseja
-const tilaukset = [
-	{ tila: 'valmis', tilauspvm: '2025-03-01', postikulut: 5.0, kokonaishinta: 50.0, kayttajaId: 5 },
-	{ tila: 'valmis', tilauspvm: '2024-03-18', postikulut: 10.0, kokonaishinta: 100.0, kayttajaId: 5 },
-	{ tila: 'valmis', tilauspvm: '2024-03-17', postikulut: 15.0, kokonaishinta: 10000.0, kayttajaId: 5 },
-];
+// Lisää divareiden data keskusdivariin erikseen
+export const lisaaDivariTestiData = async () => {
+	try {
+		await db.transaction(async (trx) => {
+			await trx(`${keskusdivari}.Divari`).insert(divarit);
+		});
+	} catch (error) {
+		console.error('Virhe divari datan lisäämisessä:', error);
+	}
+};
 
 // Lisää testidata tietokantaan
 export const lisaaTestidata = async () => {
 	try {
 		await db.transaction(async (trx) => {
 			await trx(`${keskusdivari}.Kayttaja`).insert(kayttajat);
-			await trx(`${keskusdivari}.Divari`).insert(divarit);
 			await trx(`${keskusdivari}.Luokka`).insert(luokat);
 			await trx(`${keskusdivari}.Tyyppi`).insert(tyypit);
 			await trx(`${keskusdivari}.PostitusHinnasto`).insert(postitusHinnasto);
@@ -247,7 +215,6 @@ export const lisaaTestidata = async () => {
 		await db.transaction(async (trx) => {
 			await trx(`${keskusdivari}.Teos`).insert(teokset);
 			await trx(`${keskusdivari}.Divari_Admin`).insert(divariAdminit);
-			await trx(`${keskusdivari}.Tilaus`).insert(tilaukset);
 			await trx(`${keskusdivari}.TeosInstanssi`).insert(teosInstanssit);
 		});
 		for (const divari of divariSkeemat) {
@@ -266,7 +233,6 @@ export const lisaaTestidata = async () => {
 				}
 			});
 		}
-
 		console.log('Testidata lisätty onnistuneesti');
 	} catch {
 		console.error('Tietokannassa oli jo testidataa.');

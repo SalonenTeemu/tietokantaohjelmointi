@@ -1,5 +1,5 @@
 import db from './knex';
-import { lisaaTestidata } from './insertTestData';
+import { lisaaTestidata, lisaaDivariTestiData } from './insertTestData';
 import { luoNakymat } from './views';
 
 // Skeemat keskusdivarille ja yksittäisille divareille
@@ -21,10 +21,13 @@ export const alustaTietokanta = async () => {
 		}
 		console.log('Tietokantataulut luotu onnistuneesti');
 		await luoNakymat();
-		await lisaaTestidata();
+		await lisaaDivariTestiData();
 		for (const divari of divarit) {
 			await luoInstanssiTriggeri(divari);
 		}
+		await luoInstanssinTilaTriggeri();
+		await luoInstanssinMyyntiPvmTriggeri();
+		await lisaaTestidata();
 	} catch (err: unknown) {
 		console.error('Virhe yhteydenotossa tai taulujen luonnissa:', err);
 	}
@@ -231,6 +234,92 @@ const luoInstanssiTriggeri = async (divari: string) => {
 			FOR
 			EACH ROW
 			EXECUTE FUNCTION ${divari}.lisaa_instanssi();
+		`);
+	}
+};
+
+// Luo funktio triggerille, joka päivittää instanssin tilan omassa divarissa
+const luoInstanssinTilanMuutosTriggeriFunktio = async () => {
+	await db.raw(`
+        CREATE OR REPLACE FUNCTION ${keskusdivari}.paivita_instanssin_tila()
+        RETURNS TRIGGER AS $$
+        DECLARE
+            divariNimi TEXT;
+        BEGIN
+            SELECT "omaTietokanta" INTO divariNimi
+            FROM ${keskusdivari}."Divari"
+            WHERE "divariId" = NEW."divariId";
+
+            EXECUTE format('UPDATE %I."TeosInstanssi" SET "tila" = $1 WHERE "teosInstanssiId" = $2', divariNimi)
+            USING NEW.tila, NEW."teosInstanssiId";
+
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    `);
+};
+
+// Luo triggeri, joka päivittää instanssin tilan omassa divarissa
+const luoInstanssinTilaTriggeri = async () => {
+	await luoInstanssinTilanMuutosTriggeriFunktio();
+	// Tarkasta, että triggeri ei ole jo olemassa
+	const triggeri = await db.raw(`
+		SELECT EXISTS (
+			SELECT 1
+			FROM pg_trigger
+			WHERE tgname = 'paivita_instanssin_tila'
+			AND tgrelid = '${keskusdivari}."TeosInstanssi"'::regclass
+		);
+	`);
+	if (!triggeri.rows[0].exists) {
+		await db.raw(`
+			CREATE TRIGGER paivita_instanssin_tila
+			AFTER UPDATE OF tila ON ${keskusdivari}."TeosInstanssi"
+			FOR EACH ROW
+			EXECUTE FUNCTION ${keskusdivari}.paivita_instanssin_tila();
+		`);
+	}
+};
+
+// Luo funktio triggerille, joka päivittää instanssin myyntipäivämäärän omassa divarissa
+const luoInstanssinMyyntiPvmMuutosTriggeriFunktio = async () => {
+	await db.raw(`
+        CREATE OR REPLACE FUNCTION ${keskusdivari}.paivita_instanssin_myyntipvm()
+        RETURNS TRIGGER AS $$
+        DECLARE
+            divariNimi TEXT;
+        BEGIN
+            SELECT "omaTietokanta" INTO divariNimi
+            FROM ${keskusdivari}."Divari"
+            WHERE "divariId" = NEW."divariId";
+
+            EXECUTE format('UPDATE %I."TeosInstanssi" SET "myyntipvm" = $1 WHERE "teosInstanssiId" = $2', divariNimi)
+            USING NEW.myyntipvm, NEW."teosInstanssiId";
+
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    `);
+};
+
+// Luo triggeri, joka päivittää instanssin myyntipäivämäärän omassa divarissa
+const luoInstanssinMyyntiPvmTriggeri = async () => {
+	await luoInstanssinMyyntiPvmMuutosTriggeriFunktio();
+	// Tarkasta, että triggeri ei ole jo olemassa
+	const triggeri = await db.raw(`
+		SELECT EXISTS (
+			SELECT 1
+			FROM pg_trigger
+			WHERE tgname = 'paivita_instanssin_myyntipvm'
+			AND tgrelid = '${keskusdivari}."TeosInstanssi"'::regclass
+		);
+	`);
+	if (!triggeri.rows[0].exists) {
+		await db.raw(`
+			CREATE TRIGGER paivita_instanssin_myyntipvm
+			AFTER UPDATE OF myyntipvm ON ${keskusdivari}."TeosInstanssi"
+			FOR EACH ROW
+			EXECUTE FUNCTION ${keskusdivari}.paivita_instanssin_myyntipvm();
 		`);
 	}
 };
