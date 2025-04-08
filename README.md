@@ -22,6 +22,7 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
+- Tarkemmat virheviestit UI:ssa palvelimen vastauksien mukaan
 - Dokumentaation teko
 - Excel-kaavakkeen täyttö
 - Vaiheen 1 dokumentaation viimeistely ja tarkistus

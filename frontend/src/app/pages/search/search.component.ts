@@ -71,8 +71,8 @@ export class SearchComponent {
 		// Muuten hae teokset käyttäjän syötteen perusteella
 		this.bookService
 			.getTeokset({
-				nimi: this.queryNimi,
-				tekija: this.queryTekija,
+				nimi: this.queryNimi.trim(),
+				tekija: this.queryTekija.trim(),
 				tyyppi: this.queryTyyppi,
 				luokka: this.queryLuokka,
 			})

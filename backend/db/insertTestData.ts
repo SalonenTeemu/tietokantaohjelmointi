@@ -45,9 +45,16 @@ const kayttajat = [
 	},
 	{
 		nimi: 'Asiakas 1',
-		osoite: 'Asiakastie 4',
+		osoite: 'Asiakastie 1',
 		puhelin: '0407654324',
-		email: 'asiakas@email.com',
+		email: 'asiakas1@email.com',
+		salasana: await hashSalasana('salasana'),
+	},
+	{
+		nimi: 'Asiakas 2',
+		osoite: 'Asiakastie 2',
+		puhelin: '0407654325',
+		email: 'asiakas2@email.com',
 		salasana: await hashSalasana('salasana'),
 	},
 ];
@@ -169,11 +176,78 @@ const teokset = [
 
 // Teosinstanssit keskusdivarissa, joista osa liitetty tilauksiin
 const teosInstanssit = [
-	{ hinta: 30.0, kunto: 'kohtalainen', sisaanostohinta: 15.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 18.0, teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 10.0, kunto: 'kohtalainen', sisaanostohinta: 6.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 15.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
-	{ hinta: 15.0, kunto: 'erinomainen', sisaanostohinta: 8.0, teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd', divariId: 3 },
+	{
+		hinta: 30.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 15.0,
+		teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 1,
+	},
+	{
+		hinta: 35.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 18.0,
+		teosId: '03d2c3b7-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 2,
+	},
+	{
+		hinta: 10.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 6.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 2,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 8.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 3,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 8.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 3,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 8.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 4,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 8.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 5,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 8.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+		tila: 'myyty',
+		tilausId: 5,
+	},
 ];
 
 // Divarin 1 teosinstanssit
@@ -190,6 +264,15 @@ const teosInstanssitD1 = [
 const teosInstanssitD3 = [
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
 	{ hinta: 35.0, kunto: 'erinomainen', sisaanostohinta: 17.0, teosId: '5c68c167-3770-456e-9385-6d58abdce0d5' },
+];
+
+// Tilaukset, joihin on liitetty teosinstansseja
+const tilaukset = [
+	{ tila: 'valmis', tilauspvm: '2025-03-01', postikulut: 5.0, kokonaishinta: 100.0, kayttajaId: 5 },
+	{ tila: 'valmis', tilauspvm: '2024-11-02', postikulut: 10.0, kokonaishinta: 10.0, kayttajaId: 5 },
+	{ tila: 'valmis', tilauspvm: '2024-03-18', postikulut: 10.0, kokonaishinta: 130.0, kayttajaId: 5 },
+	{ tila: 'valmis', tilauspvm: '2024-06-23', postikulut: 15.0, kokonaishinta: 45.0, kayttajaId: 5 },
+	{ tila: 'valmis', tilauspvm: '2024-09-01', postikulut: 15.0, kokonaishinta: 60.0, kayttajaId: 6 },
 ];
 
 // Lisää divareiden data keskusdivariin erikseen
@@ -213,6 +296,7 @@ export const lisaaTestidata = async () => {
 			await trx(`${keskusdivari}.PostitusHinnasto`).insert(postitusHinnasto);
 		});
 		await db.transaction(async (trx) => {
+			await trx(`${keskusdivari}.Tilaus`).insert(tilaukset);
 			await trx(`${keskusdivari}.Teos`).insert(teokset);
 			await trx(`${keskusdivari}.Divari_Admin`).insert(divariAdminit);
 			await trx(`${keskusdivari}.TeosInstanssi`).insert(teosInstanssit);

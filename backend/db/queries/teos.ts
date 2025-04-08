@@ -32,8 +32,26 @@ export const haeLuokanMyynnissaOlevatTeoksetKeskusdivari = async () => {
 
 // Hae teokset annetuilla hakusanoilla keskusdivarista. Hakusanat sisältää kentät: nimi, tekija, luokka, tyyppi.
 export const haeTeoksetHakusanalla = async (hakusanat: any) => {
-	// Haetaan nimen, tekijän, luokan ja tyypin perusteella osumia teoksista
-	// Jos saadaan osuma, lisätään yksi osumien määrään
+	// Jaetaan hakusanat osiin
+	const nimiSanat = hakusanat.nimi ? hakusanat.nimi.split(/\s+/).filter(Boolean) : [];
+	const tekijaSanat = hakusanat.tekija ? hakusanat.tekija.split(/\s+/).filter(Boolean) : [];
+
+	// Lasketaan osumien määrä hakusanojen perusteella
+	const osumaLaskuriOsat: string[] = [];
+	const osumaArvot: string[] = [];
+
+	// Lisätään laskuriin osumat nimelle ja tekijälle
+	nimiSanat.forEach((sana: string) => {
+		osumaLaskuriOsat.push(`CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END`);
+		osumaArvot.push(sana);
+	});
+
+	tekijaSanat.forEach((sana: string) => {
+		osumaLaskuriOsat.push(`CASE WHEN LOWER(t.tekija) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END`);
+		osumaArvot.push(sana);
+	});
+
+	// Rakennetaan kysely
 	const query = db('keskusdivari.Teos as t')
 		.select(
 			't.teosId',
@@ -43,50 +61,46 @@ export const haeTeoksetHakusanalla = async (hakusanat: any) => {
 			'ty.nimi as tyyppi',
 			'l.nimi as luokka',
 			't.julkaisuvuosi',
-			db.raw(
-				`(
-                    ${hakusanat.nimi ? `CASE WHEN LOWER(t.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-                    ${hakusanat.tekija ? `+ CASE WHEN LOWER(t.tekija) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-                    ${hakusanat.luokka ? `+ CASE WHEN LOWER(l.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-                    ${hakusanat.tyyppi ? `+ CASE WHEN LOWER(ty.nimi) LIKE '%' || LOWER(?) || '%' THEN 1 ELSE 0 END` : ''}
-                ) AS osumien_maara`,
-				[
-					...(hakusanat.nimi ? [hakusanat.nimi] : []),
-					...(hakusanat.tekija ? [hakusanat.tekija] : []),
-					...(hakusanat.luokka ? [hakusanat.luokka] : []),
-					...(hakusanat.tyyppi ? [hakusanat.tyyppi] : []),
-				]
-			)
+			db.raw(`(${osumaLaskuriOsat.join(' + ') || '0'}) AS osumien_maara`, osumaArvot)
 		)
 		.leftJoin('keskusdivari.Tyyppi as ty', 't.tyyppiId', 'ty.tyyppiId')
 		.leftJoin('keskusdivari.Luokka as l', 't.luokkaId', 'l.luokkaId');
 
-	const hakuEhdot: string[] = [];
-	const hakuArvot: string[] = [];
-
-	// Funktio, joka lisää hakuehdon ja arvon listaan
-	const lisaaHakuehtoJaArvo = (sarake: string, arvo: string | null) => {
-		if (arvo) {
-			const sanat = arvo.split(/\s+/);
-			sanat.forEach((sana) => {
-				hakuEhdot.push(`LOWER(${sarake}) LIKE '%' || LOWER(?) || '%'`);
-				hakuArvot.push(sana);
-			});
-		}
-	};
-
-	// Lisätään hakuehdot ja arvot kyselystä
-	lisaaHakuehtoJaArvo('t.nimi', hakusanat.nimi);
-	lisaaHakuehtoJaArvo('t.tekija', hakusanat.tekija);
-	lisaaHakuehtoJaArvo('l.nimi', hakusanat.luokka);
-	lisaaHakuehtoJaArvo('ty.nimi', hakusanat.tyyppi);
-
-	// Jos hakuehtoja on, tehdään kysely
-	if (hakuEhdot.length > 0) {
-		query.whereRaw(hakuEhdot.join(' AND '), hakuArvot);
+	// Filtteröidään tuloksista pois teokset, joissa tyyppi ja luokka eivät vastaa annettuja
+	if (hakusanat.tyyppi) {
+		query.whereRaw('LOWER(ty.nimi) = LOWER(?)', [hakusanat.tyyppi]);
 	}
 
-	// Ryhmitellään ja järjestetään tulokset osumien määrän ja nimen mukaan
+	if (hakusanat.luokka) {
+		query.whereRaw('LOWER(l.nimi) = LOWER(?)', [hakusanat.luokka]);
+	}
+
+	// Haetaan vain teokset, joissa on osumia nimen mukaan
+	if (nimiSanat.length > 0) {
+		query.where(function () {
+			nimiSanat.forEach((sana: string, i: number) => {
+				if (i === 0) {
+					this.whereRaw(`LOWER(t.nimi) LIKE '%' || LOWER(?) || '%'`, [sana]);
+				} else {
+					this.orWhereRaw(`LOWER(t.nimi) LIKE '%' || LOWER(?) || '%'`, [sana]);
+				}
+			});
+		});
+	}
+
+	// Haetaan vain teokset, joissa on osumia tekijän mukaan
+	if (tekijaSanat.length > 0) {
+		query.where(function () {
+			tekijaSanat.forEach((sana: string, i: number) => {
+				if (i === 0) {
+					this.whereRaw(`LOWER(t.tekija) LIKE '%' || LOWER(?) || '%'`, [sana]);
+				} else {
+					this.orWhereRaw(`LOWER(t.tekija) LIKE '%' || LOWER(?) || '%'`, [sana]);
+				}
+			});
+		});
+	}
+
 	query
 		.groupBy('t.teosId', 't.isbn', 't.nimi', 't.tekija', 'ty.nimi', 'l.nimi', 't.julkaisuvuosi')
 		.orderBy([{ column: 'osumien_maara', order: 'desc' }, { column: 't.nimi' }]);
