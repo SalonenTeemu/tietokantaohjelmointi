@@ -1,46 +1,64 @@
 .order-confirmed-container {
-	max-width: 600px;
-	margin: 3rem auto;
+	max-width: 800px;
+	margin: 2rem auto;
 	padding: 2rem;
-	background-color: #fff;
+	background-color: #ffffff;
 	border-radius: 12px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-	text-align: center;
 }
 
 h2 {
 	color: #28a745;
-	font-size: 2rem;
 	margin-bottom: 1.5rem;
+	text-align: center;
 }
 
 .order-items-list {
 	list-style: none;
 	padding: 0;
-	margin: 1rem 0;
-	text-align: left;
+	margin-bottom: 1.5rem;
 }
 
 .order-item {
-	padding: 1rem;
-	border-bottom: 1px solid #ddd;
-	color: #333;
-	font-size: 1rem;
-	text-align: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #eef2f7;
+	padding: 0.75rem 1rem;
+	border: 1px solid #d0d7e2;
+	border-radius: 8px;
+	margin-bottom: 0.5rem;
 }
 
-.order-item:last-child {
-	border-bottom: none;
+.order-item-details {
+	display: flex;
+	flex-direction: column;
+	color: #333;
+	font-weight: 500;
+}
+
+.item-title {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #002b5c;
+	margin-bottom: 0.25rem;
+}
+
+.item-meta {
+	font-size: 0.95rem;
+	color: #555;
+}
+
+.item-price {
+	font-weight: bold;
+	color: #007bff;
+	font-size: 1.1rem;
 }
 
 .order-summary {
 	margin-top: 2rem;
+	text-align: right;
 	font-size: 1.2rem;
-}
-
-.order-summary h3 {
-	margin-bottom: 0.5rem;
-	color: #555;
 }
 
 .order-actions {
@@ -66,20 +84,13 @@ button.btn-primary:hover {
 	background-color: #0056b3;
 }
 
-@media (max-width: 480px) {
-	.order-confirmed-container {
-		padding: 1.5rem;
+@media (max-width: 768px) {
+	.order-item {
+		flex-direction: column;
+		align-items: flex-start;
 	}
 
-	h2 {
-		font-size: 1.5rem;
-	}
-
-	.order-summary h3 {
-		font-size: 1rem;
-	}
-
-	button {
-		font-size: 1rem;
+	.order-item-details {
+		margin-bottom: 0.5rem;
 	}
 }

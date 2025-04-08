@@ -4,7 +4,19 @@
 
 	<ul class="order-items-list">
 		<li *ngFor="let tuote of ostoskoriTuotteet$ | async" class="order-item">
-			{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €
+			<div class="order-item-details">
+				<div class="item-title">{{ tuote.teos.nimi }}</div>
+				<div class="item-meta">
+					<span
+						>Kunto: <strong>{{ tuote.teosInstanssi.kunto }}</strong></span
+					>
+					|
+					<span
+						>Myyjä: <strong>{{ tuote.teosInstanssi.divari }}</strong></span
+					>
+				</div>
+			</div>
+			<div class="item-price">{{ tuote.teosInstanssi.hinta }} €</div>
 		</li>
 	</ul>
 
@@ -15,7 +27,7 @@
 	</div>
 
 	<div class="order-actions">
-		<button (click)="peruutaTilaus()" class="btn btn-secondary">Keskeytä tilaus</button>
+		<button (click)="keskeytaTilaus()" class="btn btn-secondary">Keskeytä tilaus</button>
 		<button (click)="vahvistaTilaus()" class="btn btn-primary">Vahvista tilaus</button>
 	</div>
 </div>

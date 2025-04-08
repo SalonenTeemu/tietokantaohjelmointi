@@ -6,7 +6,7 @@
 	<div class="divari-books">
 		<div *ngFor="let teos of teokset" class="divari-book">
 			<div class="divari-book-info">
-				<h2>{{ teos.nimi }}</h2>
+				<h3>{{ teos.nimi }}</h3>
 				<p><strong>Tekijä:</strong> {{ teos.tekija }}</p>
 				<p><strong>ISBN:</strong> {{ teos.isbn }}</p>
 				<p><strong>Tyyppi:</strong> {{ teos.tyyppi }}</p>
@@ -20,7 +20,7 @@
 			</div>
 
 			<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
-				<h2>Lisää uusi myytävä instanssi</h2>
+				<h3>Lisää uusi myytävä instanssi</h3>
 				<form [formGroup]="instanceFormGroup" (ngSubmit)="lisaaInstanssi()">
 					<div class="form-group">
 						<label for="price">Hinta:</label>
@@ -76,68 +76,70 @@
 		{{ naytaSaatavatTeokset ? 'Sulje' : 'Lisää instanssi teoksesta, jota divarisi ei vielä myy' }}
 	</button>
 
-	<div *ngIf="naytaSaatavatTeokset && saatavillaOlevatTeokset && saatavillaOlevatTeokset.length > 0" class="available-books">
+	<div *ngIf="naytaSaatavatTeokset && saatavillaOlevatTeokset && saatavillaOlevatTeokset.length > 0">
 		<h2>Kaikki saatavilla olevat teokset</h2>
-		<div *ngFor="let teos of saatavillaOlevatTeokset" class="available-book">
-			<h2>{{ teos.nimi }}</h2>
-			<p><strong>Tekijä:</strong> {{ teos.tekija }}</p>
-			<p><strong>ISBN:</strong> {{ teos.isbn }}</p>
-			<p><strong>Tyyppi:</strong> {{ teos.tyyppi }}</p>
-			<p><strong>Luokka:</strong> {{ teos.luokka }}</p>
-			<p><strong>Julkaisuvuosi:</strong> {{ teos.julkaisuvuosi }}</p>
-			<p><strong>Paino:</strong> {{ teos.paino }} g</p>
-			<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">
-				{{ valittuTeos === teos.teosId ? 'Sulje' : 'Lisää uusi myytävä instanssi' }}
-			</button>
-			<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
-				<h2>Lisää uusi myytävä instanssi</h2>
-				<form [formGroup]="instanceFormGroup" (ngSubmit)="lisaaInstanssi()">
-					<div class="form-group">
-						<label for="price">Hinta:</label>
-						<input
-							type="number"
-							formControlName="hinta"
-							class="form-control"
-							id="price"
-							placeholder="Anna instanssin hinta"
-							min="0.01"
-							step="0.01"
-							required
-						/>
+		<div class="divari-books">
+			<div *ngFor="let teos of saatavillaOlevatTeokset" class="divari-book">
+				<h3>{{ teos.nimi }}</h3>
+				<p><strong>Tekijä:</strong> {{ teos.tekija }}</p>
+				<p><strong>ISBN:</strong> {{ teos.isbn }}</p>
+				<p><strong>Tyyppi:</strong> {{ teos.tyyppi }}</p>
+				<p><strong>Luokka:</strong> {{ teos.luokka }}</p>
+				<p><strong>Julkaisuvuosi:</strong> {{ teos.julkaisuvuosi }}</p>
+				<p><strong>Paino:</strong> {{ teos.paino }} g</p>
+				<button class="btn btn-primary" (click)="valitseTeos(teos.teosId)">
+					{{ valittuTeos === teos.teosId ? 'Sulje' : 'Lisää uusi myytävä instanssi' }}
+				</button>
+				<div *ngIf="valittuTeos === teos.teosId" class="new-instance-form">
+					<h3>Lisää uusi myytävä instanssi</h3>
+					<form [formGroup]="instanceFormGroup" (ngSubmit)="lisaaInstanssi()">
+						<div class="form-group">
+							<label for="price">Hinta:</label>
+							<input
+								type="number"
+								formControlName="hinta"
+								class="form-control"
+								id="price"
+								placeholder="Anna instanssin hinta"
+								min="0.01"
+								step="0.01"
+								required
+							/>
 
-						<label for="amount">Kappalemäärä:</label>
-						<input
-							type="number"
-							formControlName="kpl"
-							class="form-control"
-							id="amount"
-							placeholder="Anna lisättävä kappalemäärä"
-							min="1"
-							required
-						/>
+							<label for="amount">Kappalemäärä:</label>
+							<input
+								type="number"
+								formControlName="kpl"
+								class="form-control"
+								id="amount"
+								placeholder="Anna lisättävä kappalemäärä"
+								min="1"
+								required
+							/>
 
-						<label for="condition">Kunto:</label>
-						<select formControlName="kunto" class="form-control" id="condition">
-							<option value="">-- Valitse kunto --</option>
-							<option value="erinomainen">Erinomainen</option>
-							<option value="kohtalainen">Kohtalainen</option>
-							<option value="heikko">Heikko</option>
-						</select>
+							<label for="condition">Kunto:</label>
+							<select formControlName="kunto" class="form-control" id="condition">
+								<option value="">-- Valitse kunto --</option>
+								<option value="erinomainen">Erinomainen</option>
+								<option value="kohtalainen">Kohtalainen</option>
+								<option value="heikko">Heikko</option>
+							</select>
 
-						<label for="bought-price">Sisäänostohinta:</label>
-						<input
-							type="number"
-							formControlName="sisaanostohinta"
-							class="form-control"
-							id="bought-price"
-							min="0.01"
-							step="0.01"
-							placeholder="Anna instanssin sisäänostohinta"
-						/>
+							<label for="bought-price">Sisäänostohinta:</label>
+							<input
+								type="number"
+								formControlName="sisaanostohinta"
+								class="form-control"
+								id="bought-price"
+								min="0.01"
+								step="0.01"
+								placeholder="Anna instanssin sisäänostohinta"
+							/>
 
-						<button type="submit" class="btn btn-primary">Lisää instanssi</button>
-					</div>
-				</form>
+							<button type="submit" class="btn btn-primary">Lisää instanssi</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>

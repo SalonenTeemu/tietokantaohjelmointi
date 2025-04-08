@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectCartItems, selectCartTotal, selectCartShipping, selectCartOrderId } from '../../store/selectors/cart.selector';
@@ -18,13 +18,14 @@ import { NotificationService } from '../../services/notification.service';
 	standalone: true,
 })
 // Tilauksen yhteenvetokomponentti
-export class OrderOverviewComponent {
+export class OrderOverviewComponent implements OnDestroy {
 	ostoskoriTuotteet$: Observable<OstoskoriTuote[]>;
 	toimituskulut$: Observable<number>;
 	tuotteetYhteensa$: Observable<number>;
 	yhteensa$: Observable<number>;
 	tilausId$: Observable<number | null>;
 
+	private tilausVahvistettu = false;
 	private store = inject(Store);
 
 	// Rakentaja alustaa tilauksen yhteenvetokomponentin ja tilat storesta
@@ -41,9 +42,16 @@ export class OrderOverviewComponent {
 			map(([tuotteetYhteensa, toimituskulut]) => tuotteetYhteensa + toimituskulut)
 		);
 	}
+	ngOnDestroy() {
+		// Peruuta tilaus vain, jos sitä ei ole vahvistettu
+		if (!this.tilausVahvistettu) {
+			this.peruutaTilaus();
+		}
+	}
 
 	// Vahvistaa tilauksen ja ohjaa käyttäjän tilausvahvistussivulle
 	vahvistaTilaus() {
+		this.tilausVahvistettu = true;
 		this.tilausId$.pipe(take(1)).subscribe((tilausId) => {
 			if (tilausId !== null) {
 				this.orderService.postVahvistaTilaus(tilausId).subscribe((success: boolean) => {
@@ -68,6 +76,11 @@ export class OrderOverviewComponent {
 	}
 
 	// Peruuta tilaus ja ohjaa käyttäjän ostoskoriin
+	keskeytaTilaus() {
+		this.router.navigate(['/ostoskori']);
+	}
+
+	// Peruuta tilaus
 	peruutaTilaus() {
 		this.tilausId$.pipe(take(1)).subscribe((tilausId) => {
 			if (tilausId !== null) {
@@ -85,7 +98,5 @@ export class OrderOverviewComponent {
 				this.notificationService.newNotification('error', 'Tilauksen peruminen epäonnistui');
 			}
 		});
-
-		this.router.navigate(['/ostoskori']);
 	}
 }

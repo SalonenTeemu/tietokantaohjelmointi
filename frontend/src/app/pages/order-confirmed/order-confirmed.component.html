@@ -4,9 +4,19 @@
 
 	<ul class="order-items-list">
 		<li *ngFor="let tuote of tuotteet" class="order-item">
-			<span
-				>{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €</span
-			>
+			<div class="order-item-details">
+				<div class="item-title">{{ tuote.teos.nimi }}</div>
+				<div class="item-meta">
+					<span
+						>Kunto: <strong>{{ tuote.teosInstanssi.kunto }}</strong></span
+					>
+					|
+					<span
+						>Myyjä: <strong>{{ tuote.teosInstanssi.divari }}</strong></span
+					>
+				</div>
+			</div>
+			<div class="item-price">{{ tuote.teosInstanssi.hinta }} €</div>
 		</li>
 	</ul>
 

@@ -56,6 +56,7 @@ export class NewBookComponent {
 		this.bookService.postLisaaTeos(this.bookFormGroup.value).subscribe((success: boolean) => {
 			if (success) {
 				this.notificationService.newNotification('success', 'Teoksen lisäys onnistui');
+				this.location.back();
 			} else {
 				this.notificationService.newNotification('error', 'Teoksen lisäys epäonnistui');
 			}
