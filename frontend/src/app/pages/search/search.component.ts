@@ -110,8 +110,8 @@ export class SearchComponent {
 							if (!acc[key]) {
 								acc[key] = {
 									hinta: item.hinta,
-									kunto: String(item.kunto),
-									divari: item.divari,
+									kunto: item.kunto ? String(item.kunto) : 'Ei tietoa',
+									divari: item.divari ? String(item.divari) : 'Ei tietoa',
 									instanssiIdt: [],
 								};
 							}
@@ -147,6 +147,9 @@ export class SearchComponent {
 	lisaaOstoskoriin(instanssi: any) {
 		// Tarkista, että käyttäjä on valinnut teoksen
 		if (this.valittuTeos) {
+			// Valitse satunnainen instanssiId instanssiIdt-taulukosta
+			const randomInstanssiId = instanssi.instanssiIdt[Math.floor(Math.random() * instanssi.instanssiIdt.length)];
+
 			// Tee ostoskoriTuote ja lisää se ostoskoriin
 			const ostoskoriTuote: OstoskoriTuote = {
 				id: Math.floor(Math.random() * 1000),
@@ -155,7 +158,7 @@ export class SearchComponent {
 					hinta: instanssi.hinta,
 					kunto: instanssi.kunto,
 					divari: instanssi.divari,
-					teosInstanssiId: instanssi.instanssiIdt[0],
+					teosInstanssiId: randomInstanssiId,
 				},
 			};
 			// Lisää ostoskoriTuote store-tilaan

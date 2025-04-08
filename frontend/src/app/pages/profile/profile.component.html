@@ -27,7 +27,7 @@
 									<p *ngIf="instanssi.teos.isbn"><strong>ISBN:</strong> {{ instanssi.teos.isbn }}</p>
 									<p><strong>Julkaisuvuosi:</strong> {{ instanssi.teos.julkaisuvuosi }}</p>
 									<p><strong>Hinta:</strong> {{ instanssi.hinta }} €</p>
-									<p><strong>Kunto:</strong> {{ instanssi.kunto }}</p>
+									<p><strong>Kunto:</strong> {{ instanssi.kunto || 'Ei tietoa' }}</p>
 								</li>
 							</ul>
 						</div>
