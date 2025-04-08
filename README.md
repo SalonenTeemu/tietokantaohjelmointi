@@ -22,10 +22,8 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
-- Paranna UI:ta (ostokori ainakin)
-
 - Github julkiseksi
 - Dokumentaation teko
 - Excel-kaavakkeen täyttö
 - Vaiheen 1 dokumentaation viimeistely ja tarkistus
-- README päivitys
+- README päivitys (AI:n käyttö)

@@ -4,9 +4,19 @@
 
 	<ul class="cart-list">
 		<li *ngFor="let tuote of ostoskoriTuotteet$ | async" class="cart-item">
-			<span class="cart-item-details">
-				{{ tuote.teos.nimi }} - {{ tuote.teosInstanssi.kunto }} - {{ tuote.teosInstanssi.divari }} - {{ tuote.teosInstanssi.hinta }} €
-			</span>
+			<div class="cart-item-details">
+				<div class="item-title">{{ tuote.teos.nimi }}</div>
+				<div class="item-meta">
+					<span
+						>Kunto: <strong>{{ tuote.teosInstanssi.kunto }}</strong></span
+					>
+					|
+					<span
+						>Myyjä: <strong>{{ tuote.teosInstanssi.divari }}</strong></span
+					>
+				</div>
+			</div>
+			<div class="item-price">{{ tuote.teosInstanssi.hinta }} €</div>
 			<button class="btn btn-remove" (click)="poistaOstoskorista(tuote.id)">Poista</button>
 		</li>
 	</ul>

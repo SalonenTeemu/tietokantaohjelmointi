@@ -39,7 +39,7 @@
 						<li *ngFor="let instanssi of instanssit" class="instanssi-item">
 							<p>Hinta: {{ instanssi.hinta }}€</p>
 							<p>Kunto: {{ instanssi.kunto || 'Ei tietoa' }}</p>
-							<p>Divari: {{ instanssi.divari || 'Ei tietoa' }}</p>
+							<p>Myyjä: {{ instanssi.divari || 'Ei tietoa' }}</p>
 							<p>Myynnissä: {{ instanssi.instanssiIdt.length }} kpl</p>
 							<button (click)="lisaaOstoskoriin(instanssi)" class="btn btn-success">Lisää ostoskoriin</button>
 						</li>
