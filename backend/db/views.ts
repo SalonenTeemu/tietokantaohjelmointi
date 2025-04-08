@@ -19,10 +19,10 @@ const luoNakyma = async (schema: string, view: string, query: string) => {
 	if (!exists) await db.raw(`CREATE VIEW "${schema}"."${view}" AS ${query}`);
 };
 
-// Luo näkymä luokan myynnissä olevista teoksista
-const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
+// Luo näkymä luokan myynnissä olevista teoksista divareittain.
+const luoDivariLuokkaMyyntiNakyma = async () => {
 	const schema = keskusdivari;
-	const view = 'LuokanMyynnissaOlevatTeokset';
+	const view = 'LuokanMyynnissaOlevatTeoksetDivari';
 	const query = `
         SELECT
             l.nimi AS luokka, 
@@ -36,6 +36,26 @@ const luoLuokanMyynnissaOlevatTeoksetNakyma = async () => {
         JOIN ${schema}."Luokka" l ON t."luokkaId" = l."luokkaId"
         WHERE ti.tila = 'vapaa'
         GROUP BY l.nimi, ti."divariId";
+    `;
+	await luoNakyma(schema, view, query);
+};
+
+// Luo näkymä kaikista luokan myynnissä olevista teoksista keskusdivarissa.
+const luoKeskusdivariLuokkaMyyntiNakyma = async () => {
+	const schema = keskusdivari;
+	const view = 'LuokanMyynnissaOlevatTeoksetKeskusdivari';
+	const query = `
+        SELECT
+            l.nimi AS luokka, 
+            COUNT(ti."teosInstanssiId") AS "lkmMyynnissa", 
+            COUNT(DISTINCT t."teosId") AS "lkmTeoksia",
+            ROUND(SUM(ti.hinta), 2) AS "kokonaisMyyntihinta", 
+            ROUND(AVG(ti.hinta), 2) AS "keskiMyyntihinta"
+        FROM ${schema}."TeosInstanssi" ti
+        JOIN ${schema}."Teos" t ON ti."teosId" = t."teosId"
+        JOIN ${schema}."Luokka" l ON t."luokkaId" = l."luokkaId"
+        WHERE ti.tila = 'vapaa'
+        GROUP BY l.nimi;
     `;
 	await luoNakyma(schema, view, query);
 };
@@ -72,8 +92,9 @@ const luoAsiakasRaporttiViimeVuosiNakyma = async () => {
 // Luo kaikki näkymät
 export const luoNakymat = async () => {
 	try {
-		await luoLuokanMyynnissaOlevatTeoksetNakyma();
+		await luoDivariLuokkaMyyntiNakyma();
 		await luoAsiakasRaporttiViimeVuosiNakyma();
+		await luoKeskusdivariLuokkaMyyntiNakyma();
 		console.log('Näkymät luotu onnistuneesti');
 	} catch (err) {
 		console.error('Virhe näkymien luonnissa');

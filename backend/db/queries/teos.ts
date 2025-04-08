@@ -10,21 +10,23 @@ export const haeTeokset = async () => {
 	return teokset;
 };
 
-// Hae kaikki teokset keskusdivarista. Jos divariId on annettu, hae vain kyseisen divarin teokset.
-export const haeKaikkiLuokanMyynnissaOlevatTeokset = async (divariId?: number) => {
-	let query = db('keskusdivari.LuokanMyynnissaOlevatTeokset as lmot').select(
+// Hae kaikki annetun divarin myynnissa olevat teokset luokittain.
+export const haeLuokanMyynnissaOlevatTeoksetDivari = async (divariId: number) => {
+	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeoksetDivari as lmot')
+		.select('lmot.luokka', 'lmot.lkmMyynnissa', 'lmot.lkmTeoksia', 'lmot.kokonaisMyyntihinta', 'lmot.keskiMyyntihinta')
+		.where('lmot.divariId', divariId);
+	return teokset;
+};
+
+// Hae kaikki keskusdivarissa myynnissä olevat teokset luokittain.
+export const haeLuokanMyynnissaOlevatTeoksetKeskusdivari = async () => {
+	const teokset = await db('keskusdivari.LuokanMyynnissaOlevatTeoksetKeskusdivari as lmot').select(
 		'lmot.luokka',
 		'lmot.lkmMyynnissa',
 		'lmot.lkmTeoksia',
 		'lmot.kokonaisMyyntihinta',
 		'lmot.keskiMyyntihinta'
 	);
-
-	// Jos divariId on annettu, rajaa kysely vain kyseiseen divariin
-	if (divariId) {
-		query = query.where('lmot.divariId', divariId);
-	}
-	const teokset = await query;
 	return teokset;
 };
 

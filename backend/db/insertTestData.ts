@@ -198,8 +198,8 @@ export const lisaaDivariTestiData = async () => {
 		await db.transaction(async (trx) => {
 			await trx(`${keskusdivari}.Divari`).insert(divarit);
 		});
-	} catch (error) {
-		console.error('Virhe divari datan lisäämisessä:', error);
+	} catch {
+		console.error('Tietokannassa oli jo divareiden testidataa.');
 	}
 };
 
