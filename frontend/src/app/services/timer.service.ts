@@ -105,6 +105,6 @@ export class TimerService {
 					});
 				}
 			});
-		this.notificationService.newNotification('info', 'Ostoskori tyhjennetty');
+		this.notificationService.newNotification('info', 'Ostoskori tyhjennetty automaattisesti varausajan umpeuduttua');
 	}
 }

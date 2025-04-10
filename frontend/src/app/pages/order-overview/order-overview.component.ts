@@ -41,6 +41,10 @@ export class OrderOverviewComponent implements OnDestroy {
 		this.yhteensa$ = combineLatest<[number, number]>([this.tuotteetYhteensa$, this.toimituskulut$]).pipe(
 			map(([tuotteetYhteensa, toimituskulut]) => tuotteetYhteensa + toimituskulut)
 		);
+		// Jos käyttäjä sulkee sivun, peruuta tilaus
+		window.onbeforeunload = () => {
+			this.peruutaTilaus();
+		};
 	}
 	ngOnDestroy() {
 		// Peruuta tilaus vain, jos sitä ei ole vahvistettu

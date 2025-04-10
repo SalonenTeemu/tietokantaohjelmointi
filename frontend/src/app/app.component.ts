@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -13,7 +13,6 @@ import { map } from 'rxjs/operators';
 import { selectCartItems } from './store/selectors/cart.selector';
 import { TimerService } from './services/timer.service';
 import { AikaPipe } from './pipes/aika.pipe';
-import { clearCart } from './store/actions/cart.actions';
 
 @Component({
 	selector: 'app-root',
@@ -21,7 +20,6 @@ import { clearCart } from './store/actions/cart.actions';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	imports: [RouterModule, CommonModule, NotificationComponent, AikaPipe],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 // Sovellusksen pääkomponentti, joka hallitsee käyttäjän kirjautumista ja ostoskorin ajastusta
 export class AppComponent implements OnInit, OnDestroy {
@@ -36,8 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
 		private authService: AuthService,
 		private bookService: BookService,
 		private notificationService: NotificationService,
-		private timerService: TimerService,
-		private cdr: ChangeDetectorRef
+		private timerService: TimerService
 	) {
 		this.kirjautunut$ = this.store.select(selectIsLoggedIn);
 		this.rooli$ = this.store.select(selectUserRole) || undefined;
@@ -90,17 +87,6 @@ export class AppComponent implements OnInit, OnDestroy {
 					});
 				}
 			});
-		});
-
-		// Tarkista ajastimen tila ja tyhjennä ostoskori tarvittaessa
-		this.timer$.subscribe(() => {
-			this.cdr.markForCheck();
-			const aika = localStorage.getItem('ajastinAlkuAika');
-			const nyt = Date.now();
-			if (aika && (nyt - parseInt(aika)) / 1000 >= 900) {
-				this.timerService.clear();
-				this.store.dispatch(clearCart());
-			}
 		});
 
 		// Tarkista ostoskorin tuotteiden määrä ja käynnistä tai pysäytä ajastin sen mukaan

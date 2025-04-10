@@ -47,7 +47,7 @@ export const luoTilaus = async (req: Request, res: Response) => {
 				res.status(400).json({ id: instanssi, message: 'TeosInstanssia ei löytynyt.' });
 				return;
 			}
-			if (teosInstanssi.tila !== 'vapaa') {
+			if (teosInstanssi.tila === 'varattu' || teosInstanssi.tila === 'myyty') {
 				res.status(400).json({ id: instanssi, message: 'TeosInstanssi ei ole vapaa.' });
 				return;
 			}
@@ -187,17 +187,17 @@ export const peruutaTilaus = async (req: Request, res: Response) => {
 		}
 
 		// Hae tilauksen instanssit tietokannasta
-		const instannsit = await haeTilauksenInstanssit(tilausId);
-		if (!instannsit || instannsit.length === 0) {
+		const instanssit = await haeTilauksenInstanssit(tilausId);
+		if (!instanssit || instanssit.length === 0) {
 			await paivitaTilauksenTila(tilausId, 'peruutettu');
 			res.status(400).json({ message: 'Tilauksella ei ole instansseja.' });
 			return;
 		}
 
-		// Peruutetaan tilaus ja päivitetään instanssien tila vapaaksi
+		// Peruutetaan tilaus ja päivitetään instanssien tila ostoskoriin
 		const peruutettuTilaus = await db.transaction(async (trx) => {
-			for (const instanssi of instannsit) {
-				await paivitaTeosInstanssinTila(instanssi.teosInstanssiId, 'vapaa', trx);
+			for (const instanssi of instanssit) {
+				await paivitaTeosInstanssinTila(instanssi.teosInstanssiId, 'ostoskorissa', trx);
 				await paivitaTeosInstanssinTilaus(instanssi.teosInstanssiId, null, trx);
 			}
 
