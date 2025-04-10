@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -9,29 +9,40 @@ import { selectIsLoggedIn, selectUserRole } from './store/selectors/auth.selecto
 import { addLuokat, addTyypit } from './store/actions/category.actions';
 import { NotificationService } from './services/notification.service';
 import { NotificationComponent } from './notification.component';
+import { map } from 'rxjs/operators';
+import { selectCartItems } from './store/selectors/cart.selector';
+import { TimerService } from './services/timer.service';
+import { AikaPipe } from './pipes/aika.pipe';
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
-	imports: [RouterModule, CommonModule, NotificationComponent],
+	imports: [RouterModule, CommonModule, NotificationComponent, AikaPipe],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 // Pääkomponentti, joka sisältää sovelluksen navigaation ja tilan hallinnan
 export class AppComponent implements OnInit, OnDestroy {
 	private tokenRefreshSubscription!: Subscription;
 	kirjautunut$: Observable<boolean>;
 	rooli$: Observable<string | undefined>;
+	timer$: Observable<number>;
+	ostoskoriCount$: Observable<number>;
 
 	// Rakentaja alustaa käyttäjän ja roolin tilat storesta sekä palvelut
 	constructor(
 		private store: Store,
 		private authService: AuthService,
 		private bookService: BookService,
-		private notificationService: NotificationService
+		private notificationService: NotificationService,
+		private timerService: TimerService,
+		private cdr: ChangeDetectorRef
 	) {
 		this.kirjautunut$ = this.store.select(selectIsLoggedIn);
 		this.rooli$ = this.store.select(selectUserRole) || undefined;
+		this.timer$ = this.timerService.getCountdown();
+		this.ostoskoriCount$ = this.store.select(selectCartItems).pipe(map((items) => items.length));
 	}
 
 	// Komponentti alustuu ja lataa luokat, tyypit sekä käyttäjän tiedot ja asettaa aikavälin tokenien päivitykselle
@@ -76,6 +87,18 @@ export class AppComponent implements OnInit, OnDestroy {
 					});
 				}
 			});
+		});
+
+		this.timer$.subscribe(() => {
+			this.cdr.markForCheck();
+		});
+
+		this.ostoskoriCount$.subscribe((count) => {
+			if (count > 0) {
+				this.timerService.start();
+			} else {
+				this.timerService.clear();
+			}
 		});
 	}
 

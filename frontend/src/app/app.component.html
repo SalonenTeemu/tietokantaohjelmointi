@@ -1,13 +1,24 @@
 <!--Sovelluksen sivu, jossa yhdistyy navigointipalkki sekä ilmoitukset jne.-->
 <nav>
-	<a routerLink="/">Etusivu</a><a routerLink="/hae">Etsi kirjoja</a><a routerLink="/ostoskori">Ostoskori</a>
-	<ng-container *ngIf="(kirjautunut$ | async) === true">
-		<a routerLink="/profiili">Profiili</a>
-		<a *ngIf="(rooli$ | async) === 'divariAdmin'" routerLink="/divari">Divari</a>
-		<a *ngIf="(rooli$ | async) === 'admin'" routerLink="/keskusdivari">Keskusdivari</a>
-		<a routerLink="/" (click)="kirjauduUlos()">Kirjaudu ulos</a>
-	</ng-container>
-	<a *ngIf="(kirjautunut$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
+	<div class="nav-inner">
+		<div class="nav-center">
+			<a routerLink="/">Etusivu</a>
+			<a routerLink="/hae">Etsi kirjoja</a>
+			<a routerLink="/ostoskori">Ostoskori</a>
+
+			<ng-container *ngIf="(kirjautunut$ | async) === true">
+				<a routerLink="/profiili">Profiili</a>
+				<a *ngIf="(rooli$ | async) === 'divariAdmin'" routerLink="/divari">Divari</a>
+				<a *ngIf="(rooli$ | async) === 'admin'" routerLink="/keskusdivari">Keskusdivari</a>
+				<a routerLink="/" (click)="kirjauduUlos()">Kirjaudu ulos</a>
+			</ng-container>
+
+			<a *ngIf="(kirjautunut$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
+		</div>
+
+		<div class="timer-badge" *ngIf="timer$ | async as time">Tuotteet vielä varattuina: {{ time | aikaPipe }}</div>
+	</div>
 </nav>
+
 <app-notification></app-notification>
 <router-outlet></router-outlet>
