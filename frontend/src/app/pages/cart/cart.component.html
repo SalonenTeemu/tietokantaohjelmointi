@@ -26,10 +26,16 @@
 	<div class="cart-actions">
 		<button class="btn btn-secondary" (click)="tyhjennaOstoskori()">Tyhjennä ostoskori</button>
 
-		<ng-container *ngIf="(kirjautunut$ | async) === true">
+		<ng-container *ngIf="(kirjautunut$ | async) === true; else loginButton">
 			<ng-container *ngIf="ostoskoriTuotteet$ | async as ostoskoriTuotteet">
 				<button *ngIf="ostoskoriTuotteet.length > 0" class="btn btn-primary" (click)="tilaa()">Tilaa</button>
 			</ng-container>
 		</ng-container>
+
+		<ng-template #loginButton>
+			<ng-container *ngIf="ostoskoriTuotteet$ | async as ostoskoriTuotteet">
+				<button *ngIf="ostoskoriTuotteet.length > 0" class="btn btn-primary" routerLink="/kirjaudu">Kirjaudu sisään tilataksesi</button>
+			</ng-container>
+		</ng-template>
 	</div>
 </div>

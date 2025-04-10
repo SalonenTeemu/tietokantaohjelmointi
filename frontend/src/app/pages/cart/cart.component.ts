@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { selectCartItems, selectCartTotal } from '../../store/selectors/cart.selector';
 import { removeFromCart, clearCart } from '../../store/actions/cart.actions';
 import { selectIsLoggedIn, selectUserId } from '../../store/selectors/auth.selector';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { combineLatest, map, Observable, take } from 'rxjs';
 import { OstoskoriTuote } from '../../models/ostoskoriTuote';
@@ -16,7 +16,7 @@ import { BookService } from '../../services/book.service';
 	standalone: true,
 	templateUrl: './cart.component.html',
 	styleUrls: ['./cart.component.css'],
-	imports: [CommonModule],
+	imports: [CommonModule, RouterModule],
 })
 
 // Ostoskori komponentti, joka näyttää käyttäjän ostoskorin sisällön ja mahdollistaa tilauksen tekemisen

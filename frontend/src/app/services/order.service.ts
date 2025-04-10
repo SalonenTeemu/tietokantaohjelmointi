@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 // Tilauksen palvelu, joka käsittelee tilausten hakua, luontia, vahvistamista ja perumista
 export class OrderService {
 	private apiUrl = 'http://localhost:8041/api/tilaus';
+	private peruutettuTilaus = false;
 	constructor(
 		private http: HttpClient,
 		private store: Store
@@ -53,6 +54,7 @@ export class OrderService {
 						const tilausVastaus = response.body as { message: { tilausId: number; postikulut: number } };
 						this.store.dispatch(setOrder({ orderId: tilausVastaus.message.tilausId, shipping: tilausVastaus.message.postikulut }));
 					}
+					this.peruutettuTilaus = false;
 					return true;
 				} else {
 					console.log('Tilauksen luonti epäonnistui');
@@ -96,16 +98,22 @@ export class OrderService {
 	 * @returns True, jos tilauksen peruminen onnistui, muuten false
 	 */
 	postPeruutaTilaus(tilausId: number): Observable<boolean> {
+		if (this.peruutettuTilaus) {
+			return of(false);
+		}
+		this.peruutettuTilaus = true;
 		return this.http.post(`${this.apiUrl}/peruuta/${tilausId}`, null, { observe: 'response' }).pipe(
 			map((response) => {
 				if (response.ok) {
+					this.peruutettuTilaus = true;
 					return true;
 				} else {
-					console.log('Tilauksen peruminen epäonnistui');
+					this.peruutettuTilaus = false;
 					return false;
 				}
 			}),
 			catchError((error) => {
+				this.peruutettuTilaus = false;
 				console.error('Tilauksen peruminen epäonnistui:', error);
 				return of(false);
 			})

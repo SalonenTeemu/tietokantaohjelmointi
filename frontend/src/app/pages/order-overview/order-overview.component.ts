@@ -41,6 +41,14 @@ export class OrderOverviewComponent implements OnDestroy {
 		this.yhteensa$ = combineLatest<[number, number]>([this.tuotteetYhteensa$, this.toimituskulut$]).pipe(
 			map(([tuotteetYhteensa, toimituskulut]) => tuotteetYhteensa + toimituskulut)
 		);
+
+		// Jos ostokori tyhjenee (tuotteiden aikaraja tulee vastaan), peruuta tilaus
+		this.ostoskoriTuotteet$.subscribe((ostoskoriTuotteet) => {
+			if (!ostoskoriTuotteet || ostoskoriTuotteet.length === 0) {
+				this.keskeytaTilaus();
+			}
+		});
+
 		// Jos käyttäjä sulkee sivun, peruuta tilaus
 		window.onbeforeunload = () => {
 			this.peruutaTilaus();
@@ -94,12 +102,8 @@ export class OrderOverviewComponent implements OnDestroy {
 						// Poistetaan tilausid
 						this.store.dispatch(cancelOrder());
 						this.notificationService.newNotification('success', 'Tilaus peruttu');
-					} else {
-						this.notificationService.newNotification('error', 'Tilauksen peruminen epäonnistui');
 					}
 				});
-			} else {
-				this.notificationService.newNotification('error', 'Tilauksen peruminen epäonnistui');
 			}
 		});
 	}
