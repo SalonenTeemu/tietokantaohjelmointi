@@ -9,6 +9,9 @@ import {
 	lisaaTeosInstanssi,
 	haeDivarinTeokset,
 	haeKaikkiTeokset,
+	lisaaInstanssiOstoskoriin,
+	vapautaInstanssi,
+	vapautaInstanssit,
 } from '../controllers/teosController';
 
 const teosRoutes = express.Router({ mergeParams: true });
@@ -21,5 +24,8 @@ teosRoutes.get('/tyypit', haeKaikkiTyypit);
 teosRoutes.get('/:divariId', validoiJWT, tarkistaRooli(['divariAdmin']), haeDivarinTeokset);
 teosRoutes.get('/:teosId/instanssit', haeTeosInstanssit);
 teosRoutes.post('/:teosId', validoiJWT, tarkistaRooli(['divariAdmin']), lisaaTeosInstanssi);
+teosRoutes.post('/ostoskori/vapauta', vapautaInstanssit);
+teosRoutes.post('/ostoskori/:instanssiId', lisaaInstanssiOstoskoriin);
+teosRoutes.post('/ostoskori/:instanssiId/vapauta', vapautaInstanssi);
 
 export default teosRoutes;

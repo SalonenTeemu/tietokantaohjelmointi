@@ -6,6 +6,7 @@ import teosRoutes from './routes/teosRoutes';
 import tilausRoutes from './routes/tilausRoutes';
 import kayttajaRoutes from './routes/kayttajaRoutes';
 import raporttiRoutes from './routes/raporttiRoutes';
+import './db/instanssienVapautusTask';
 
 // Palvelimen tiedot
 const hostname = 'localhost';

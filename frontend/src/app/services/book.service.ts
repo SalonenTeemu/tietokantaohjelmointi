@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Teos } from '../models/teos';
 import { TeosInstanssi } from '../models/teosInstanssi';
+import { NotificationService } from './notification.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -12,7 +13,7 @@ import { TeosInstanssi } from '../models/teosInstanssi';
 export class BookService {
 	private apiUrl = 'http://localhost:8041/api';
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient, private notificationService: NotificationService) {}
 	/**
 	 * Hakee kaikki teokset palvelimelta.
 	 *
@@ -143,6 +144,70 @@ export class BookService {
 			}),
 			catchError((error: unknown) => {
 				console.error('Teosinstanssin lisäys epäonnistui:', error);
+				return of(false);
+			})
+		);
+	}
+
+	/**
+	 * Lisää instanssin ostoskoriin. Varaa tietokannassa instanssin. 
+	 *
+	 * @param instanssiId - Instanssin ID, joka lisätään ostoskoriin
+	 * @returns Instanssin ID, jos lisäys onnistui, muuten null
+	 */
+	postLisaaInstanssiOstoskoriin(instanssiId: string): Observable<string | null> {
+		return this.http.post<{ message: string, instanssiId: string }>(`${this.apiUrl}/teos/ostoskori/${instanssiId}`, {}, { observe: 'response' }).pipe(
+			map((response) => {
+				if (response.ok) {
+					return response.body?.instanssiId || null;
+				}
+				return null;
+			}),
+			catchError((error: any) => {
+				console.error('Instanssin lisääminen ostoskoriin epäonnistui:', error);
+                this.notificationService.newNotification('error', `Instanssin lisääminen ostoskoriin epäonnistui: ${error.error?.message || 'Tuntematon virhe'}`);
+				return of(null);
+			})
+		);
+	}
+
+	/**
+	 * Vapauta instanssi ostoskorista. Vapauttaa tietokannassa varauksen.
+	 * 
+	 * @param instanssiId - Instanssin ID, joka vapautetaan
+	 * @returns boolean - true, jos vapautus onnistui, muuten false
+	 */
+	postVapautaInstanssi(instanssiId: string): Observable<boolean> {
+		return this.http.post<{ message: string }>(`${this.apiUrl}/teos/ostoskori/${instanssiId}/vapauta`, {}).pipe(
+			map((response) => {
+				if (response.message) {
+					return true;
+				}
+				return false;
+			}),
+			catchError((error: unknown) => {
+				console.error('Instanssin vapauttaminen epäonnistui:', error);
+				return of(false);
+			})
+		);
+	}
+
+	/**
+	 * Vapauta kaikki instanssit ostoskorista. Vapauttaa tietokannassa varaukset.
+	 * 
+	 * @param instanssiIdt - Instanssien IDt, jotka vapautetaan
+	 * @returns boolean - true, jos vapautus onnistui, muuten false
+	 */
+	postVapautaInstanssit(instanssiIdt: string[]): Observable<boolean> {
+		return this.http.post<{ message: string }>(`${this.apiUrl}/teos/ostoskori/vapauta`, { instanssiIdt }).pipe(
+			map((response) => {
+				if (response.message) {
+					return true;
+				}
+				return false;
+			}),
+			catchError((error: unknown) => {
+				console.error('Instanssien vapauttaminen epäonnistui:', error);
 				return of(false);
 			})
 		);

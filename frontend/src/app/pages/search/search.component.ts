@@ -144,28 +144,37 @@ export class SearchComponent {
 	}
 
 	// Lisää teosinstanssi ostoskoriin
-	lisaaOstoskoriin(instanssi: any) {
+	lisaaOstoskoriin = async (instanssi: any) => {
 		// Tarkista, että käyttäjä on valinnut teoksen
 		if (this.valittuTeos) {
-			// Valitse satunnainen instanssiId instanssiIdt-taulukosta
-			const randomInstanssiId = instanssi.instanssiIdt[Math.floor(Math.random() * instanssi.instanssiIdt.length)];
-
-			// Tee ostoskoriTuote ja lisää se ostoskoriin
+			const valittuTeos = { ...this.valittuTeos };
+	
+			// Valitse ensimmäinen instanssi ID
+			let instanssiId = instanssi.instanssiIdt[0];
+	
+			const id = await this.bookService.postLisaaInstanssiOstoskoriin(instanssiId).toPromise();
+			console.log(instanssiId);
+			instanssiId = id; // Käytä backendin palauttamaa idtä
+			
+			// Jos null, ei vapaita instansseja
+			if (!instanssiId) {
+				return;
+			}
+	
 			const ostoskoriTuote: OstoskoriTuote = {
 				id: Math.floor(Math.random() * 1000),
-				teos: this.valittuTeos,
+				teos: valittuTeos,
 				teosInstanssi: {
 					hinta: instanssi.hinta,
 					kunto: instanssi.kunto,
 					divari: instanssi.divari,
-					teosInstanssiId: randomInstanssiId,
+					teosInstanssiId: instanssiId,
 				},
 			};
-			// Lisää ostoskoriTuote store-tilaan
 			this.store.dispatch(addToCart({ item: ostoskoriTuote }));
 			this.notificationService.newNotification('success', `Tuote "${ostoskoriTuote.teos.nimi}" lisätty ostoskoriin`);
 		} else {
 			this.notificationService.newNotification('error', 'Ei valittua teosta');
 		}
-	}
+	};
 }
