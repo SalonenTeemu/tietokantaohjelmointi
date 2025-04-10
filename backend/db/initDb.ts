@@ -46,7 +46,7 @@ const luoTyypit = async () => {
 	await createTypeIfNotExists('kayttajarooli', "ENUM ('asiakas', 'divariAdmin', 'admin')");
 	await createTypeIfNotExists('teoskunto', "ENUM ('heikko', 'kohtalainen', 'erinomainen')");
 	await createTypeIfNotExists('tilaustila', "ENUM ('kesken', 'peruutettu', 'valmis')");
-	await createTypeIfNotExists('teostila', "ENUM ('vapaa', 'varattu', 'myyty')");
+	await createTypeIfNotExists('teostila', "ENUM ('vapaa', 'ostoskorissa', 'varattu', 'myyty')");
 };
 
 // Luo tietokantatyyppi, jos sitä ei ole olemassa
@@ -150,6 +150,7 @@ const luoKeskusdivarinTaulut = async () => {
 			table.decimal('sisaanostohinta', 10, 2);
 			table.date('myyntipvm');
 			table.specificType('tila', 'teostila').defaultTo('vapaa');
+			table.dateTime('varausaika');
 			table.uuid('teosId').notNullable().references('teosId').inTable(`${keskusdivari}.Teos`);
 			table.integer('tilausId').references('tilausId').inTable(`${keskusdivari}.Tilaus`);
 			table.integer('divariId').notNullable().references('divariId').inTable(`${keskusdivari}.Divari`);

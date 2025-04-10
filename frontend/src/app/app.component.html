@@ -16,7 +16,7 @@
 			<a *ngIf="(kirjautunut$ | async) === false" routerLink="/kirjaudu">Kirjaudu sisään</a>
 		</div>
 
-		<div class="timer-badge" *ngIf="timer$ | async as time">Tuotteet vielä varattuina: {{ time | aikaPipe }}</div>
+		<div class="timer-badge" *ngIf="timer$ | async as time">Ostokorin tuotteet vielä varattuina: {{ time | aikaPipe }}</div>
 	</div>
 </nav>
 

@@ -22,7 +22,6 @@ Tämä on Node.js ja Angular -pohjainen sovellus, jossa käytetään PostgreSQL-
 
 ## TODO
 
-- Samanaikaisen teosIntanssien tilaamisen käsittely frontendissa ja backendissa
 - Tarkemmat virheviestit UI:ssa palvelimen vastauksien mukaan
 - Dokumentaation teko
 - Excel-kaavakkeen täyttö

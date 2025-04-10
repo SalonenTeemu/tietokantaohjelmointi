@@ -32,3 +32,23 @@ export const haeAsiakkaidenViimeVuodenOstot = async () => {
 	const raportti = await db('keskusdivari.AsiakasRaporttiViimeVuosi').select('*');
 	return raportti;
 };
+
+// Varaa instanssi ostoskoriin ID:n perusteella
+export const asetaTeosInstanssiOstoskoriin = async (teosInstanssiId: string) => {
+	const instanssi = await db('keskusdivari.TeosInstanssi')
+		.where('teosInstanssiId', teosInstanssiId)
+		.update({ tila: 'ostoskorissa', varausaika: db.raw('NOW()') })
+		.returning('*');
+	return instanssi[0];
+};
+
+// Vapauta instanssi ID:n perusteella
+export const asetaTeosInstanssiVapaaksi = async (teosInstanssiId: string) => {
+	await db('keskusdivari.TeosInstanssi').where('teosInstanssiId', teosInstanssiId).update({ tila: 'vapaa', varausaika: null });
+};
+
+// Hae samanlaiset vapaat teosinstanssit keskusdivarista
+export const haeVapaaTeosInstanssi = async (teosId: number, divariId: number, kunto: string, hinta: number) => {
+	const instanssi = await db('keskusdivari.TeosInstanssi').where({ teosId, divariId, kunto, hinta }).andWhere('tila', 'vapaa').first();
+	return instanssi;
+};

@@ -12,7 +12,13 @@ import {
 } from '../db/queries/teos';
 import { tarkistaLuoTeos, tarkistaLuoTeosInstanssi, tarkistaTeosHaku } from '../utils/validate';
 import { haeDivariIdlla } from '../db/queries/divari';
-import { lisaaUusiTeosInstanssi } from '../db/queries/teosInstanssi';
+import {
+	lisaaUusiTeosInstanssi,
+	asetaTeosInstanssiOstoskoriin,
+	asetaTeosInstanssiVapaaksi,
+	haeTeosInstanssi,
+	haeVapaaTeosInstanssi,
+} from '../db/queries/teosInstanssi';
 import { haeKayttajanOmaTietokanta } from '../db/queries/kayttaja';
 
 /**
@@ -234,6 +240,78 @@ export const lisaaTeosInstanssi = async (req: Request, res: Response) => {
 		}
 	} catch (error) {
 		console.error('Virhe teoksen instanssin lisäämisessä:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+/**
+ * Vastaa pyyntöön varata teosinstanssi ostoskoriin. Tarkistaa, että instanssiId on annettu ja varaa sen.
+ *
+ * @returns varattu instanssiId tai virheviesti.
+ */
+export const lisaaInstanssiOstoskoriin = async (req: Request, res: Response) => {
+	try {
+		const instanssiId = req.params.instanssiId;
+		if (!instanssiId) {
+			res.status(400).json({ message: 'Virheellinen instanssiId.' });
+			return;
+		}
+		const instanssi = await haeTeosInstanssi(instanssiId);
+		if (!instanssi || instanssi.tila !== 'vapaa') {
+			const vapaaInstanssi = await haeVapaaTeosInstanssi(instanssi.teosId, instanssi.divariId, instanssi.kunto, instanssi.hinta);
+			if (!vapaaInstanssi) {
+				res.status(400).json({ message: 'Ei vapaita instansseja.' });
+				return;
+			}
+			await asetaTeosInstanssiOstoskoriin(vapaaInstanssi.teosInstanssiId);
+			res.status(201).json({ message: 'TeosInstanssi lisätty ostoskoriin.', instanssiId: vapaaInstanssi.teosInstanssiId });
+		} else {
+			await asetaTeosInstanssiOstoskoriin(instanssiId);
+			res.status(201).json({ message: 'TeosInstanssi lisätty ostoskoriin.', instanssiId: instanssiId });
+		}
+	} catch (error) {
+		console.error('Virhe lisätessä ostoskoriin:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+/**
+ * Vapauttaa teosinstanssin. Tarkistaa, että instanssiId on annettu ja vapauttaa sen.
+ *
+ * @returns viesti instanssin vapauttamisesta tai virheviesti.
+ */
+export const vapautaInstanssi = async (req: Request, res: Response) => {
+	try {
+		const instanssiId = req.params.instanssiId;
+		if (!instanssiId) {
+			res.status(400).json({ message: 'Virheellinen instanssiId.' });
+			return;
+		}
+		await asetaTeosInstanssiVapaaksi(instanssiId);
+		res.status(201).json({ message: 'TeosInstanssi vapautettu.' });
+	} catch (error) {
+		console.error('Virhe vapautettaessa instanssia:', error);
+		res.status(500).json({ message: 'Virhe' });
+	}
+};
+
+/**
+ * Vapauttaa useita teosinstansseja. Tarkistaa, että instanssiIdt on annettu ja vapauttaa ne.
+ * @returns viesti instanssien vapauttamisesta tai virheviesti.
+ */
+export const vapautaInstanssit = async (req: Request, res: Response) => {
+	try {
+		const instanssiIdt = req.body.instanssiIdt;
+		if (!instanssiIdt || instanssiIdt.length === 0) {
+			res.status(400).json({ message: 'Virheelliset instanssiIdt.' });
+			return;
+		}
+		for (const instanssiId of instanssiIdt) {
+			await asetaTeosInstanssiVapaaksi(instanssiId);
+		}
+		res.status(201).json({ message: 'TeosInstanssi(t) vapautettu.' });
+	} catch (error) {
+		console.error('Virhe vapautettaessa instanssia:', error);
 		res.status(500).json({ message: 'Virhe' });
 	}
 };

@@ -6,9 +6,10 @@ import { removeFromCart, clearCart } from '../../store/actions/cart.actions';
 import { selectIsLoggedIn, selectUserId } from '../../store/selectors/auth.selector';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
-import { combineLatest, Observable, take } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { OstoskoriTuote } from '../../models/ostoskoriTuote';
 import { NotificationService } from '../../services/notification.service';
+import { BookService } from '../../services/book.service';
 
 @Component({
 	selector: 'app-cart',
@@ -30,7 +31,8 @@ export class CartComponent {
 		private store: Store,
 		private router: Router,
 		private orderService: OrderService,
-		private notificationService: NotificationService
+		private notificationService: NotificationService,
+		private bookService: BookService
 	) {
 		this.ostoskoriTuotteet$ = this.store.select(selectCartItems);
 		this.yhteensa$ = this.store.select(selectCartTotal);
@@ -39,15 +41,48 @@ export class CartComponent {
 	}
 
 	// Tuotteen poistaminen ostoskorista
-	poistaOstoskorista(id: number) {
-		this.store.dispatch(removeFromCart({ id }));
+	poistaOstoskorista(tuote: OstoskoriTuote) {
+		this.store.dispatch(removeFromCart({ id: tuote.id }));
+		this.bookService.postVapautaInstanssi(tuote.teosInstanssi.teosInstanssiId).subscribe({
+			next: (success) => {
+				if (!success) {
+					this.notificationService.newNotification('error', 'Tuotteen vapauttaminen epäonnistui');
+					return;
+				}
+			},
+		});
 		this.notificationService.newNotification('success', 'Tuote poistettu ostoskorista');
 	}
 
 	// Tyhjentää ostoskorin
 	tyhjennaOstoskori() {
-		this.store.dispatch(clearCart());
-		this.notificationService.newNotification('success', 'Ostoskori tyhjennetty');
+		this.ostoskoriTuotteet$
+			.pipe(
+				take(1),
+				map((tuotteet) => tuotteet.map((tuote) => tuote.teosInstanssi.teosInstanssiId))
+			)
+			.subscribe((instanssiIdt) => {
+				if (instanssiIdt.length === 0) {
+					this.notificationService.newNotification('info', 'Ostoskori on jo tyhjä');
+					return;
+				}
+				// Vapautetaan instanssit palvelimella
+				this.bookService.postVapautaInstanssit(instanssiIdt).subscribe({
+					next: (success: boolean) => {
+						if (success) {
+							// Tyhjennetään ostoskori
+							this.store.dispatch(clearCart());
+							this.notificationService.newNotification('success', 'Ostoskori tyhjennetty');
+						} else {
+							this.notificationService.newNotification('error', 'Ostoskorin tyhjentäminen epäonnistui');
+						}
+					},
+					error: (error: Error) => {
+						console.error('Virhe vapautettaessa instansseja:', error);
+						this.notificationService.newNotification('error', 'Ostoskorin tyhjentäminen epäonnistui');
+					},
+				});
+			});
 	}
 
 	// Luo tilauksen ja ohjaa käyttäjän tilaus-sivulle

@@ -13,6 +13,7 @@ import { map } from 'rxjs/operators';
 import { selectCartItems } from './store/selectors/cart.selector';
 import { TimerService } from './services/timer.service';
 import { AikaPipe } from './pipes/aika.pipe';
+import { clearCart } from './store/actions/cart.actions';
 
 @Component({
 	selector: 'app-root',
@@ -22,7 +23,7 @@ import { AikaPipe } from './pipes/aika.pipe';
 	imports: [RouterModule, CommonModule, NotificationComponent, AikaPipe],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-// Pääkomponentti, joka sisältää sovelluksen navigaation ja tilan hallinnan
+// Sovellusksen pääkomponentti, joka hallitsee käyttäjän kirjautumista ja ostoskorin ajastusta
 export class AppComponent implements OnInit, OnDestroy {
 	private tokenRefreshSubscription!: Subscription;
 	kirjautunut$: Observable<boolean>;
@@ -30,7 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
 	timer$: Observable<number>;
 	ostoskoriCount$: Observable<number>;
 
-	// Rakentaja alustaa käyttäjän ja roolin tilat storesta sekä palvelut
 	constructor(
 		private store: Store,
 		private authService: AuthService,
@@ -45,8 +45,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		this.ostoskoriCount$ = this.store.select(selectCartItems).pipe(map((items) => items.length));
 	}
 
-	// Komponentti alustuu ja lataa luokat, tyypit sekä käyttäjän tiedot ja asettaa aikavälin tokenien päivitykselle
 	ngOnInit() {
+		// Hae käyttäjätiedot ja teosten luokat ja tyypit alussa
 		this.authService.getKayttaja().subscribe();
 		this.bookService.getTeosLuokat().subscribe((luokat: string[]) => {
 			this.store.dispatch(addLuokat({ luokat }));
@@ -54,6 +54,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		this.bookService.getTeosTyypit().subscribe((tyypit: string[]) => {
 			this.store.dispatch(addTyypit({ tyypit }));
 		});
+
+		// Tarkista, onko käyttäjä kirjautunut sisään ja päivitä tokenit tarvittaessa
 		this.kirjautunut$.pipe(take(1)).subscribe((isLoggedIn) => {
 			if (!isLoggedIn) {
 				this.authService.paivitaTokenit().subscribe({
@@ -68,9 +70,10 @@ export class AppComponent implements OnInit, OnDestroy {
 				});
 			}
 		});
+
+		// Käynnistä ajstin tokenin päivitykselle
 		this.tokenRefreshSubscription = interval(840000).subscribe(() => {
 			this.kirjautunut$.subscribe((isLoggedIn) => {
-				// Jos käyttäjä on kirjautunut sisään, päivitetään tokenit
 				if (isLoggedIn) {
 					this.authService.paivitaTokenit().subscribe({
 						next: (success) => {
@@ -89,10 +92,18 @@ export class AppComponent implements OnInit, OnDestroy {
 			});
 		});
 
+		// Tarkista ajastimen tila ja tyhjennä ostoskori tarvittaessa
 		this.timer$.subscribe(() => {
 			this.cdr.markForCheck();
+			const aika = localStorage.getItem('ajastinAlkuAika');
+			const nyt = Date.now();
+			if (aika && (nyt - parseInt(aika)) / 1000 >= 900) {
+				this.timerService.clear();
+				this.store.dispatch(clearCart());
+			}
 		});
 
+		// Tarkista ostoskorin tuotteiden määrä ja käynnistä tai pysäytä ajastin sen mukaan
 		this.ostoskoriCount$.subscribe((count) => {
 			if (count > 0) {
 				this.timerService.start();
@@ -102,13 +113,14 @@ export class AppComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	// Poista tilaus tokenien päivityksestä, kun komponentti tuhotaan
 	ngOnDestroy() {
 		if (this.tokenRefreshSubscription) {
 			this.tokenRefreshSubscription.unsubscribe();
 		}
 	}
 
-	// Kirjaa käyttäjän ulos ja näyttää ilmoituksen
+	// Kirjauta käyttäjä ulos
 	kirjauduUlos() {
 		this.authService.postKirjauduUlos().subscribe();
 		this.notificationService.newNotification('success', 'Kirjauduttu ulos');
