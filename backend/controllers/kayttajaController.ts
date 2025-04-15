@@ -49,8 +49,8 @@ export const kirjaudu = async (req: Request, res: Response) => {
 		});
 
 		// Asetetaan access_token evästeeseen iällä 15 min ja refresh_token evästeeseen iällä 7 päivää
-		res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 900000 });
-		res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 604800000 });
+		res.cookie('access_token', access_token, { httpOnly: true, sameSite: 'strict', maxAge: 900000 });
+		res.cookie('refresh_token', refresh_token, { httpOnly: true, sameSite: 'strict', maxAge: 604800000 });
 		res.status(200).json({ message: { ...user, divariId, divariNimi } });
 	} catch (error) {
 		console.error('Virhe kirjautumisessa:', error);
@@ -133,8 +133,8 @@ export const paivitaTokenit = async (req: Request, res: Response): Promise<void>
 				}
 			);
 			// Asetetaan access_token evästeeseen iällä 15 min ja refresh_token evästeeseen iällä 7 päivää
-			res.cookie('access_token', access_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 900000 });
-			res.cookie('refresh_token', refresh_token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 604800000 });
+			res.cookie('access_token', access_token, { httpOnly: true, sameSite: 'strict', maxAge: 900000 });
+			res.cookie('refresh_token', refresh_token, { httpOnly: true, sameSite: 'strict', maxAge: 604800000 });
 			res.status(200).json({ message: 'Tokenit päivitetty onnistuneesti.' });
 		});
 	} catch (error) {
