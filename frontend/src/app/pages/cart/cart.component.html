@@ -2,24 +2,28 @@
 <div class="cart-container">
 	<h2>Ostoskori</h2>
 
-	<ul class="cart-list">
-		<li *ngFor="let tuote of ostoskoriTuotteet$ | async" class="cart-item">
-			<div class="cart-item-details">
-				<div class="item-title">{{ tuote.teos.nimi }}</div>
-				<div class="item-meta">
-					<span
-						>Kunto: <strong>{{ tuote.teosInstanssi.kunto }}</strong></span
-					>
-					|
-					<span
-						>Myyjä: <strong>{{ tuote.teosInstanssi.divari }}</strong></span
-					>
+	<ng-container *ngIf="ostoskoriTuotteet$ | async as ostoskoriTuotteet">
+		<div *ngIf="ostoskoriTuotteet.length === 0" class="empty-cart">Ostoskori on tyhjä</div>
+
+		<ul *ngIf="ostoskoriTuotteet.length > 0" class="cart-list">
+			<li *ngFor="let tuote of ostoskoriTuotteet" class="cart-item">
+				<div class="cart-item-details">
+					<div class="item-title">{{ tuote.teos.nimi }}</div>
+					<div class="item-meta">
+						<span
+							>Kunto: <strong>{{ tuote.teosInstanssi.kunto }}</strong></span
+						>
+						|
+						<span
+							>Myyjä: <strong>{{ tuote.teosInstanssi.divari }}</strong></span
+						>
+					</div>
 				</div>
-			</div>
-			<div class="item-price">{{ tuote.teosInstanssi.hinta }} €</div>
-			<button class="btn btn-remove" (click)="poistaOstoskorista(tuote)">Poista</button>
-		</li>
-	</ul>
+				<div class="item-price">{{ tuote.teosInstanssi.hinta }} €</div>
+				<button class="btn btn-remove" (click)="poistaOstoskorista(tuote)">Poista</button>
+			</li>
+		</ul>
+	</ng-container>
 
 	<h3 class="cart-total">Kokonaissumma: {{ yhteensa$ | async }} €</h3>
 
