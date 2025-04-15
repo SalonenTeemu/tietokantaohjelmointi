@@ -15,7 +15,7 @@ const port = 8041;
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['http://localhost:8040', 'http://tie-tkannat.tuni.fi:8040'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:8040', 'http://tie-tkannat.it.tuni.fi:8040'], credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
