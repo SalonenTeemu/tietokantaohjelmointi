@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { setOrder } from '../store/actions/cart.actions';
 import { Store } from '@ngrx/store';
+import { API_URL } from '../utils/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 // Tilauksen palvelu, joka käsittelee tilausten hakua, luontia, vahvistamista ja perumista
 export class OrderService {
-	private apiUrl = 'http://localhost:8041/api/tilaus';
+	private apiUrl = `${API_URL}/tilaus`;
 	private peruutettuTilaus = false;
 	constructor(
 		private http: HttpClient,

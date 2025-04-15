@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { API_URL } from '../utils/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 // Palvelu, joka käsittelee raporttien hakua ja käsittelyä
 export class ReportService {
-	private apiUrl = 'http://localhost:8041/api';
+	private apiUrl = `${API_URL}`;
 
 	constructor(private http: HttpClient) {}
 

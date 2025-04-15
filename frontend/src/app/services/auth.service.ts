@@ -7,13 +7,14 @@ import { Kayttaja } from '../models/kayttaja';
 import { selectCartOrderId } from '../store/selectors/cart.selector';
 import { OrderService } from './order.service';
 import { cancelOrder } from '../store/actions/cart.actions';
+import { API_URL } from '../utils/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 // Autentikointipalvelu, joka käsittelee käyttäjän kirjautumista, rekisteröitymistä, tokenien päivitystä ja uloskirjautumista
 export class AuthService {
-	private apiUrl = 'http://localhost:8041/api/auth';
+	private apiUrl = `${API_URL}/auth`;
 	private tilausId$;
 	constructor(
 		private store: Store,

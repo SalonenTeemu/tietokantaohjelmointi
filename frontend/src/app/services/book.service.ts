@@ -5,13 +5,14 @@ import { catchError, map } from 'rxjs/operators';
 import { Teos } from '../models/teos';
 import { TeosInstanssi } from '../models/teosInstanssi';
 import { NotificationService } from './notification.service';
+import { API_URL } from '../utils/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 // Teospalvelu, joka käsittelee teosten hakua, lisäämistä ja instanssien hallintaa
 export class BookService {
-	private apiUrl = 'http://localhost:8041/api';
+	private apiUrl = `${API_URL}`;
 
 	constructor(
 		private http: HttpClient,
