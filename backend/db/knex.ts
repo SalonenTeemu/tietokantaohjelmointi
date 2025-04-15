@@ -8,9 +8,9 @@ const db: Knex = knex({
 	connection: {
 		host: 'localhost',
 		port: 5432,
-		database: 'httusa',
-		user: 'postgres',
-		password: 'salonen',
+		database: 'nctesa', //'httusa',
+		user: 'nctesa', //'postgres',
+		password: 'D5AB2Pxh2gxEpr5', //'salonen',
 	},
 	pool: {
 		min: 2,

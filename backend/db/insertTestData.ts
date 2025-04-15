@@ -12,16 +12,16 @@ const hashSalasana = async (salasana: string) => {
 // Käyttäjät
 const kayttajat = [
 	{
-		nimi: 'Admin Admin',
-		osoite: 'Admintie 1',
+		nimi: 'Keskusdivarin omistaja',
+		osoite: 'Keskusdivarintie 1',
 		puhelin: '0401234567',
-		email: 'admin@email.com',
+		email: 'keskusdivari@email.com',
 		salasana: await hashSalasana('salasana'),
 		rooli: 'admin',
 	},
 	{
 		nimi: 'Divarin 1 omistaja',
-		osoite: 'Asiakastie 1',
+		osoite: 'Divarintie 1',
 		puhelin: '0407654321',
 		email: 'divari1@email.com',
 		salasana: await hashSalasana('salasana'),
@@ -29,7 +29,7 @@ const kayttajat = [
 	},
 	{
 		nimi: 'Divarin 2 omistaja',
-		osoite: 'Asiakastie 2',
+		osoite: 'Divarintie 2',
 		puhelin: '0407654322',
 		email: 'divari2@email.com',
 		salasana: await hashSalasana('salasana'),
@@ -37,7 +37,7 @@ const kayttajat = [
 	},
 	{
 		nimi: 'Divarin 3 omistaja',
-		osoite: 'Asiakastie 3',
+		osoite: 'Divarintie 3',
 		puhelin: '0407654323',
 		email: 'divari3@email.com',
 		salasana: await hashSalasana('salasana'),
