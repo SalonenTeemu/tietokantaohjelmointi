@@ -251,6 +251,10 @@ const luoInstanssinTilanMuutosTriggeriFunktio = async () => {
             FROM ${keskusdivari}."Divari"
             WHERE "divariId" = NEW."divariId";
 
+			IF divariNimi IS NULL THEN
+				RETURN NEW;
+			END IF;
+
             EXECUTE format('UPDATE %I."TeosInstanssi" SET "tila" = $1 WHERE "teosInstanssiId" = $2', divariNimi)
             USING NEW.tila, NEW."teosInstanssiId";
 

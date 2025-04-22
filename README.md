@@ -12,7 +12,7 @@ Kyseessä on kuvitteellinen verkkopalvelu, jossa käytettyjä kirjoja myydään 
 - Divarien ja keskusdivarin ylläpitäjät voivat lisätä uusia teoksia. Divarien ylläpitäjät voivat lisätä teosten myyntikappaleita.
 - Divarien ja keskusdivarin ylläpitäjät voivat tarkastella raportteja.
 
-## Sovelluksen asennus ja ajaminen
+## Sovelluksen asennus ja ajaminen lokaalisti
 
 1. **Kloonaa projekti ja siirry sen juurihakemistoon**:
 

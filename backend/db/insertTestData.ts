@@ -248,6 +248,62 @@ const teosInstanssit = [
 		tila: 'myyty',
 		tilausId: 5,
 	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 10.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'erinomainen',
+		sisaanostohinta: 10.0,
+		teosId: '03d2c3b6-f2c4-41c4-a105-9f2bb01dbacd',
+		divariId: 3,
+	},
+	{
+		hinta: 25.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 15.0,
+		teosId: '5c68c167-3770-456e-9385-6d58abdce0d5',
+		divariId: 3,
+	},
+	{
+		hinta: 25.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 15.0,
+		teosId: '5c68c167-3770-456e-9385-6d58abdce0d5',
+		divariId: 3,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 10.0,
+		teosId: '0fbca8b4-db20-4330-88e5-b76461d32110',
+		divariId: 3,
+	},
+	{
+		hinta: 15.0,
+		kunto: 'kohtalainen',
+		sisaanostohinta: 10.0,
+		teosId: '0fbca8b4-db20-4330-88e5-b76461d32110',
+		divariId: 3,
+	},
+	{
+		hinta: 10.0,
+		kunto: 'heikko',
+		sisaanostohinta: 8.0,
+		teosId: '0fbca8b4-db20-4330-88e5-b76461d32110',
+		divariId: 3,
+	},
+	{
+		hinta: 10.0,
+		kunto: 'heikko',
+		sisaanostohinta: 8.0,
+		teosId: '0fbca8b4-db20-4330-88e5-b76461d32110',
+		divariId: 3,
+	},
 ];
 
 // Divarin 1 teosinstanssit
